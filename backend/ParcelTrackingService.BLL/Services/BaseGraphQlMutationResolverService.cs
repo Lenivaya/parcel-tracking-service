@@ -20,7 +20,8 @@ public class BaseGraphQlMutationResolverService<TEntity, TPrimaryKey, TCreateDto
     public async Task<TEntity?> AddEntity(
         [Service] IParcelTrackingServiceUnitOfWork unitOfWork,
         [Service] IMapper mapper,
-        TCreateDto createDto
+        TCreateDto createDto,
+        Action<TEntity>? onSuccess = null
     )
     {
         try
@@ -28,9 +29,12 @@ public class BaseGraphQlMutationResolverService<TEntity, TPrimaryKey, TCreateDto
             var repo = getRepository(unitOfWork);
             var entity = mapper.Map<TEntity>(createDto!);
             var success = await repo.Insert(entity);
+            if (!success)
+                return null;
 
             await unitOfWork.SaveChanges();
-            return success ? entity : null;
+            onSuccess?.Invoke(entity);
+            return entity;
         }
         catch (DbUpdateException e) when (e.InnerException is PostgresException postgresException)
         {
@@ -44,21 +48,26 @@ public class BaseGraphQlMutationResolverService<TEntity, TPrimaryKey, TCreateDto
 
     public async Task<TEntity?> DeleteEntity(
         [Service] IParcelTrackingServiceUnitOfWork unitOfWork,
-        TPrimaryKey id
+        TPrimaryKey id,
+        Action<TEntity>? onSuccess = null
     )
     {
         var repo = getRepository(unitOfWork);
         var (isDeleted, deletedEntity) = await repo.DeleteWithEntityReturn(id);
+        if (!isDeleted || deletedEntity is null)
+            return null;
 
         await unitOfWork.SaveChanges();
-        return isDeleted ? deletedEntity : null;
+        onSuccess?.Invoke(deletedEntity);
+        return deletedEntity;
     }
 
     public async Task<TEntity?> UpdateEntity(
         [Service] IParcelTrackingServiceUnitOfWork unitOfWork,
         [Service] IMapper mapper,
         TPrimaryKey id,
-        TUpdateDto updateDto
+        TUpdateDto updateDto,
+        Action<TEntity>? onSuccess = null
     )
     {
         var repo = getRepository(unitOfWork);
@@ -71,6 +80,7 @@ public class BaseGraphQlMutationResolverService<TEntity, TPrimaryKey, TCreateDto
 
         repo.Update(updatedEntity);
         await unitOfWork.SaveChanges();
+        onSuccess?.Invoke(updatedEntity);
 
         return updatedEntity;
     }

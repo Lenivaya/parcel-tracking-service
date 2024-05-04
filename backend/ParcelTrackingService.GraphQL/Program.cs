@@ -36,6 +36,7 @@ builder.Services.AddMemoryCache().AddSha256DocumentHashProvider(HashFormat.Hex);
 builder
     .Services.AddGraphQLServer()
     .InitializeOnStartup()
+    .AddInMemorySubscriptions()
     .RegisterDbContext<ParcelTrackingServiceContext>(DbContextKind.Pooled)
     .RegisterService<ParcelTrackingServiceUnitOfWork>()
     .AddMutationConventions()
@@ -50,6 +51,10 @@ builder
     .AddTypeExtension<MutationPostOfficesResolver>()
     .AddTypeExtension<MutationDeliveryStatusesResolver>()
     .AddTypeExtension<MutationParcelsResolver>()
+    .AddSubscriptionType<Subscription>()
+    .AddTypeExtension<SubscriptionParcelsResolver>()
+    .AddTypeExtension<SubscriptionPostOfficesResolver>()
+    .AddTypeExtension<SubscriptionDeliveryStatusesResolver>()
     .AddApolloTracing()
     .UseAutomaticPersistedQueryPipeline()
     .AddInMemoryQueryStorage()
@@ -58,7 +63,7 @@ builder
 
 var app = builder.Build();
 
-app.UseRouting();
+app.UseRouting().UseWebSockets();
 
 if (app.Environment.IsDevelopment())
 {

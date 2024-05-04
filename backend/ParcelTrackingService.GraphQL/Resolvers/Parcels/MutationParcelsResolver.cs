@@ -1,3 +1,4 @@
+using HotChocolate.Subscriptions;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using ParcelTrackingService.DAL.Entities;
@@ -38,6 +39,7 @@ public class MutationParcelsResolver
     public async Task<IQueryable<Parcel>> PushOneMoreParcelStatus(
         ParcelTrackingServiceUnitOfWork unitOfWork,
         [Service] IMapper mapper,
+        ITopicEventSender sender,
         Guid parcelId,
         ParcelStatusDto createDto
     )
@@ -49,6 +51,10 @@ public class MutationParcelsResolver
         var parcelStatus = mapper.Map<ParcelStatus>(createDto);
         parcel.ParcelStatusHistory.Add(parcelStatus);
         await unitOfWork.SaveChanges();
+        await sender.SendAsync(
+            $"{nameof(SubscriptionParcelsResolver.ParcelStatusUpdated)}-{parcelId}",
+            parcel
+        );
 
         return unitOfWork
             .ParcelsRepository.StartQuery()

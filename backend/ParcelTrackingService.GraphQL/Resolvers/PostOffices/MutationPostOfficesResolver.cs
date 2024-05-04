@@ -1,3 +1,4 @@
+using HotChocolate.Subscriptions;
 using MapsterMapper;
 using ParcelTrackingService.DAL.Entities;
 using ParcelTrackingService.DAL.UnitOfWork;
@@ -22,27 +23,54 @@ public class MutationPostOfficesResolver
     public Task<PostOffice?> AddPostOffice(
         ParcelTrackingServiceUnitOfWork unitOfWork,
         [Service] IMapper mapper,
+        ITopicEventSender sender,
         PostOfficeCreateDto createDto
     )
     {
-        return GraphQlMutationResolverService.AddEntity(unitOfWork, mapper, createDto);
+        return GraphQlMutationResolverService.AddEntity(unitOfWork, mapper, createDto, OnSuccess);
+
+        async void OnSuccess(PostOffice result) =>
+            await sender.SendAsync(
+                nameof(SubscriptionPostOfficesResolver.PostOfficeCreated),
+                result
+            );
     }
 
     public Task<PostOffice?> DeletePostOfficeById(
         ParcelTrackingServiceUnitOfWork unitOfWork,
+        ITopicEventSender sender,
         Guid officeId
     )
     {
-        return GraphQlMutationResolverService.DeleteEntity(unitOfWork, officeId);
+        return GraphQlMutationResolverService.DeleteEntity(unitOfWork, officeId, OnSuccess);
+
+        async void OnSuccess(PostOffice result) =>
+            await sender.SendAsync(
+                nameof(SubscriptionPostOfficesResolver.PostOfficeDeleted),
+                result
+            );
     }
 
     public Task<PostOffice?> UpdatePostOffice(
         ParcelTrackingServiceUnitOfWork unitOfWork,
         [Service] IMapper mapper,
+        ITopicEventSender sender,
         Guid officeId,
         PostOfficePatchDto updateDto
     )
     {
-        return GraphQlMutationResolverService.UpdateEntity(unitOfWork, mapper, officeId, updateDto);
+        return GraphQlMutationResolverService.UpdateEntity(
+            unitOfWork,
+            mapper,
+            officeId,
+            updateDto,
+            OnSuccess
+        );
+
+        async void OnSuccess(PostOffice result) =>
+            await sender.SendAsync(
+                $"{nameof(SubscriptionPostOfficesResolver.PostOfficeUpdated)}-{officeId}",
+                result
+            );
     }
 }
