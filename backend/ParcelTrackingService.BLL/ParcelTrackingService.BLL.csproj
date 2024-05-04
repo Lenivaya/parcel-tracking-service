@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>ParcelTrackingService.WebCommon</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Mapster" Version="7.4.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="HotChocolate.Abstractions">
+        <HintPath>..\..\..\..\..\..\..\..\..\.local\share\NuGet\packages\hotchocolate.abstractions\13.9.0\lib\net8.0\HotChocolate.Abstractions.dll</HintPath>
+      </Reference>
+      <Reference Include="Mapster.DependencyInjection">
+        <HintPath>..\..\..\..\..\..\..\..\..\.local\share\NuGet\packages\mapster.dependencyinjection\1.0.1\lib\net7.0\Mapster.DependencyInjection.dll</HintPath>
+      </Reference>
+      <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
+        <HintPath>..\..\..\..\..\..\..\..\..\.local\share\NuGet\packages\microsoft.extensions.dependencyinjection.abstractions\8.0.0\lib\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ParcelTrackingService.DAL\ParcelTrackingService.DAL.csproj" />
+    </ItemGroup>
+
+</Project>

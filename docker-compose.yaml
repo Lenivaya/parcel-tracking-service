@@ -1,0 +1,23 @@
+services:
+  db:
+    container_name: parcel-tracking-service-db
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    expose:
+      - "5432"
+    environment:
+      POSTGRES_USER: parcel_tracking_service
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: parcel_tracking_service
+    volumes:
+      - parcel-tracking-service-db-data:/var/lib/postgresql/data
+    networks:
+      - parcel-tracking-service-network
+
+volumes:
+  parcel-tracking-service-db-data:
+
+networks:
+  parcel-tracking-service-network:
+    driver: bridge
