@@ -16,24 +16,32 @@ public class QueryParcelsResolver
         return context.Parcels.AsNoTracking();
     }
 
-
     [UsePaging]
     [UseProjection]
     [UseFiltering]
     [UseSorting]
-    public IQueryable<ParcelStatus> GetParcelHistory(ParcelTrackingServiceContext context, Guid parcelId)
+    public IQueryable<ParcelStatus> GetParcelHistory(
+        ParcelTrackingServiceContext context,
+        Guid parcelId
+    )
     {
-        return context.ParcelStatuses.AsNoTracking().Where(parcelStatus => parcelStatus.ParcelId == parcelId);
+        return context
+            .ParcelStatuses.AsNoTracking()
+            .Where(parcelStatus => parcelStatus.ParcelId == parcelId);
     }
-
 
     [UseFirstOrDefault]
     [UseProjection]
     [UseFiltering]
     [UseSorting]
-    public IQueryable<ParcelStatus> GetCurrentParcelStatus(ParcelTrackingServiceContext context, Guid parcelId)
+    public IQueryable<ParcelStatus> GetCurrentParcelStatus(
+        ParcelTrackingServiceContext context,
+        Guid parcelId
+    )
     {
-        return context.ParcelStatuses.AsNoTracking().Where(parcelStatus => parcelStatus.ParcelId == parcelId)
+        return context
+            .ParcelStatuses.AsNoTracking()
+            .Where(parcelStatus => parcelStatus.ParcelId == parcelId)
             .OrderByDescending(parcelStatus => parcelStatus.Date);
     }
 }
