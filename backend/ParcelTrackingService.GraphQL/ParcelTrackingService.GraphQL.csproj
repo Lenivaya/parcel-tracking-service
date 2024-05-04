@@ -27,6 +27,8 @@
         <PackageReference Include="HotChocolate.Data.EntityFramework" Version="13.9.0"/>
         <PackageReference Include="HotChocolate.Data.Filters.Extensions" Version="0.8.0"/>
         <PackageReference Include="HotChocolate.PersistedQueries.InMemory" Version="13.9.0"/>
+        <PackageReference Include="HotChocolate.PersistedQueries.Redis" Version="13.9.0" />
+        <PackageReference Include="HotChocolate.Subscriptions.Redis" Version="13.9.0" />
         <PackageReference Include="Mapster" Version="7.4.0" />
         <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4"/>

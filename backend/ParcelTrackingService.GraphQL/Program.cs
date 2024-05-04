@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using HotChocolate.Language;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
@@ -9,16 +10,17 @@ using ParcelTrackingService.GraphQL.Resolvers.Parcels;
 using ParcelTrackingService.GraphQL.Resolvers.PostOffices;
 using ParcelTrackingService.GraphQL.Schema;
 using ParcelTrackingService.WebCommon.DTO;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 
 MapsterConfig.ConfigureServices(builder.Services);
 
+builder.Services.ConfigureHttpJsonOptions(options =>
+    options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
 builder
-    .Services.AddHttpLogging(options =>
-    {
-        options.LoggingFields = HttpLoggingFields.Request;
-    })
+    .Services.AddHttpLogging(options => { options.LoggingFields = HttpLoggingFields.Request; })
     .AddCors();
 
 builder
@@ -31,12 +33,14 @@ builder
     })
     .AddTransient<ParcelTrackingServiceUnitOfWork>();
 
-builder.Services.AddMemoryCache().AddSha256DocumentHashProvider(HashFormat.Hex);
+var redisConnectionString = builder.Configuration.GetConnectionString("Redis") ?? "localhost:6379";
+
+builder.Services
+    .AddSha256DocumentHashProvider(HashFormat.Hex);
 
 builder
     .Services.AddGraphQLServer()
-    .InitializeOnStartup()
-    .AddInMemorySubscriptions()
+    .AddRedisSubscriptions(_ => ConnectionMultiplexer.Connect(redisConnectionString))
     .RegisterDbContext<ParcelTrackingServiceContext>(DbContextKind.Pooled)
     .RegisterService<ParcelTrackingServiceUnitOfWork>()
     .AddMutationConventions()
@@ -55,10 +59,12 @@ builder
     .AddTypeExtension<SubscriptionParcelsResolver>()
     .AddTypeExtension<SubscriptionPostOfficesResolver>()
     .AddTypeExtension<SubscriptionDeliveryStatusesResolver>()
-    .AddApolloTracing()
     .UseAutomaticPersistedQueryPipeline()
-    .AddInMemoryQueryStorage()
-    .ModifyRequestOptions(options => options.IncludeExceptionDetails = true);
+    .AddRedisQueryStorage(_ => ConnectionMultiplexer.Connect(redisConnectionString).GetDatabase())
+    .ModifyRequestOptions(options => options.IncludeExceptionDetails = true)
+    .AddApolloTracing()
+    .InitializeOnStartup()
+    ;
 ;
 
 var app = builder.Build();

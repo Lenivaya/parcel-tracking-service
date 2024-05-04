@@ -12,10 +12,10 @@ public class SubscriptionPostOfficesResolver
     [UseProjection]
     public IQueryable<PostOffice> PostOfficeCreated(
         ParcelTrackingServiceContext context,
-        [EventMessage] PostOffice postOffice
+        [EventMessage] Guid postOfficeId
     )
     {
-        return context.PostOffices.AsNoTracking().Where(p => p.Id == postOffice.Id);
+        return context.PostOffices.AsNoTracking().Where(p => p.Id == postOfficeId);
     }
 
     [Subscribe]
@@ -23,10 +23,10 @@ public class SubscriptionPostOfficesResolver
     [UseProjection]
     public IQueryable<PostOffice> PostOfficeDeleted(
         ParcelTrackingServiceContext context,
-        [EventMessage] PostOffice postOffice
+        [EventMessage] Guid postOfficeId
     )
     {
-        return context.PostOffices.AsNoTracking().Where(p => p.Id == postOffice.Id);
+        return context.PostOffices.AsNoTracking().Where(p => p.Id == postOfficeId);
     }
 
     [Subscribe]
@@ -36,9 +36,9 @@ public class SubscriptionPostOfficesResolver
     public IQueryable<PostOffice> PostOfficeUpdated(
         ParcelTrackingServiceContext context,
         Guid postOfficeId,
-        [EventMessage] PostOffice office
+        [EventMessage] Guid officeIdInMessage
     )
     {
-        return context.PostOffices.AsNoTracking().Where(p => p.Id == postOfficeId);
+        return context.PostOffices.AsNoTracking().Where(p => p.Id == officeIdInMessage);
     }
 }

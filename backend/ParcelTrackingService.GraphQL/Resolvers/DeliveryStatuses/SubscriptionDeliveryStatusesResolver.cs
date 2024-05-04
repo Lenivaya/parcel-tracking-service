@@ -12,12 +12,12 @@ public class SubscriptionDeliveryStatusesResolver
     [UseProjection]
     public IQueryable<DeliveryStatus> DeliveryStatusCreated(
         ParcelTrackingServiceContext context,
-        [EventMessage] DeliveryStatus deliveryStatus
+        [EventMessage] Guid deliveryStatusId
     )
     {
         return context
             .DeliveryStatuses.AsNoTracking()
-            .Where(status => status.Id == deliveryStatus.Id);
+            .Where(status => status.Id == deliveryStatusId);
     }
 
     [Subscribe]
@@ -25,12 +25,12 @@ public class SubscriptionDeliveryStatusesResolver
     [UseProjection]
     public IQueryable<DeliveryStatus> DeliveryStatusDeleted(
         ParcelTrackingServiceContext context,
-        [EventMessage] DeliveryStatus deliveryStatus
+        [EventMessage] Guid deliveryStatusId
     )
     {
         return context
             .DeliveryStatuses.AsNoTracking()
-            .Where(status => status.Id == deliveryStatus.Id);
+            .Where(status => status.Id == deliveryStatusId);
     }
 
     [Subscribe]
@@ -38,11 +38,11 @@ public class SubscriptionDeliveryStatusesResolver
     [UseProjection]
     public IQueryable<DeliveryStatus> DeliveryStatusUpdated(
         ParcelTrackingServiceContext context,
-        [EventMessage] DeliveryStatus deliveryStatus
+        [EventMessage] Guid deliveryStatusId
     )
     {
         return context
             .DeliveryStatuses.AsNoTracking()
-            .Where(status => status.Id == deliveryStatus.Id);
+            .Where(status => status.Id == deliveryStatusId);
     }
 }

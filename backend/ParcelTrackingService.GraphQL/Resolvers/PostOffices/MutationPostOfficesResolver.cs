@@ -32,7 +32,7 @@ public class MutationPostOfficesResolver
         async void OnSuccess(PostOffice result) =>
             await sender.SendAsync(
                 nameof(SubscriptionPostOfficesResolver.PostOfficeCreated),
-                result
+                result.Id
             );
     }
 
@@ -47,7 +47,7 @@ public class MutationPostOfficesResolver
         async void OnSuccess(PostOffice result) =>
             await sender.SendAsync(
                 nameof(SubscriptionPostOfficesResolver.PostOfficeDeleted),
-                result
+                result.Id
             );
     }
 
@@ -70,7 +70,7 @@ public class MutationPostOfficesResolver
         async void OnSuccess(PostOffice result) =>
             await sender.SendAsync(
                 $"{nameof(SubscriptionPostOfficesResolver.PostOfficeUpdated)}-{officeId}",
-                result
+                result.Id
             );
     }
 }

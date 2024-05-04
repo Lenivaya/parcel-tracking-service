@@ -53,12 +53,12 @@ public class MutationParcelsResolver
         await unitOfWork.SaveChanges();
         await sender.SendAsync(
             $"{nameof(SubscriptionParcelsResolver.ParcelStatusUpdated)}-{parcelId}",
-            parcel
+            parcel.Id
         );
 
         return unitOfWork
             .ParcelsRepository.StartQuery()
-            .Where(p => p.Id == parcelId)
-            .AsNoTracking();
+            .AsNoTracking()
+            .Where(p => p.Id == parcelId);
     }
 }

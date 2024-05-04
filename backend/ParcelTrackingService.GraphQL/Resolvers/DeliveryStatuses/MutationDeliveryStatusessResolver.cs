@@ -33,7 +33,7 @@ public class MutationDeliveryStatusesResolver
         async void OnSuccess(DeliveryStatus entity) =>
             await sender.SendAsync(
                 nameof(SubscriptionDeliveryStatusesResolver.DeliveryStatusCreated),
-                entity
+                entity.Id
             );
     }
 
@@ -48,7 +48,7 @@ public class MutationDeliveryStatusesResolver
         async void OnSuccess(DeliveryStatus entity) =>
             await sender.SendAsync(
                 nameof(SubscriptionDeliveryStatusesResolver.DeliveryStatusDeleted),
-                entity
+                entity.Id
             );
     }
 
@@ -71,7 +71,7 @@ public class MutationDeliveryStatusesResolver
         async void OnSuccess(DeliveryStatus entity) =>
             await sender.SendAsync(
                 nameof(SubscriptionDeliveryStatusesResolver.DeliveryStatusUpdated),
-                entity
+                entity.Id
             );
     }
 }
