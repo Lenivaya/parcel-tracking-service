@@ -4,10 +4,16 @@ namespace ParcelTrackingService.DAL.Entities;
 
 public partial class ParcelTrackingServiceContext : DbContext
 {
-    public ParcelTrackingServiceContext() { }
+    public ParcelTrackingServiceContext()
+    {
+        ChangeTracker.LazyLoadingEnabled = false;
+    }
 
     public ParcelTrackingServiceContext(DbContextOptions<ParcelTrackingServiceContext> options)
-        : base(options) { }
+        : base(options)
+    {
+        ChangeTracker.LazyLoadingEnabled = false;
+    }
 
     public virtual DbSet<PostOffice> PostOffices { get; set; } = default!;
     public virtual DbSet<DeliveryStatus> DeliveryStatuses { get; set; } = default!;

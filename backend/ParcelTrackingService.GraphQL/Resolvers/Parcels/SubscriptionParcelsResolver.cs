@@ -14,12 +14,12 @@ public class SubscriptionParcelsResolver
     public IQueryable<ParcelStatus> ParcelStatusUpdated(
         ParcelTrackingServiceContext context,
         Guid parcelId,
-        [EventMessage] Parcel parcel
+        [EventMessage] Guid messageParcelId
     )
     {
         return context
             .ParcelStatuses.AsNoTracking()
-            .Where(status => status.ParcelId == parcel.Id)
+            .Where(status => status.ParcelId == messageParcelId)
             .OrderByDescending(status => status.Date);
     }
 }
