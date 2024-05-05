@@ -13,6 +13,9 @@ import { ArrowUp, PackageIcon, Route } from 'lucide-react'
 import { formatMoney } from '@/lib/money'
 import { isSome } from '@/lib/types'
 import { toast } from '@/components/ui/use-toast'
+import { truncate } from '@/lib/strings'
+import { AppTooltip } from '@/components/tracking-service/generic/AppTooltip'
+import App from 'next/app'
 
 export const ParcelCardFragment = gql`
   fragment ParcelCardItem on Parcel {
@@ -45,12 +48,14 @@ export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
   }
 
   return (
-    <Card className='max-w-80 w-80 min-h-80'>
+    <Card className='max-w-80 w-80 !max-h-96'>
       <CardHeader>
         <CardTitle>
           <div className={'flex flex-row gap-3 text-md'}>
             <PackageIcon className={'hover:scale-150 cursor-pointer'} />
-            <p>{parcel.parcelInfo.description}</p>
+            <AppTooltip text={parcel.parcelInfo.description}>
+              <p>{truncate(parcel.parcelInfo.description, 20)}</p>
+            </AppTooltip>
           </div>
 
           <button className={'mt-5'} onClick={handleCopyParcelId}>
@@ -99,9 +104,13 @@ export const ParcelCardDeliveryPath: FC<
 > = ({ deliveryDestinationAddress, deliverySourceAddress }) => {
   return (
     <div className={'flex flex-col text-center gap-3'}>
-      <p>{deliveryDestinationAddress}</p>
+      <AppTooltip text={deliveryDestinationAddress}>
+        <p>{truncate(deliveryDestinationAddress, 30)}</p>
+      </AppTooltip>
       <ArrowUp className={'mx-auto my-auto'} />
-      {deliverySourceAddress}
+      <AppTooltip text={deliverySourceAddress}>
+        <p>{truncate(deliverySourceAddress, 30)}</p>
+      </AppTooltip>
     </div>
   )
 }
