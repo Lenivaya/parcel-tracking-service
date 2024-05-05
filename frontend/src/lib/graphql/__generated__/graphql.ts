@@ -664,12 +664,12 @@ export type UuidOperationFilterInput = {
   nlte?: InputMaybe<Scalars['UUID']['input']>;
 };
 
-export type ParcelCardItemFragment = { __typename?: 'Parcel', id: any, parcelInfo: { __typename?: 'ParcelInfo', deliveryDestinationAddress: string, description: string, priceToPay: any, parcelContentPrice: any }, currentStatus?: { __typename?: 'ParcelStatus', statusDescription: string } | null };
-
 export type GetParcelsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetParcelsQuery = { __typename?: 'Query', parcels?: { __typename?: 'ParcelsConnection', nodes?: Array<{ __typename?: 'Parcel', id: any, parcelInfo: { __typename?: 'ParcelInfo', deliveryDestinationAddress: string, description: string, priceToPay: any, parcelContentPrice: any }, currentStatus?: { __typename?: 'ParcelStatus', statusDescription: string } | null }> | null } | null };
+
+export type ParcelCardItemFragment = { __typename?: 'Parcel', id: any, parcelInfo: { __typename?: 'ParcelInfo', deliveryDestinationAddress: string, description: string, priceToPay: any, parcelContentPrice: any }, currentStatus?: { __typename?: 'ParcelStatus', statusDescription: string } | null };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
 export type ResolversObject<TObject> = WithIndex<TObject>;

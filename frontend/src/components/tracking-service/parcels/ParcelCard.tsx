@@ -48,7 +48,7 @@ export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
       <CardHeader>
         <CardTitle>
           <div className={'flex flex-row gap-3 text-md'}>
-            <PackageIcon />
+            <PackageIcon className={'hover:scale-150 cursor-pointer'} />
             <p>{parcel.parcelInfo.description}</p>
           </div>
 
