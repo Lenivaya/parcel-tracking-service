@@ -671,9 +671,9 @@ export type UuidOperationFilterInput = {
 export type GetParcelsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetParcelsQuery = { __typename?: 'Query', parcels?: { __typename?: 'ParcelsConnection', nodes?: Array<{ __typename?: 'Parcel', id: any, parcelInfo: { __typename?: 'ParcelInfo', deliveryDestinationAddress: string, deliverySourceAddress: string, description: string, priceToPay: any, parcelContentPrice: any }, currentStatus?: { __typename?: 'ParcelStatus', statusDescription: string } | null }> | null } | null };
+export type GetParcelsQuery = { __typename?: 'Query', parcels?: { __typename?: 'ParcelsConnection', nodes?: Array<{ __typename?: 'Parcel', id: any, updatedAt?: any | null, parcelInfo: { __typename?: 'ParcelInfo', id: any, deliveryDestinationAddress: string, deliverySourceAddress: string, description: string, priceToPay: any, parcelContentPrice: any }, currentStatus?: { __typename?: 'ParcelStatus', id: any, statusDescription: string, updatedAt?: any | null } | null }> | null } | null };
 
-export type ParcelCardItemFragment = { __typename?: 'Parcel', id: any, parcelInfo: { __typename?: 'ParcelInfo', deliveryDestinationAddress: string, deliverySourceAddress: string, description: string, priceToPay: any, parcelContentPrice: any }, currentStatus?: { __typename?: 'ParcelStatus', statusDescription: string } | null };
+export type ParcelCardItemFragment = { __typename?: 'Parcel', id: any, updatedAt?: any | null, parcelInfo: { __typename?: 'ParcelInfo', id: any, deliveryDestinationAddress: string, deliverySourceAddress: string, description: string, priceToPay: any, parcelContentPrice: any }, currentStatus?: { __typename?: 'ParcelStatus', id: any, statusDescription: string, updatedAt?: any | null } | null };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
 export type ResolversObject<TObject> = WithIndex<TObject>;
@@ -1194,6 +1194,7 @@ export const ParcelCardItemFragmentDoc = gql`
     fragment ParcelCardItem on Parcel {
   id
   parcelInfo {
+    id
     deliveryDestinationAddress
     deliverySourceAddress
     description
@@ -1201,8 +1202,11 @@ export const ParcelCardItemFragmentDoc = gql`
     parcelContentPrice
   }
   currentStatus {
+    id
     statusDescription
+    updatedAt
   }
+  updatedAt
 }
     `;
 export const GetParcelsDocument = gql`

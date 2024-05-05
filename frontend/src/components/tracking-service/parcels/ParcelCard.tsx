@@ -9,18 +9,19 @@ import {
 } from '@/components/ui'
 import type { FC } from 'react'
 import { ParcelCardItemFragment } from '@/lib'
-import { ArrowUp, PackageIcon, Route } from 'lucide-react'
+import { ArrowUp, PackageIcon } from 'lucide-react'
 import { formatMoney } from '@/lib/money'
 import { isSome } from '@/lib/types'
 import { toast } from '@/components/ui/use-toast'
 import { truncate } from '@/lib/strings'
 import { AppTooltip } from '@/components/tracking-service/generic/AppTooltip'
-import App from 'next/app'
+import { dateFormatterWithHours } from '@/components/tracking-service/generic/dates'
 
 export const ParcelCardFragment = gql`
   fragment ParcelCardItem on Parcel {
     id
     parcelInfo {
+      id
       deliveryDestinationAddress
       deliverySourceAddress
       description
@@ -29,8 +30,12 @@ export const ParcelCardFragment = gql`
     }
 
     currentStatus {
+      id
       statusDescription
+      updatedAt
     }
+
+    updatedAt
   }
 `
 
@@ -46,6 +51,8 @@ export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
       duration: 750
     })
   }
+
+  console.log(parcel.currentStatus?.updatedAt)
 
   return (
     <Card className='max-w-80 w-80 !max-h-96'>
@@ -82,15 +89,26 @@ export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
       </CardContent>
 
       <CardFooter className={'flex flex-col justify-between'}>
-        <ParcelCardPrice
-          price={parcel.parcelInfo.priceToPay}
-          label={'Price to pay'}
-        />
+        <div className={'flex flex-col justify-between'}>
+          <ParcelCardPrice
+            price={parcel.parcelInfo.priceToPay}
+            label={'Price to pay'}
+          />
 
-        <ParcelCardPrice
-          price={parcel.parcelInfo.parcelContentPrice}
-          label={'Parcel content price'}
-        />
+          <ParcelCardPrice
+            price={parcel.parcelInfo.parcelContentPrice}
+            label={'Parcel content price'}
+          />
+        </div>
+
+        <div className={'mt-4'}>
+          <p>
+            <span>Last updated: </span>
+            {dateFormatterWithHours(
+              new Date(parcel.currentStatus?.updatedAt ?? parcel.updatedAt)
+            )}
+          </p>
+        </div>
       </CardFooter>
     </Card>
   )
