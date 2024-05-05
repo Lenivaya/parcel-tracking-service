@@ -113,6 +113,7 @@ type ParcelHistoryEdge {
 
 type ParcelInfo {
   deliveryDestinationAddress: String!
+  deliverySourceAddress: String!
   description: String!
   priceToPay: Decimal!
   parcelContentPrice: Decimal!
@@ -336,6 +337,7 @@ input ParcelFilterInput {
 
 input ParcelInfoDtoInput {
   deliveryDestinationAddress: String!
+  deliverySourceAddress: String!
   description: String!
   priceToPay: Decimal!
   parcelContentPrice: Decimal!
@@ -345,6 +347,7 @@ input ParcelInfoFilterInput {
   and: [ParcelInfoFilterInput!]
   or: [ParcelInfoFilterInput!]
   deliveryDestinationAddress: StringOperationFilterInput
+  deliverySourceAddress: StringOperationFilterInput
   description: StringOperationFilterInput
   priceToPay: DecimalOperationFilterInput
   parcelContentPrice: DecimalOperationFilterInput
@@ -357,6 +360,7 @@ input ParcelInfoFilterInput {
 
 input ParcelInfoSortInput {
   deliveryDestinationAddress: SortEnumType
+  deliverySourceAddress: SortEnumType
   description: SortEnumType
   priceToPay: SortEnumType
   parcelContentPrice: SortEnumType

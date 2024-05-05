@@ -9,7 +9,7 @@ import {
 } from '@/components/ui'
 import type { FC } from 'react'
 import { ParcelCardItemFragment } from '@/lib'
-import { PackageIcon } from 'lucide-react'
+import { ArrowUp, PackageIcon, Route } from 'lucide-react'
 import { formatMoney } from '@/lib/money'
 import { isSome } from '@/lib/types'
 import { toast } from '@/components/ui/use-toast'
@@ -19,6 +19,7 @@ export const ParcelCardFragment = gql`
     id
     parcelInfo {
       deliveryDestinationAddress
+      deliverySourceAddress
       description
       priceToPay
       parcelContentPrice
@@ -44,7 +45,7 @@ export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
   }
 
   return (
-    <Card className='max-w-80 w-80 h-80'>
+    <Card className='max-w-80 w-80 min-h-80'>
       <CardHeader>
         <CardTitle>
           <div className={'flex flex-row gap-3 text-md'}>
@@ -72,8 +73,9 @@ export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
       )}
 
       <CardContent className='flex-col'>
-        {parcel.parcelInfo.deliveryDestinationAddress}
+        <ParcelCardDeliveryPath {...parcel.parcelInfo} />
       </CardContent>
+
       <CardFooter className={'flex flex-col justify-between'}>
         <ParcelCardPrice
           price={parcel.parcelInfo.priceToPay}
@@ -86,6 +88,21 @@ export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
         />
       </CardFooter>
     </Card>
+  )
+}
+
+export const ParcelCardDeliveryPath: FC<
+  Pick<
+    ParcelCardItemFragment['parcelInfo'],
+    'deliveryDestinationAddress' | 'deliverySourceAddress'
+  >
+> = ({ deliveryDestinationAddress, deliverySourceAddress }) => {
+  return (
+    <div className={'flex flex-col text-center gap-3'}>
+      <p>{deliveryDestinationAddress}</p>
+      <ArrowUp className={'mx-auto my-auto'} />
+      {deliverySourceAddress}
+    </div>
   )
 }
 
