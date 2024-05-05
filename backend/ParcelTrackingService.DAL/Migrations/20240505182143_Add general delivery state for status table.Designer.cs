@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ParcelTrackingService.DAL.Entities;
@@ -11,9 +12,11 @@ using ParcelTrackingService.DAL.Entities;
 namespace ParcelTrackingService.DAL.Migrations
 {
     [DbContext(typeof(ParcelTrackingServiceContext))]
-    partial class ParcelTrackingServiceContextModelSnapshot : ModelSnapshot
+    [Migration("20240505182143_Add general delivery state for status table")]
+    partial class Addgeneraldeliverystateforstatustable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
