@@ -47,6 +47,7 @@ builder
     .AddProjections()
     .AddExtendedFiltering()
     .AddSorting()
+    .AddTypeExtension<ParcelExtensions>()
     .AddQueryType<Query>()
     .AddTypeExtension<QueryPostOfficesResolver>()
     .AddTypeExtension<QueryDeliveryStatusesResolver>()
