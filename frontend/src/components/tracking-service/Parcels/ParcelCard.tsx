@@ -9,9 +9,10 @@ import {
 } from '@/components/ui'
 import type { FC } from 'react'
 import { ParcelCardItemFragment } from '@/lib'
-import { PackageIcon } from 'lucide-react'
+import { Copy, PackageIcon } from 'lucide-react'
 import { formatMoney } from '@/lib/money'
 import { isSome } from '@/lib/types'
+import { toast } from '@/components/ui/use-toast'
 
 export const ParcelCardFragment = gql`
   fragment ParcelCardItem on Parcel {
@@ -34,6 +35,14 @@ export type ParcelCardProps = {
 }
 
 export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
+  const handleCopyParcelId = async () => {
+    await navigator.clipboard.writeText(parcel.id)
+    toast({
+      title: 'Parcel ID copied to clipboard',
+      duration: 750
+    })
+  }
+
   return (
     <Card className='max-w-80 w-80 h-80'>
       <CardHeader>
@@ -42,7 +51,10 @@ export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
             <PackageIcon />
             <p>{parcel.parcelInfo.description}</p>
           </div>
-          <p className='text-sm font-light mt-5'>{parcel.id}</p>
+
+          <button className={'mt-5'} onClick={handleCopyParcelId}>
+            <p className='text-[13.5px]  font-light'>{parcel.id}</p>
+          </button>
         </CardTitle>
       </CardHeader>
 
