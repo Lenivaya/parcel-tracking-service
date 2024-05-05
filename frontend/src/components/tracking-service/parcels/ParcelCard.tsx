@@ -55,7 +55,7 @@ export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
   console.log(parcel.currentStatus?.updatedAt)
 
   return (
-    <Card className='flex flex-col justify-between max-w-80 w-80 !max-h-[26rem]'>
+    <Card className='flex flex-col justify-between max-w-80 w-80 !max-h-[28rem]'>
       <CardHeader>
         <CardTitle>
           <div className={'flex flex-row gap-3 text-md'}>

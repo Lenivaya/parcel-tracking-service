@@ -117,18 +117,21 @@ export type DeletePostOfficeByIdPayload = {
 export type DeliveryStatus = {
   __typename?: 'DeliveryStatus';
   createdAt?: Maybe<Scalars['DateTime']['output']>;
+  generalDeliveryState: GeneralDeliveryState;
   id: Scalars['UUID']['output'];
   statusName: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
 
 export type DeliveryStatusCreateDtoInput = {
+  generalDeliveryState: GeneralDeliveryState;
   statusName: Scalars['String']['input'];
 };
 
 export type DeliveryStatusFilterInput = {
   and?: InputMaybe<Array<DeliveryStatusFilterInput>>;
   createdAt?: InputMaybe<DateTimeOperationFilterInput>;
+  generalDeliveryState?: InputMaybe<GeneralDeliveryStateOperationFilterInput>;
   id?: InputMaybe<UuidOperationFilterInput>;
   or?: InputMaybe<Array<DeliveryStatusFilterInput>>;
   statusName?: InputMaybe<StringOperationFilterInput>;
@@ -136,11 +139,13 @@ export type DeliveryStatusFilterInput = {
 };
 
 export type DeliveryStatusPatchDtoInput = {
+  generalDeliveryState?: InputMaybe<GeneralDeliveryState>;
   statusName?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type DeliveryStatusSortInput = {
   createdAt?: InputMaybe<SortEnumType>;
+  generalDeliveryState?: InputMaybe<SortEnumType>;
   id?: InputMaybe<SortEnumType>;
   statusName?: InputMaybe<SortEnumType>;
   updatedAt?: InputMaybe<SortEnumType>;
@@ -168,6 +173,20 @@ export type DeliveryStatusesEdge = {
 
 export type Error = {
   message: Scalars['String']['output'];
+};
+
+export type GeneralDeliveryState =
+  | 'DELIVERED'
+  | 'IN_TRANSIT'
+  | 'PREPARING'
+  | 'RETURNED'
+  | 'SENT';
+
+export type GeneralDeliveryStateOperationFilterInput = {
+  eq?: InputMaybe<GeneralDeliveryState>;
+  in?: InputMaybe<Array<GeneralDeliveryState>>;
+  neq?: InputMaybe<GeneralDeliveryState>;
+  nin?: InputMaybe<Array<GeneralDeliveryState>>;
 };
 
 export type ListFilterInputTypeOfParcelStatusFilterInput = {
@@ -784,6 +803,8 @@ export type ResolversTypes = ResolversObject<{
   DeliveryStatusesConnection: ResolverTypeWrapper<DeliveryStatusesConnection>;
   DeliveryStatusesEdge: ResolverTypeWrapper<DeliveryStatusesEdge>;
   Error: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Error']>;
+  GeneralDeliveryState: GeneralDeliveryState;
+  GeneralDeliveryStateOperationFilterInput: GeneralDeliveryStateOperationFilterInput;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   ListFilterInputTypeOfParcelStatusFilterInput: ListFilterInputTypeOfParcelStatusFilterInput;
   Mutation: ResolverTypeWrapper<{}>;
@@ -861,6 +882,7 @@ export type ResolversParentTypes = ResolversObject<{
   DeliveryStatusesConnection: DeliveryStatusesConnection;
   DeliveryStatusesEdge: DeliveryStatusesEdge;
   Error: ResolversInterfaceTypes<ResolversParentTypes>['Error'];
+  GeneralDeliveryStateOperationFilterInput: GeneralDeliveryStateOperationFilterInput;
   Int: Scalars['Int']['output'];
   ListFilterInputTypeOfParcelStatusFilterInput: ListFilterInputTypeOfParcelStatusFilterInput;
   Mutation: {};
@@ -958,6 +980,7 @@ export type DeletePostOfficeByIdPayloadResolvers<ContextType = any, ParentType e
 
 export type DeliveryStatusResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeliveryStatus'] = ResolversParentTypes['DeliveryStatus']> = ResolversObject<{
   createdAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  generalDeliveryState?: Resolver<ResolversTypes['GeneralDeliveryState'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
   statusName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
@@ -1276,9 +1299,10 @@ export type DeletePostOfficeByIdPayloadKeySpecifier = ('postOffice' | DeletePost
 export type DeletePostOfficeByIdPayloadFieldPolicy = {
 	postOffice?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type DeliveryStatusKeySpecifier = ('createdAt' | 'id' | 'statusName' | 'updatedAt' | DeliveryStatusKeySpecifier)[];
+export type DeliveryStatusKeySpecifier = ('createdAt' | 'generalDeliveryState' | 'id' | 'statusName' | 'updatedAt' | DeliveryStatusKeySpecifier)[];
 export type DeliveryStatusFieldPolicy = {
 	createdAt?: FieldPolicy<any> | FieldReadFunction<any>,
+	generalDeliveryState?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	statusName?: FieldPolicy<any> | FieldReadFunction<any>,
 	updatedAt?: FieldPolicy<any> | FieldReadFunction<any>
