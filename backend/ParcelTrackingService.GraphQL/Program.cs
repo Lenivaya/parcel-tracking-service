@@ -59,10 +59,10 @@ builder
     .AddTypeExtension<SubscriptionParcelsResolver>()
     .AddTypeExtension<SubscriptionPostOfficesResolver>()
     .AddTypeExtension<SubscriptionDeliveryStatusesResolver>()
+    .AddApolloTracing()
     .UseAutomaticPersistedQueryPipeline()
     .AddRedisQueryStorage(_ => ConnectionMultiplexer.Connect(redisConnectionString).GetDatabase())
     .ModifyRequestOptions(options => options.IncludeExceptionDetails = true)
-    .AddApolloTracing()
     .InitializeOnStartup()
     ;
 ;
