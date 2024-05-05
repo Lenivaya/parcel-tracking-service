@@ -9,7 +9,7 @@ import {
 } from '@/components/ui'
 import type { FC } from 'react'
 import { ParcelCardItemFragment } from '@/lib'
-import { Copy, PackageIcon } from 'lucide-react'
+import { PackageIcon } from 'lucide-react'
 import { formatMoney } from '@/lib/money'
 import { isSome } from '@/lib/types'
 import { toast } from '@/components/ui/use-toast'
@@ -75,18 +75,28 @@ export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
         {parcel.parcelInfo.deliveryDestinationAddress}
       </CardContent>
       <CardFooter className={'flex flex-col justify-between'}>
-        <ParcelCardPrice price={parcel.parcelInfo.priceToPay} />
-        <ParcelCardPrice price={parcel.parcelInfo.parcelContentPrice} />
+        <ParcelCardPrice
+          price={parcel.parcelInfo.priceToPay}
+          label={'Price to pay'}
+        />
+
+        <ParcelCardPrice
+          price={parcel.parcelInfo.parcelContentPrice}
+          label={'Parcel content price'}
+        />
       </CardFooter>
     </Card>
   )
 }
 
-export const ParcelCardPrice: FC<{ price: number }> = ({ price }) => {
-  return (
-    <p className='text-sm'>
-      <span className='font-bold'>{formatMoney(price)}</span>
-      <span> USD</span>
-    </p>
-  )
-}
+export const ParcelCardPrice: FC<{ price: number; label: string }> = ({
+  price,
+  label
+}) => (
+  <p className='text-sm'>
+    {label}
+    <span className='mr-2'>:</span>
+    <span className='font-bold'>{formatMoney(price)}</span>
+    <span> USD</span>
+  </p>
+)
