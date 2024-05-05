@@ -12,6 +12,7 @@ public record ParcelPatchDto(
 
 public record ParcelInfoDto(
     string DeliveryDestinationAddress,
+    string DeliverySourceAddress,
     string Description,
     decimal PriceToPay,
     decimal ParcelContentPrice

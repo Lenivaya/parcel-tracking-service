@@ -299,6 +299,7 @@ export type ParcelInfo = {
   __typename?: 'ParcelInfo';
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   deliveryDestinationAddress: Scalars['String']['output'];
+  deliverySourceAddress: Scalars['String']['output'];
   description: Scalars['String']['output'];
   id: Scalars['UUID']['output'];
   parcelContentPrice: Scalars['Decimal']['output'];
@@ -310,6 +311,7 @@ export type ParcelInfo = {
 
 export type ParcelInfoDtoInput = {
   deliveryDestinationAddress: Scalars['String']['input'];
+  deliverySourceAddress: Scalars['String']['input'];
   description: Scalars['String']['input'];
   parcelContentPrice: Scalars['Decimal']['input'];
   priceToPay: Scalars['Decimal']['input'];
@@ -319,6 +321,7 @@ export type ParcelInfoFilterInput = {
   and?: InputMaybe<Array<ParcelInfoFilterInput>>;
   createdAt?: InputMaybe<DateTimeOperationFilterInput>;
   deliveryDestinationAddress?: InputMaybe<StringOperationFilterInput>;
+  deliverySourceAddress?: InputMaybe<StringOperationFilterInput>;
   description?: InputMaybe<StringOperationFilterInput>;
   id?: InputMaybe<UuidOperationFilterInput>;
   or?: InputMaybe<Array<ParcelInfoFilterInput>>;
@@ -332,6 +335,7 @@ export type ParcelInfoFilterInput = {
 export type ParcelInfoSortInput = {
   createdAt?: InputMaybe<SortEnumType>;
   deliveryDestinationAddress?: InputMaybe<SortEnumType>;
+  deliverySourceAddress?: InputMaybe<SortEnumType>;
   description?: InputMaybe<SortEnumType>;
   id?: InputMaybe<SortEnumType>;
   parcelContentPrice?: InputMaybe<SortEnumType>;
@@ -664,12 +668,12 @@ export type UuidOperationFilterInput = {
   nlte?: InputMaybe<Scalars['UUID']['input']>;
 };
 
-export type ParcelCardItemFragment = { __typename?: 'Parcel', id: any, parcelInfo: { __typename?: 'ParcelInfo', deliveryDestinationAddress: string, description: string, priceToPay: any, parcelContentPrice: any }, currentStatus?: { __typename?: 'ParcelStatus', statusDescription: string } | null };
-
 export type GetParcelsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetParcelsQuery = { __typename?: 'Query', parcels?: { __typename?: 'ParcelsConnection', nodes?: Array<{ __typename?: 'Parcel', id: any, parcelInfo: { __typename?: 'ParcelInfo', deliveryDestinationAddress: string, description: string, priceToPay: any, parcelContentPrice: any }, currentStatus?: { __typename?: 'ParcelStatus', statusDescription: string } | null }> | null } | null };
+export type GetParcelsQuery = { __typename?: 'Query', parcels?: { __typename?: 'ParcelsConnection', nodes?: Array<{ __typename?: 'Parcel', id: any, updatedAt?: any | null, parcelInfo: { __typename?: 'ParcelInfo', id: any, deliveryDestinationAddress: string, deliverySourceAddress: string, description: string, priceToPay: any, parcelContentPrice: any }, currentStatus?: { __typename?: 'ParcelStatus', id: any, statusDescription: string, updatedAt?: any | null } | null }> | null } | null };
+
+export type ParcelCardItemFragment = { __typename?: 'Parcel', id: any, updatedAt?: any | null, parcelInfo: { __typename?: 'ParcelInfo', id: any, deliveryDestinationAddress: string, deliverySourceAddress: string, description: string, priceToPay: any, parcelContentPrice: any }, currentStatus?: { __typename?: 'ParcelStatus', id: any, statusDescription: string, updatedAt?: any | null } | null };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
 export type ResolversObject<TObject> = WithIndex<TObject>;
@@ -1025,6 +1029,7 @@ export type ParcelHistoryEdgeResolvers<ContextType = any, ParentType extends Res
 export type ParcelInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['ParcelInfo'] = ResolversParentTypes['ParcelInfo']> = ResolversObject<{
   createdAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   deliveryDestinationAddress?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  deliverySourceAddress?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
   parcelContentPrice?: Resolver<ResolversTypes['Decimal'], ParentType, ContextType>;
@@ -1189,14 +1194,19 @@ export const ParcelCardItemFragmentDoc = gql`
     fragment ParcelCardItem on Parcel {
   id
   parcelInfo {
+    id
     deliveryDestinationAddress
+    deliverySourceAddress
     description
     priceToPay
     parcelContentPrice
   }
   currentStatus {
+    id
     statusDescription
+    updatedAt
   }
+  updatedAt
 }
     `;
 export const GetParcelsDocument = gql`
@@ -1328,10 +1338,11 @@ export type ParcelHistoryEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type ParcelInfoKeySpecifier = ('createdAt' | 'deliveryDestinationAddress' | 'description' | 'id' | 'parcelContentPrice' | 'priceToPay' | 'sender' | 'senderId' | 'updatedAt' | ParcelInfoKeySpecifier)[];
+export type ParcelInfoKeySpecifier = ('createdAt' | 'deliveryDestinationAddress' | 'deliverySourceAddress' | 'description' | 'id' | 'parcelContentPrice' | 'priceToPay' | 'sender' | 'senderId' | 'updatedAt' | ParcelInfoKeySpecifier)[];
 export type ParcelInfoFieldPolicy = {
 	createdAt?: FieldPolicy<any> | FieldReadFunction<any>,
 	deliveryDestinationAddress?: FieldPolicy<any> | FieldReadFunction<any>,
+	deliverySourceAddress?: FieldPolicy<any> | FieldReadFunction<any>,
 	description?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	parcelContentPrice?: FieldPolicy<any> | FieldReadFunction<any>,
