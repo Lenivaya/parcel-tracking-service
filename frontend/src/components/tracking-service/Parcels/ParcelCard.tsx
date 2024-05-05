@@ -11,6 +11,7 @@ import type { FC } from 'react'
 import { ParcelCardItemFragment } from '@/lib'
 import { PackageIcon } from 'lucide-react'
 import { formatMoney } from '@/lib/money'
+import { isSome } from '@/lib/types'
 
 export const ParcelCardFragment = gql`
   fragment ParcelCardItem on Parcel {
@@ -21,6 +22,10 @@ export const ParcelCardFragment = gql`
       priceToPay
       parcelContentPrice
     }
+
+    currentStatus {
+      statusDescription
+    }
   }
 `
 
@@ -30,7 +35,7 @@ export type ParcelCardProps = {
 
 export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
   return (
-    <Card className='max-w-70 w-70 h-80'>
+    <Card className='max-w-80 w-80 h-80'>
       <CardHeader>
         <CardTitle>
           <div className={'flex flex-row gap-3 text-md'}>
@@ -41,9 +46,22 @@ export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
         </CardTitle>
       </CardHeader>
 
-      <Separator className='mb-5' />
+      <Separator className='mb-3' />
 
-      <CardContent>{parcel.parcelInfo.deliveryDestinationAddress}</CardContent>
+      {isSome(parcel.currentStatus) && (
+        <div className='flex items-center space-x-4 rounded-md border m-3 p-3'>
+          <div className='flex-1 space-y-1'>
+            <p className='text-sm font-medium leading-none'>Current status:</p>
+            <p className='text-sm text-muted-foreground'>
+              <p>{parcel.currentStatus?.statusDescription}</p>
+            </p>
+          </div>
+        </div>
+      )}
+
+      <CardContent className='flex-col'>
+        {parcel.parcelInfo.deliveryDestinationAddress}
+      </CardContent>
       <CardFooter className={'flex flex-col justify-between'}>
         <ParcelCardPrice price={parcel.parcelInfo.priceToPay} />
         <ParcelCardPrice price={parcel.parcelInfo.parcelContentPrice} />
