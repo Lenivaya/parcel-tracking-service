@@ -5,7 +5,8 @@ namespace ParcelTrackingService.DAL.Entities;
 [Table("parcels")]
 public class Parcel : BaseEntity
 {
-    [ForeignKey(nameof(ParcelInfo))] public Guid ParcelInfoId { get; init; }
+    [ForeignKey(nameof(ParcelInfo))]
+    public Guid ParcelInfoId { get; init; }
 
     public virtual ParcelInfo ParcelInfo { get; init; } = default!;
 

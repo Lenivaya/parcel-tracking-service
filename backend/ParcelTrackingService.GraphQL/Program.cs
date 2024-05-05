@@ -3,6 +3,7 @@ using HotChocolate.Language;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using ParcelTrackingService.DAL;
 using ParcelTrackingService.DAL.Entities;
 using ParcelTrackingService.DAL.UnitOfWork;
 using ParcelTrackingService.GraphQL.Resolvers.DeliveryStatuses;
@@ -17,10 +18,14 @@ var builder = WebApplication.CreateSlimBuilder(args);
 MapsterConfig.ConfigureServices(builder.Services);
 
 builder.Services.ConfigureHttpJsonOptions(options =>
-    options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+    options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles
+);
 
 builder
-    .Services.AddHttpLogging(options => { options.LoggingFields = HttpLoggingFields.Request; })
+    .Services.AddHttpLogging(options =>
+    {
+        options.LoggingFields = HttpLoggingFields.Request;
+    })
     .AddCors();
 
 builder
@@ -31,12 +36,12 @@ builder
         );
         options.UseNpgsql(dataSourceBuilder.Build());
     })
-    .AddTransient<ParcelTrackingServiceUnitOfWork>();
+    .AddTransient<ParcelTrackingServiceUnitOfWork>()
+    .AddTransient<DatabaseSeeder>();
 
 var redisConnectionString = builder.Configuration.GetConnectionString("Redis") ?? "localhost:6379";
 
-builder.Services
-    .AddSha256DocumentHashProvider(HashFormat.Hex);
+builder.Services.AddSha256DocumentHashProvider(HashFormat.Hex);
 
 builder
     .Services.AddGraphQLServer()
@@ -64,11 +69,12 @@ builder
     .UseAutomaticPersistedQueryPipeline()
     .AddRedisQueryStorage(_ => ConnectionMultiplexer.Connect(redisConnectionString).GetDatabase())
     .ModifyRequestOptions(options => options.IncludeExceptionDetails = true)
-    .InitializeOnStartup()
-    ;
+    .InitializeOnStartup();
 ;
 
 var app = builder.Build();
+
+await app.Services.GetRequiredService<DatabaseSeeder>().Seed();
 
 app.UseRouting().UseWebSockets();
 
