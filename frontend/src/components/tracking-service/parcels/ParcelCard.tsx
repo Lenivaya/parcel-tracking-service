@@ -9,7 +9,7 @@ import {
 } from '@/components/ui'
 import type { FC } from 'react'
 import { ParcelCardItemFragment } from '@/lib'
-import { ArrowUp, PackageIcon } from 'lucide-react'
+import { ArrowUp, Clock, PackageIcon } from 'lucide-react'
 import { formatMoney } from '@/lib/money'
 import { isSome } from '@/lib/types'
 import { toast } from '@/components/ui/use-toast'
@@ -55,7 +55,7 @@ export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
   console.log(parcel.currentStatus?.updatedAt)
 
   return (
-    <Card className='max-w-80 w-80 !max-h-96'>
+    <Card className='flex flex-col justify-between max-w-80 w-80 !max-h-[26rem]'>
       <CardHeader>
         <CardTitle>
           <div className={'flex flex-row gap-3 text-md'}>
@@ -88,7 +88,7 @@ export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
         <ParcelCardDeliveryPath {...parcel.parcelInfo} />
       </CardContent>
 
-      <CardFooter className={'flex flex-col justify-between'}>
+      <CardFooter className={'flex flex-col'}>
         <div className={'flex flex-col justify-between'}>
           <ParcelCardPrice
             price={parcel.parcelInfo.priceToPay}
@@ -101,12 +101,20 @@ export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
           />
         </div>
 
-        <div className={'mt-4'}>
+        <div className={'mt-5 text-sm'}>
           <p>
-            <span>Last updated: </span>
-            {dateFormatterWithHours(
-              new Date(parcel.currentStatus?.updatedAt ?? parcel.updatedAt)
-            )}
+            <AppTooltip text={'Last updated'}>
+              <div className={'flex flex-row gap-3'}>
+                <Clock className={'w-5'} />
+                <span>
+                  {dateFormatterWithHours(
+                    new Date(
+                      parcel.currentStatus?.updatedAt ?? parcel.updatedAt
+                    )
+                  )}
+                </span>
+              </div>
+            </AppTooltip>
           </p>
         </div>
       </CardFooter>
