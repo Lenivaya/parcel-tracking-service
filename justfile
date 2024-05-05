@@ -10,3 +10,10 @@ backend-graphql-schema $DOTNET_WATCH_SUPPRESS_LAUNCH_BROWSER="1":
     
 backend-graphql-develop $DOTNET_WATCH_SUPPRESS_LAUNCH_BROWSER="1":
     dotnet watch run --project backend/ParcelTrackingService.GraphQL 
+
+# Frontend
+frontend-develop:
+    cd frontend; pnpm run dev
+
+frontend-graphql-schema-watch:
+    cd frontend; watchexec --restart --exts ts,tsx -- pnpm run code:graphql:gen
