@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ParcelTrackingService.DAL;
 using ParcelTrackingService.DAL.Entities;
 
 namespace ParcelTrackingService.GraphQL.Resolvers.Parcels;
@@ -13,7 +14,8 @@ public class ParcelExtensions
         [Parent] Parcel parcel
     )
     {
-        return context.ParcelStatuses.AsNoTracking()
+        return context
+            .ParcelStatuses.AsNoTracking()
             .Where(parcelStatus => parcelStatus.ParcelId == parcel.Id)
             .OrderByDescending(parcelStatus => parcelStatus.Date);
     }

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using ParcelTrackingService.DAL.Entities;
 
-namespace ParcelTrackingService.DAL.Entities;
+namespace ParcelTrackingService.DAL;
 
 public partial class ParcelTrackingServiceContext : DbContext
 {
@@ -29,7 +30,6 @@ public partial class ParcelTrackingServiceContext : DbContext
             .HasDefaultValueSql("gen_random_uuid()");
 
         modelBuilder.Entity<BaseEntity>().Property(e => e.CreatedAt).HasDefaultValueSql("now()");
-
         modelBuilder.Entity<BaseEntity>().Property(e => e.UpdatedAt).HasDefaultValueSql("now()");
 
         OnModelCreatingPartial(modelBuilder);

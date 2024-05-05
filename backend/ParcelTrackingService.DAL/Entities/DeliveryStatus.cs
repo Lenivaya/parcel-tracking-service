@@ -4,6 +4,7 @@ namespace ParcelTrackingService.DAL.Entities;
 
 public enum GeneralDeliveryState
 {
+    Preparing,
     Sent,
     InTransit,
     Delivered,

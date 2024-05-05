@@ -15,7 +15,8 @@ public class ParcelInfo : BaseEntity
 
     public decimal ParcelContentPrice { get; set; }
 
-    [ForeignKey(nameof(Sender))] public Guid? SenderId { get; init; }
+    [ForeignKey(nameof(Sender))]
+    public Guid? SenderId { get; init; }
 
     public virtual User? Sender { get; init; } = default!;
 }

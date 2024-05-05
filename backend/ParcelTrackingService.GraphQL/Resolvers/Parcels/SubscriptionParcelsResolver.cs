@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ParcelTrackingService.DAL;
 using ParcelTrackingService.DAL.Entities;
 using ParcelTrackingService.GraphQL.Schema;
 
