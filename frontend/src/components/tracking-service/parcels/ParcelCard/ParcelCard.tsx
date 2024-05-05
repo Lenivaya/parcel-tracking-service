@@ -19,6 +19,7 @@ import {
   ParcelCardPrice,
   ParcelCardStatus
 } from '@/components/tracking-service/parcels/ParcelCard'
+import { clsx } from 'clsx'
 
 export const ParcelCardFragment = gql`
   fragment ParcelCardItem on Parcel {
@@ -35,6 +36,9 @@ export const ParcelCardFragment = gql`
     currentStatus {
       id
       statusDescription
+      deliveryStatus {
+        generalDeliveryState
+      }
       updatedAt
     }
 
@@ -62,7 +66,16 @@ export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
       <CardHeader>
         <CardTitle>
           <div className={'flex flex-row gap-3 text-md'}>
-            <PackageIcon className={'hover:scale-150 cursor-pointer'} />
+            <PackageIcon
+              className={clsx('hover:scale-150 cursor-pointer', {
+                'text-green-500':
+                  parcel.currentStatus?.deliveryStatus?.generalDeliveryState ===
+                  'DELIVERED',
+                'text-red-500':
+                  parcel.currentStatus?.deliveryStatus?.generalDeliveryState ===
+                  'RETURNED'
+              })}
+            />
             <AppTooltip text={parcel.parcelInfo.description}>
               <p>{truncate(parcel.parcelInfo.description, 20)}</p>
             </AppTooltip>

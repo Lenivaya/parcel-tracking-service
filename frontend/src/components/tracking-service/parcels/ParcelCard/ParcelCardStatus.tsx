@@ -1,12 +1,22 @@
 import type { FC } from 'react'
 import { ParcelCardItemFragment } from '@/lib'
-import { isSome } from '@/lib/types'
+import { isNone, isSome } from '@/lib/types'
+import { clsx } from 'clsx'
 
 export const ParcelCardStatus: FC<{
   currentStatus: ParcelCardItemFragment['currentStatus']
-}> = ({ currentStatus }) =>
-  isSome(currentStatus) && (
-    <div className='flex items-center space-x-4 rounded-md border m-3 p-3'>
+}> = ({ currentStatus }) => {
+  if (isNone(currentStatus)) return null
+
+  return (
+    <div
+      className={clsx('flex items-center space-x-4 rounded-md border m-3 p-3', {
+        'border-green-500 bg-green-50':
+          currentStatus?.deliveryStatus?.generalDeliveryState === 'DELIVERED',
+        'border-red-500 bg-red-50':
+          currentStatus?.deliveryStatus?.generalDeliveryState === 'RETURNED'
+      })}
+    >
       <div className='flex-1 space-y-1'>
         <p className='text-sm font-medium leading-none'>Current status:</p>
         <p className='text-sm text-muted-foreground'>
@@ -15,3 +25,4 @@ export const ParcelCardStatus: FC<{
       </div>
     </div>
   )
+}

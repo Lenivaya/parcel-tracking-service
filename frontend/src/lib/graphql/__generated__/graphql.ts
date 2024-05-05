@@ -690,9 +690,9 @@ export type UuidOperationFilterInput = {
 export type GetParcelsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetParcelsQuery = { __typename?: 'Query', parcels?: { __typename?: 'ParcelsConnection', nodes?: Array<{ __typename?: 'Parcel', id: any, updatedAt?: any | null, parcelInfo: { __typename?: 'ParcelInfo', id: any, deliveryDestinationAddress: string, deliverySourceAddress: string, description: string, priceToPay: any, parcelContentPrice: any }, currentStatus?: { __typename?: 'ParcelStatus', id: any, statusDescription: string, updatedAt?: any | null } | null }> | null } | null };
+export type GetParcelsQuery = { __typename?: 'Query', parcels?: { __typename?: 'ParcelsConnection', nodes?: Array<{ __typename?: 'Parcel', id: any, updatedAt?: any | null, parcelInfo: { __typename?: 'ParcelInfo', id: any, deliveryDestinationAddress: string, deliverySourceAddress: string, description: string, priceToPay: any, parcelContentPrice: any }, currentStatus?: { __typename?: 'ParcelStatus', id: any, statusDescription: string, updatedAt?: any | null, deliveryStatus?: { __typename?: 'DeliveryStatus', generalDeliveryState: GeneralDeliveryState } | null } | null }> | null } | null };
 
-export type ParcelCardItemFragment = { __typename?: 'Parcel', id: any, updatedAt?: any | null, parcelInfo: { __typename?: 'ParcelInfo', id: any, deliveryDestinationAddress: string, deliverySourceAddress: string, description: string, priceToPay: any, parcelContentPrice: any }, currentStatus?: { __typename?: 'ParcelStatus', id: any, statusDescription: string, updatedAt?: any | null } | null };
+export type ParcelCardItemFragment = { __typename?: 'Parcel', id: any, updatedAt?: any | null, parcelInfo: { __typename?: 'ParcelInfo', id: any, deliveryDestinationAddress: string, deliverySourceAddress: string, description: string, priceToPay: any, parcelContentPrice: any }, currentStatus?: { __typename?: 'ParcelStatus', id: any, statusDescription: string, updatedAt?: any | null, deliveryStatus?: { __typename?: 'DeliveryStatus', generalDeliveryState: GeneralDeliveryState } | null } | null };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
 export type ResolversObject<TObject> = WithIndex<TObject>;
@@ -1227,6 +1227,9 @@ export const ParcelCardItemFragmentDoc = gql`
   currentStatus {
     id
     statusDescription
+    deliveryStatus {
+      generalDeliveryState
+    }
     updatedAt
   }
   updatedAt
