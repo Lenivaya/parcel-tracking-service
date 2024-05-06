@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client'
-import { FC, useMemo } from 'react'
+import React, { FC, useMemo } from 'react'
 import {
   Card,
   CardContent,
@@ -18,7 +18,10 @@ import {
 import { ParcelPageItemFragment } from '@/lib'
 import { PackageIcon } from 'lucide-react'
 import { clsx } from 'clsx'
-import { ParcelPageStatusesList } from '@/components/tracking-service/parcels/ParcelPage'
+import {
+  ParcelPageStatusesList,
+  ParcelQrCodeBlock
+} from '@/components/tracking-service/parcels/ParcelPage'
 
 const GET_PARCEL_FOR_PAGE = gql`
   query GetParcelForPage($id: UUID!) {
@@ -110,6 +113,12 @@ export const ParcelPage: FC<ParcelPageProps> = ({ parcel }) => {
               {truncate(parcel.parcelInfo.description, 70)}
             </p>
           </AppTooltip>
+
+          <div className='absolute m-auto right-0 top-1'>
+            <AppTooltip text={'Create qr code for the parcel'}>
+              <ParcelQrCodeBlock {...parcel} />
+            </AppTooltip>
+          </div>
         </CardTitle>
       </CardHeader>
 
