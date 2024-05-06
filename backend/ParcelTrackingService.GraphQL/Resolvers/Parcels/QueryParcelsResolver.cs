@@ -17,6 +17,14 @@ public class QueryParcelsResolver
         return context.Parcels.AsNoTracking();
     }
 
+
+    [UseFirstOrDefault]
+    [UseProjection]
+    public IQueryable<Parcel> GetParcelById(ParcelTrackingServiceContext context, Guid parcelId)
+    {
+        return context.Parcels.AsNoTracking().Where(parcel => parcel.Id == parcelId);
+    }
+
     [UsePaging]
     [UseProjection]
     [UseFiltering]

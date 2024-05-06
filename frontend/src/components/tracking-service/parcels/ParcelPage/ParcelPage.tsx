@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client'
-import React, { FC, useMemo } from 'react'
+import React, { FC, useEffect, useMemo } from 'react'
 import {
   Card,
   CardContent,
@@ -22,13 +22,12 @@ import {
   ParcelPageStatusesList,
   ParcelQrCodeDrawer
 } from '@/components/tracking-service/parcels/ParcelPage'
+import { isNone, Option } from '@/lib/types'
 
 const GET_PARCEL_FOR_PAGE = gql`
-  query GetParcelForPage($id: UUID!) {
-    parcels(where: { id: { eq: $id } }) {
-      nodes {
-        ...ParcelPageItem
-      }
+  query GetParcelForPage($parcelId: UUID!) {
+    parcelById(parcelId: $parcelId) {
+      ...ParcelPageItem
     }
   }
 `
@@ -55,18 +54,26 @@ export const ParcelPageFragment = gql`
 `
 
 export type ParcelPageProps = {
-  parcel: ParcelPageItemFragment
+  parcel: Option<ParcelPageItemFragment>
+  subscribeToUpdates?: () => void
 }
 
-export const ParcelPage: FC<ParcelPageProps> = ({ parcel }) => {
-  const statusHistory = useMemo(
-    () =>
-      [...parcel.parcelStatusHistory].sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-      ),
-    [parcel.parcelStatusHistory]
-  )
+export const ParcelPage: FC<ParcelPageProps> = ({
+  parcel,
+  subscribeToUpdates
+}) => {
+  if (isNone(parcel)) return null
+
+  const statusHistory = useMemo(() => {
+    return [...parcel.parcelStatusHistory].sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    )
+  }, [parcel.parcelStatusHistory])
   const currentStatus = useMemo(() => statusHistory.at(0), [statusHistory])
+
+  useEffect(() => {
+    subscribeToUpdates?.()
+  }, [])
 
   const handleCopyParcelId = async () => {
     await navigator.clipboard.writeText(parcel.id)

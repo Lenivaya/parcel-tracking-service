@@ -1,8 +1,5 @@
 import { FC } from 'react'
-import {
-  ParcelPageItemFragment,
-  ParcelPageStatusesListItemFragment
-} from '@/lib'
+import { ParcelPageStatusesListItemFragment } from '@/lib'
 import { ParcelPageStatusBlock } from '@/components/tracking-service/parcels/ParcelPage/ParcelPageStatusBlock'
 import { gql } from '@apollo/client'
 
