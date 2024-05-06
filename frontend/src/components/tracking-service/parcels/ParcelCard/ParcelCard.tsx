@@ -15,7 +15,7 @@ import { truncate } from '@/lib/strings'
 import { AppTooltip } from '@/components/tracking-service/generic/AppTooltip'
 import { dateFormatterWithHours } from '@/components/tracking-service/generic/dates'
 import {
-  ParcelCardDeliveryPath,
+  ParcelDeliveryPath,
   ParcelCardPrice,
   ParcelCardStatus
 } from '@/components/tracking-service/parcels/ParcelCard'
@@ -27,23 +27,19 @@ export const ParcelCardFragment = gql`
     id
     parcelInfo {
       id
-      deliveryDestinationAddress
-      deliverySourceAddress
       description
       priceToPay
       parcelContentPrice
     }
 
     currentStatus {
-      id
-      statusDescription
-      deliveryStatus {
-        generalDeliveryState
-      }
       updatedAt
     }
 
     updatedAt
+
+    ...ParcelCardStatusItem
+    ...ParcelDeliveryPathItem
   }
 `
 
@@ -61,7 +57,7 @@ export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
   }
 
   return (
-    <Card className='flex flex-col justify-between max-w-80 w-80 !max-h-[28rem]'>
+    <Card className='flex flex-col justify-between max-w-80 w-80 max-h-full'>
       <CardHeader>
         <CardTitle>
           <Link href={'parcels/' + parcel.id}>
@@ -93,7 +89,7 @@ export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
       <ParcelCardStatus currentStatus={parcel.currentStatus} />
 
       <CardContent className='flex-col'>
-        <ParcelCardDeliveryPath {...parcel.parcelInfo} />
+        <ParcelDeliveryPath {...parcel} />
       </CardContent>
 
       <CardFooter className={'flex flex-col'}>

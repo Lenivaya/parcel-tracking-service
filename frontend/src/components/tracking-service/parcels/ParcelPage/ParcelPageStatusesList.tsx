@@ -1,12 +1,24 @@
 import { FC } from 'react'
-import { ParcelPageItemFragment } from '@/lib'
+import {
+  ParcelPageItemFragment,
+  ParcelPageStatusesListItemFragment
+} from '@/lib'
 import { ParcelPageStatusBlock } from '@/components/tracking-service/parcels/ParcelPage/ParcelPageStatusBlock'
+import { gql } from '@apollo/client'
 
-export const ParcelPageStatusesList: FC<{
-  statusHistory: ParcelPageItemFragment['parcelStatusHistory']
-}> = ({ statusHistory }) => (
+const ParcelPageStatusesListFragment = gql`
+  fragment ParcelPageStatusesListItem on Parcel {
+    parcelStatusHistory {
+      ...ParcelPageStatusBlockItem
+    }
+  }
+`
+
+export const ParcelPageStatusesList: FC<ParcelPageStatusesListItemFragment> = ({
+  parcelStatusHistory
+}) => (
   <div className='flex flex-col justify-between w-full md:w-3/4 lg:w-1/2 xl:w-1/2 mx-auto my-auto'>
-    {statusHistory.map((status, idx) => (
+    {parcelStatusHistory.map((status, idx) => (
       <div className='mx-auto my-auto w-full'>
         <ParcelPageStatusBlock
           key={status.id}

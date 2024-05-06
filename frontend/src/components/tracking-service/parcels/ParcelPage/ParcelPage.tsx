@@ -12,15 +12,15 @@ import {
 import { AppTooltip } from '@/components/tracking-service/generic'
 import { truncate } from '@/lib/strings'
 import {
-  ParcelCardDeliveryPath,
-  ParcelCardPrice
+  ParcelCardPrice,
+  ParcelDeliveryPath
 } from '@/components/tracking-service/parcels'
 import { ParcelPageItemFragment } from '@/lib'
 import { PackageIcon } from 'lucide-react'
 import { clsx } from 'clsx'
 import {
   ParcelPageStatusesList,
-  ParcelQrCodeBlock
+  ParcelQrCodeDrawer
 } from '@/components/tracking-service/parcels/ParcelPage'
 
 const GET_PARCEL_FOR_PAGE = gql`
@@ -38,24 +38,19 @@ export const ParcelPageFragment = gql`
     id
     parcelInfo {
       id
-      deliveryDestinationAddress
-      deliverySourceAddress
       description
       priceToPay
       parcelContentPrice
     }
 
     parcelStatusHistory {
-      id
-      date
-      statusDescription
-      deliveryStatus {
-        generalDeliveryState
-      }
       updatedAt
     }
-
     updatedAt
+
+    ...ParcelPageStatusesListItem
+    ...ParcelQrCodeDrawerItem
+    ...ParcelDeliveryPathItem
   }
 `
 
@@ -116,7 +111,7 @@ export const ParcelPage: FC<ParcelPageProps> = ({ parcel }) => {
 
           <div className='absolute m-auto right-0 top-1'>
             <AppTooltip text={'Create qr code for the parcel'}>
-              <ParcelQrCodeBlock {...parcel} />
+              <ParcelQrCodeDrawer {...parcel} />
             </AppTooltip>
           </div>
         </CardTitle>
@@ -125,7 +120,7 @@ export const ParcelPage: FC<ParcelPageProps> = ({ parcel }) => {
       <Separator />
 
       <CardContent className={'mt-5'}>
-        <ParcelCardDeliveryPath {...parcel.parcelInfo} maxAddressLength={80} />
+        <ParcelDeliveryPath {...parcel} maxAddressLength={80} />
 
         <Separator className='my-5' />
 
@@ -147,7 +142,7 @@ export const ParcelPage: FC<ParcelPageProps> = ({ parcel }) => {
       </CardContent>
 
       <CardFooter>
-        <ParcelPageStatusesList statusHistory={statusHistory} />
+        <ParcelPageStatusesList parcelStatusHistory={statusHistory} />
       </CardFooter>
     </Card>
   )

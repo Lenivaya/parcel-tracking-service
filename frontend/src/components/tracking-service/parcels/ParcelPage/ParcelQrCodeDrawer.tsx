@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { ParcelPageItemFragment } from '@/lib'
+import { ParcelQrCodeDrawerItemFragment } from '@/lib'
 import {
   Drawer,
   DrawerClose,
@@ -14,8 +14,15 @@ import { QrCodeIcon } from 'lucide-react'
 import { Separator } from '@/components/ui'
 import { Button } from '@/components/ui/button'
 import QRCode from 'react-qr-code'
+import { gql } from '@apollo/client'
 
-export const ParcelQrCodeBlock: FC<Pick<ParcelPageItemFragment, 'id'>> = ({
+const ParcelQrcodeDrawerFragment = gql`
+  fragment ParcelQrCodeDrawerItem on Parcel {
+    id
+  }
+`
+
+export const ParcelQrCodeDrawer: FC<ParcelQrCodeDrawerItemFragment> = ({
   id
 }) => (
   <Drawer>
