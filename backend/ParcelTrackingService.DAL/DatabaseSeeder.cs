@@ -4,14 +4,9 @@ using ParcelTrackingService.DAL.Entities;
 
 namespace ParcelTrackingService.DAL;
 
-public class DatabaseSeeder
+public class DatabaseSeeder(IDbContextFactory<ParcelTrackingServiceContext> contextFactory)
 {
-    private ParcelTrackingServiceContext Context { get; }
-
-    public DatabaseSeeder(IDbContextFactory<ParcelTrackingServiceContext> contextFactory)
-    {
-        Context = contextFactory.CreateDbContext();
-    }
+    private ParcelTrackingServiceContext Context { get; } = contextFactory.CreateDbContext();
 
     public async Task Seed()
     {
@@ -103,7 +98,7 @@ public class DatabaseSeeder
                     {
                         Id = Guid.NewGuid(),
                         StatusDescription = "Parcel is preparing for the delivery",
-                        Date = DateTime.UtcNow,
+                        Date = new DateTime(2021, 10, 10).ToUniversalTime(),
                         DeliveryStatus = DeliveryStatuses.First(x =>
                             x.GeneralDeliveryState == GeneralDeliveryState.Preparing
                         ),
@@ -112,7 +107,7 @@ public class DatabaseSeeder
                     {
                         Id = Guid.NewGuid(),
                         StatusDescription = "Parcel is sent",
-                        Date = DateTime.UtcNow,
+                        Date = new DateTime(2021, 10, 11).ToUniversalTime(),
                         DeliveryStatus = DeliveryStatuses.First(x =>
                             x.GeneralDeliveryState == GeneralDeliveryState.Sent
                         ),
@@ -121,7 +116,7 @@ public class DatabaseSeeder
                     {
                         Id = Guid.NewGuid(),
                         StatusDescription = "Parcel is in transit",
-                        Date = DateTime.UtcNow,
+                        Date = new DateTime(2021, 10, 12).ToUniversalTime(),
                         DeliveryStatus = DeliveryStatuses.First(x =>
                             x.GeneralDeliveryState == GeneralDeliveryState.InTransit
                         ),
@@ -130,14 +125,14 @@ public class DatabaseSeeder
                     {
                         Id = Guid.NewGuid(),
                         StatusDescription = "Parcel is delivered to the office",
-                        Date = DateTime.UtcNow,
+                        Date = new DateTime(2021, 10, 13).ToUniversalTime(),
                         DeliveryStatus = DeliveryStatuses.First(x =>
                             x.GeneralDeliveryState == GeneralDeliveryState.Delivered
                         ),
                     },
                 },
             },
-            new Parcel()
+            new()
             {
                 Id = Guid.NewGuid(),
                 ParcelInfo = new ParcelInfo
@@ -156,7 +151,7 @@ public class DatabaseSeeder
                     {
                         Id = Guid.NewGuid(),
                         StatusDescription = "Parcel is preparing for the delivery",
-                        Date = DateTime.UtcNow,
+                        Date = new DateTime(2022, 10, 10).ToUniversalTime(),
                         DeliveryStatus = DeliveryStatuses.First(x =>
                             x.GeneralDeliveryState == GeneralDeliveryState.Preparing
                         ),
@@ -165,7 +160,7 @@ public class DatabaseSeeder
                     {
                         Id = Guid.NewGuid(),
                         StatusDescription = "Parcel is sent",
-                        Date = DateTime.UtcNow,
+                        Date = new DateTime(2022, 10, 11).ToUniversalTime(),
                         DeliveryStatus = DeliveryStatuses.First(x =>
                             x.GeneralDeliveryState == GeneralDeliveryState.Sent
                         ),
@@ -174,7 +169,7 @@ public class DatabaseSeeder
                     {
                         Id = Guid.NewGuid(),
                         StatusDescription = "Parcel is in transit",
-                        Date = DateTime.UtcNow,
+                        Date = new DateTime(2022, 10, 12).ToUniversalTime(),
                         DeliveryStatus = DeliveryStatuses.First(x =>
                             x.GeneralDeliveryState == GeneralDeliveryState.InTransit
                         ),
@@ -183,14 +178,14 @@ public class DatabaseSeeder
                     {
                         Id = Guid.NewGuid(),
                         StatusDescription = "Parcel is delivered to the office",
-                        Date = DateTime.UtcNow,
+                        Date = new DateTime(2022, 11, 12).ToUniversalTime(),
                         DeliveryStatus = DeliveryStatuses.First(x =>
                             x.GeneralDeliveryState == GeneralDeliveryState.Delivered
                         ),
                     },
                 },
             },
-            new Parcel()
+            new()
             {
                 Id = Guid.NewGuid(),
                 ParcelInfo = new ParcelInfo
@@ -216,7 +211,7 @@ public class DatabaseSeeder
                     },
                 },
             },
-            new Parcel()
+            new()
             {
                 Id = Guid.NewGuid(),
                 ParcelInfo = new ParcelInfo
@@ -225,6 +220,31 @@ public class DatabaseSeeder
                     Description = "IMac 2021",
                     ParcelContentPrice = 2500,
                     PriceToPay = 25,
+                    DeliverySourceAddress = "Kyiv, Ukraine, 02000, 1, Ivanova street",
+                    DeliveryDestinationAddress = "Zhytomyr, Ukraine, 79000, 1, Shevchenka street",
+                },
+                ParcelStatusHistory = new List<ParcelStatus>
+                {
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        StatusDescription = "Parcel is preparing for the delivery",
+                        Date = DateTime.UtcNow,
+                        DeliveryStatus = DeliveryStatuses.First(x =>
+                            x.GeneralDeliveryState == GeneralDeliveryState.Preparing
+                        ),
+                    },
+                },
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                ParcelInfo = new ParcelInfo
+                {
+                    Id = Guid.NewGuid(),
+                    Description = "Samsung Galaxy S21",
+                    ParcelContentPrice = 1000,
+                    PriceToPay = 10,
                     DeliverySourceAddress = "Kyiv, Ukraine, 02000, 1, Ivanova street",
                     DeliveryDestinationAddress = "Zhytomyr, Ukraine, 79000, 1, Shevchenka street",
                 },

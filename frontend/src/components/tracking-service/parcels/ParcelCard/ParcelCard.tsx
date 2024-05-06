@@ -20,6 +20,7 @@ import {
   ParcelCardStatus
 } from '@/components/tracking-service/parcels/ParcelCard'
 import { clsx } from 'clsx'
+import { Link } from 'next-view-transitions'
 
 export const ParcelCardFragment = gql`
   fragment ParcelCardItem on Parcel {
@@ -59,27 +60,27 @@ export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
     })
   }
 
-  console.log(parcel.currentStatus?.updatedAt)
-
   return (
     <Card className='flex flex-col justify-between max-w-80 w-80 !max-h-[28rem]'>
       <CardHeader>
         <CardTitle>
-          <div className={'flex flex-row gap-3 text-md'}>
-            <PackageIcon
-              className={clsx('hover:scale-150 cursor-pointer', {
-                'text-green-500':
-                  parcel.currentStatus?.deliveryStatus?.generalDeliveryState ===
-                  'DELIVERED',
-                'text-red-500':
-                  parcel.currentStatus?.deliveryStatus?.generalDeliveryState ===
-                  'RETURNED'
-              })}
-            />
-            <AppTooltip text={parcel.parcelInfo.description}>
-              <p>{truncate(parcel.parcelInfo.description, 20)}</p>
-            </AppTooltip>
-          </div>
+          <Link href={'parcels/' + parcel.id}>
+            <div className={'flex flex-row gap-3 text-md'}>
+              <PackageIcon
+                className={clsx('hover:scale-150 cursor-pointer', {
+                  'text-green-500':
+                    parcel.currentStatus?.deliveryStatus
+                      ?.generalDeliveryState === 'DELIVERED',
+                  'text-red-500':
+                    parcel.currentStatus?.deliveryStatus
+                      ?.generalDeliveryState === 'RETURNED'
+                })}
+              />
+              <AppTooltip text={parcel.parcelInfo.description}>
+                <p>{truncate(parcel.parcelInfo.description, 20)}</p>
+              </AppTooltip>
+            </div>
+          </Link>
 
           <button className={'mt-5'} onClick={handleCopyParcelId}>
             <p className='text-[13.5px]  font-light'>{parcel.id}</p>
@@ -111,9 +112,9 @@ export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
         <div className={'mt-5 text-sm'}>
           <p>
             <AppTooltip text={'Last updated'}>
-              <div className={'flex flex-row gap-3'}>
-                <Clock className={'w-5'} />
-                <span>
+              <div className={'flex justify-center gap-2'}>
+                <Clock className={'w-5 my-auto'} />
+                <span className={'my-auto'}>
                   {dateFormatterWithHours(
                     new Date(
                       parcel.currentStatus?.updatedAt ?? parcel.updatedAt
