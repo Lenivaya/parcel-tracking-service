@@ -1,4 +1,4 @@
-import type { FC } from 'react'
+import { FC } from 'react'
 import type { ParcelCardItemFragment } from '@/lib'
 import { ParcelCard } from '@/components/tracking-service/parcels'
 import { isSome, Option } from '@/lib/types'

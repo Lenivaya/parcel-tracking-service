@@ -4,6 +4,7 @@ import { gql } from '@apollo/client'
 import { useGetParcelForSearchLazyQuery } from '@/lib'
 import { isNone, isSome } from '@/lib/types'
 import { redirect } from 'next/navigation'
+import { Loader } from '@/components/tracking-service/generic/Loading'
 
 export const GET_PARCEL_FOR_SEARCH_BY_ID = gql`
   query GetParcelForSearch($id: UUID!) {
@@ -57,7 +58,7 @@ export const ParcelSearchInputBar = () => {
     [getParcel, searchInput]
   )
 
-  if (loading) return <div>Loading...</div>
+  if (loading) return <Loader />
 
   return (
     <div className='flex w-full max-w-md items-center space-x-2'>
