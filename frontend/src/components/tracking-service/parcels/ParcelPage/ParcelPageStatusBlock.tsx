@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { ParcelPageItemFragment } from '@/lib'
+import { ParcelPageStatusBlockItemFragment } from '@/lib'
 import { isNone } from '@/lib/types'
 import { clsx } from 'clsx'
 import {
@@ -8,9 +8,21 @@ import {
   dateFormatterWithHours
 } from '@/components/tracking-service/generic'
 import { ClockIcon } from 'lucide-react'
+import { gql } from '@apollo/client'
+
+const ParcelPageStatusBlockFragment = gql`
+  fragment ParcelPageStatusBlockItem on ParcelStatus {
+    id
+    date
+    statusDescription
+    deliveryStatus {
+      generalDeliveryState
+    }
+  }
+`
 
 export const ParcelPageStatusBlock: FC<{
-  status: ParcelPageItemFragment['parcelStatusHistory'][0]
+  status: ParcelPageStatusBlockItemFragment
   isCurrent?: boolean
 }> = ({ status, isCurrent }) => {
   if (isNone(status)) return null

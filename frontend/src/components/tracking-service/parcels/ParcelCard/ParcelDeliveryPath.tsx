@@ -1,17 +1,23 @@
 import type { FC } from 'react'
-import { ParcelCardItemFragment } from '@/lib'
+import { ParcelDeliveryPathItemFragment } from '@/lib'
 import { AppTooltip } from '@/components/tracking-service/generic/AppTooltip'
 import { truncate } from '@/lib/strings'
 import { ArrowUp } from 'lucide-react'
+import { gql } from '@apollo/client'
 
-export const ParcelCardDeliveryPath: FC<
-  Pick<
-    ParcelCardItemFragment['parcelInfo'],
-    'deliveryDestinationAddress' | 'deliverySourceAddress'
-  > & { maxAddressLength?: number }
+export const ParcelDeliveryPathFragment = gql`
+  fragment ParcelDeliveryPathItem on Parcel {
+    parcelInfo {
+      deliveryDestinationAddress
+      deliverySourceAddress
+    }
+  }
+`
+
+export const ParcelDeliveryPath: FC<
+  ParcelDeliveryPathItemFragment & { maxAddressLength?: number }
 > = ({
-  deliveryDestinationAddress,
-  deliverySourceAddress,
+  parcelInfo: { deliveryDestinationAddress, deliverySourceAddress },
   maxAddressLength = 30
 }) => {
   return (

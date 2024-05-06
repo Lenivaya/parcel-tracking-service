@@ -1,11 +1,23 @@
 import type { FC } from 'react'
-import { ParcelCardItemFragment } from '@/lib'
-import { isNone, isSome } from '@/lib/types'
+import { ParcelCardStatusItemFragment } from '@/lib'
+import { isNone } from '@/lib/types'
 import { clsx } from 'clsx'
+import { gql } from '@apollo/client'
 
-export const ParcelCardStatus: FC<{
-  currentStatus: ParcelCardItemFragment['currentStatus']
-}> = ({ currentStatus }) => {
+export const ParcelCardStatusFragment = gql`
+  fragment ParcelCardStatusItem on Parcel {
+    currentStatus {
+      deliveryStatus {
+        generalDeliveryState
+      }
+      statusDescription
+    }
+  }
+`
+
+export const ParcelCardStatus: FC<ParcelCardStatusItemFragment> = ({
+  currentStatus
+}) => {
   if (isNone(currentStatus)) return null
 
   return (
