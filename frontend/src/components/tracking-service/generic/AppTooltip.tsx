@@ -10,7 +10,7 @@ export const AppTooltip: FC<{ text: string; children?: ReactNode }> = ({
   text,
   children
 }) => (
-  <TooltipProvider>
+  <TooltipProvider delayDuration={100}>
     <Tooltip>
       <TooltipTrigger asChild>{children}</TooltipTrigger>
       <TooltipContent>

@@ -36,6 +36,7 @@ type DeletePostOfficeByIdPayload {
 
 type DeliveryStatus {
   statusName: String!
+  generalDeliveryState: GeneralDeliveryState!
   id: UUID!
   createdAt: DateTime
   updatedAt: DateTime
@@ -290,12 +291,14 @@ input DeletePostOfficeByIdInput {
 
 input DeliveryStatusCreateDtoInput {
   statusName: String!
+  generalDeliveryState: GeneralDeliveryState!
 }
 
 input DeliveryStatusFilterInput {
   and: [DeliveryStatusFilterInput!]
   or: [DeliveryStatusFilterInput!]
   statusName: StringOperationFilterInput
+  generalDeliveryState: GeneralDeliveryStateOperationFilterInput
   id: UuidOperationFilterInput
   createdAt: DateTimeOperationFilterInput
   updatedAt: DateTimeOperationFilterInput
@@ -303,13 +306,22 @@ input DeliveryStatusFilterInput {
 
 input DeliveryStatusPatchDtoInput {
   statusName: String
+  generalDeliveryState: GeneralDeliveryState
 }
 
 input DeliveryStatusSortInput {
   statusName: SortEnumType
+  generalDeliveryState: SortEnumType
   id: SortEnumType
   createdAt: SortEnumType
   updatedAt: SortEnumType
+}
+
+input GeneralDeliveryStateOperationFilterInput {
+  eq: GeneralDeliveryState
+  neq: GeneralDeliveryState
+  in: [GeneralDeliveryState!]
+  nin: [GeneralDeliveryState!]
 }
 
 input ListFilterInputTypeOfParcelStatusFilterInput {
@@ -510,6 +522,14 @@ input UuidOperationFilterInput {
   nlt: UUID
   lte: UUID
   nlte: UUID
+}
+
+enum GeneralDeliveryState {
+  PREPARING
+  SENT
+  IN_TRANSIT
+  DELIVERED
+  RETURNED
 }
 
 enum SortEnumType {

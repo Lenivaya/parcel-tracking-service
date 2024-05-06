@@ -117,18 +117,21 @@ export type DeletePostOfficeByIdPayload = {
 export type DeliveryStatus = {
   __typename?: 'DeliveryStatus';
   createdAt?: Maybe<Scalars['DateTime']['output']>;
+  generalDeliveryState: GeneralDeliveryState;
   id: Scalars['UUID']['output'];
   statusName: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
 
 export type DeliveryStatusCreateDtoInput = {
+  generalDeliveryState: GeneralDeliveryState;
   statusName: Scalars['String']['input'];
 };
 
 export type DeliveryStatusFilterInput = {
   and?: InputMaybe<Array<DeliveryStatusFilterInput>>;
   createdAt?: InputMaybe<DateTimeOperationFilterInput>;
+  generalDeliveryState?: InputMaybe<GeneralDeliveryStateOperationFilterInput>;
   id?: InputMaybe<UuidOperationFilterInput>;
   or?: InputMaybe<Array<DeliveryStatusFilterInput>>;
   statusName?: InputMaybe<StringOperationFilterInput>;
@@ -136,11 +139,13 @@ export type DeliveryStatusFilterInput = {
 };
 
 export type DeliveryStatusPatchDtoInput = {
+  generalDeliveryState?: InputMaybe<GeneralDeliveryState>;
   statusName?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type DeliveryStatusSortInput = {
   createdAt?: InputMaybe<SortEnumType>;
+  generalDeliveryState?: InputMaybe<SortEnumType>;
   id?: InputMaybe<SortEnumType>;
   statusName?: InputMaybe<SortEnumType>;
   updatedAt?: InputMaybe<SortEnumType>;
@@ -168,6 +173,20 @@ export type DeliveryStatusesEdge = {
 
 export type Error = {
   message: Scalars['String']['output'];
+};
+
+export type GeneralDeliveryState =
+  | 'DELIVERED'
+  | 'IN_TRANSIT'
+  | 'PREPARING'
+  | 'RETURNED'
+  | 'SENT';
+
+export type GeneralDeliveryStateOperationFilterInput = {
+  eq?: InputMaybe<GeneralDeliveryState>;
+  in?: InputMaybe<Array<GeneralDeliveryState>>;
+  neq?: InputMaybe<GeneralDeliveryState>;
+  nin?: InputMaybe<Array<GeneralDeliveryState>>;
 };
 
 export type ListFilterInputTypeOfParcelStatusFilterInput = {
@@ -671,9 +690,18 @@ export type UuidOperationFilterInput = {
 export type GetParcelsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetParcelsQuery = { __typename?: 'Query', parcels?: { __typename?: 'ParcelsConnection', nodes?: Array<{ __typename?: 'Parcel', id: any, updatedAt?: any | null, parcelInfo: { __typename?: 'ParcelInfo', id: any, deliveryDestinationAddress: string, deliverySourceAddress: string, description: string, priceToPay: any, parcelContentPrice: any }, currentStatus?: { __typename?: 'ParcelStatus', id: any, statusDescription: string, updatedAt?: any | null } | null }> | null } | null };
+export type GetParcelsQuery = { __typename?: 'Query', parcels?: { __typename?: 'ParcelsConnection', nodes?: Array<{ __typename?: 'Parcel', id: any, updatedAt?: any | null, parcelInfo: { __typename?: 'ParcelInfo', id: any, deliveryDestinationAddress: string, deliverySourceAddress: string, description: string, priceToPay: any, parcelContentPrice: any }, currentStatus?: { __typename?: 'ParcelStatus', id: any, statusDescription: string, updatedAt?: any | null, deliveryStatus?: { __typename?: 'DeliveryStatus', generalDeliveryState: GeneralDeliveryState } | null } | null }> | null } | null };
 
-export type ParcelCardItemFragment = { __typename?: 'Parcel', id: any, updatedAt?: any | null, parcelInfo: { __typename?: 'ParcelInfo', id: any, deliveryDestinationAddress: string, deliverySourceAddress: string, description: string, priceToPay: any, parcelContentPrice: any }, currentStatus?: { __typename?: 'ParcelStatus', id: any, statusDescription: string, updatedAt?: any | null } | null };
+export type ParcelCardItemFragment = { __typename?: 'Parcel', id: any, updatedAt?: any | null, parcelInfo: { __typename?: 'ParcelInfo', id: any, deliveryDestinationAddress: string, deliverySourceAddress: string, description: string, priceToPay: any, parcelContentPrice: any }, currentStatus?: { __typename?: 'ParcelStatus', id: any, statusDescription: string, updatedAt?: any | null, deliveryStatus?: { __typename?: 'DeliveryStatus', generalDeliveryState: GeneralDeliveryState } | null } | null };
+
+export type GetParcelForPageQueryVariables = Exact<{
+  id: Scalars['UUID']['input'];
+}>;
+
+
+export type GetParcelForPageQuery = { __typename?: 'Query', parcels?: { __typename?: 'ParcelsConnection', nodes?: Array<{ __typename?: 'Parcel', id: any, updatedAt?: any | null, parcelInfo: { __typename?: 'ParcelInfo', id: any, deliveryDestinationAddress: string, deliverySourceAddress: string, description: string, priceToPay: any, parcelContentPrice: any }, parcelStatusHistory: Array<{ __typename?: 'ParcelStatus', id: any, date: any, statusDescription: string, updatedAt?: any | null, deliveryStatus?: { __typename?: 'DeliveryStatus', generalDeliveryState: GeneralDeliveryState } | null }> }> | null } | null };
+
+export type ParcelPageItemFragment = { __typename?: 'Parcel', id: any, updatedAt?: any | null, parcelInfo: { __typename?: 'ParcelInfo', id: any, deliveryDestinationAddress: string, deliverySourceAddress: string, description: string, priceToPay: any, parcelContentPrice: any }, parcelStatusHistory: Array<{ __typename?: 'ParcelStatus', id: any, date: any, statusDescription: string, updatedAt?: any | null, deliveryStatus?: { __typename?: 'DeliveryStatus', generalDeliveryState: GeneralDeliveryState } | null }> };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
 export type ResolversObject<TObject> = WithIndex<TObject>;
@@ -784,6 +812,8 @@ export type ResolversTypes = ResolversObject<{
   DeliveryStatusesConnection: ResolverTypeWrapper<DeliveryStatusesConnection>;
   DeliveryStatusesEdge: ResolverTypeWrapper<DeliveryStatusesEdge>;
   Error: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Error']>;
+  GeneralDeliveryState: GeneralDeliveryState;
+  GeneralDeliveryStateOperationFilterInput: GeneralDeliveryStateOperationFilterInput;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   ListFilterInputTypeOfParcelStatusFilterInput: ListFilterInputTypeOfParcelStatusFilterInput;
   Mutation: ResolverTypeWrapper<{}>;
@@ -861,6 +891,7 @@ export type ResolversParentTypes = ResolversObject<{
   DeliveryStatusesConnection: DeliveryStatusesConnection;
   DeliveryStatusesEdge: DeliveryStatusesEdge;
   Error: ResolversInterfaceTypes<ResolversParentTypes>['Error'];
+  GeneralDeliveryStateOperationFilterInput: GeneralDeliveryStateOperationFilterInput;
   Int: Scalars['Int']['output'];
   ListFilterInputTypeOfParcelStatusFilterInput: ListFilterInputTypeOfParcelStatusFilterInput;
   Mutation: {};
@@ -958,6 +989,7 @@ export type DeletePostOfficeByIdPayloadResolvers<ContextType = any, ParentType e
 
 export type DeliveryStatusResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeliveryStatus'] = ResolversParentTypes['DeliveryStatus']> = ResolversObject<{
   createdAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  generalDeliveryState?: Resolver<ResolversTypes['GeneralDeliveryState'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
   statusName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
@@ -1204,6 +1236,32 @@ export const ParcelCardItemFragmentDoc = gql`
   currentStatus {
     id
     statusDescription
+    deliveryStatus {
+      generalDeliveryState
+    }
+    updatedAt
+  }
+  updatedAt
+}
+    `;
+export const ParcelPageItemFragmentDoc = gql`
+    fragment ParcelPageItem on Parcel {
+  id
+  parcelInfo {
+    id
+    deliveryDestinationAddress
+    deliverySourceAddress
+    description
+    priceToPay
+    parcelContentPrice
+  }
+  parcelStatusHistory {
+    id
+    date
+    statusDescription
+    deliveryStatus {
+      generalDeliveryState
+    }
     updatedAt
   }
   updatedAt
@@ -1250,6 +1308,48 @@ export type GetParcelsQueryHookResult = ReturnType<typeof useGetParcelsQuery>;
 export type GetParcelsLazyQueryHookResult = ReturnType<typeof useGetParcelsLazyQuery>;
 export type GetParcelsSuspenseQueryHookResult = ReturnType<typeof useGetParcelsSuspenseQuery>;
 export type GetParcelsQueryResult = Apollo.QueryResult<GetParcelsQuery, GetParcelsQueryVariables>;
+export const GetParcelForPageDocument = gql`
+    query GetParcelForPage($id: UUID!) {
+  parcels(where: {id: {eq: $id}}) {
+    nodes {
+      ...ParcelPageItem
+    }
+  }
+}
+    ${ParcelPageItemFragmentDoc}`;
+
+/**
+ * __useGetParcelForPageQuery__
+ *
+ * To run a query within a React component, call `useGetParcelForPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetParcelForPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetParcelForPageQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetParcelForPageQuery(baseOptions: Apollo.QueryHookOptions<GetParcelForPageQuery, GetParcelForPageQueryVariables> & ({ variables: GetParcelForPageQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetParcelForPageQuery, GetParcelForPageQueryVariables>(GetParcelForPageDocument, options);
+      }
+export function useGetParcelForPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetParcelForPageQuery, GetParcelForPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetParcelForPageQuery, GetParcelForPageQueryVariables>(GetParcelForPageDocument, options);
+        }
+export function useGetParcelForPageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetParcelForPageQuery, GetParcelForPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetParcelForPageQuery, GetParcelForPageQueryVariables>(GetParcelForPageDocument, options);
+        }
+export type GetParcelForPageQueryHookResult = ReturnType<typeof useGetParcelForPageQuery>;
+export type GetParcelForPageLazyQueryHookResult = ReturnType<typeof useGetParcelForPageLazyQuery>;
+export type GetParcelForPageSuspenseQueryHookResult = ReturnType<typeof useGetParcelForPageSuspenseQuery>;
+export type GetParcelForPageQueryResult = Apollo.QueryResult<GetParcelForPageQuery, GetParcelForPageQueryVariables>;
 export type AddDeliveryStatusPayloadKeySpecifier = ('deliveryStatus' | 'errors' | AddDeliveryStatusPayloadKeySpecifier)[];
 export type AddDeliveryStatusPayloadFieldPolicy = {
 	deliveryStatus?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -1276,9 +1376,10 @@ export type DeletePostOfficeByIdPayloadKeySpecifier = ('postOffice' | DeletePost
 export type DeletePostOfficeByIdPayloadFieldPolicy = {
 	postOffice?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type DeliveryStatusKeySpecifier = ('createdAt' | 'id' | 'statusName' | 'updatedAt' | DeliveryStatusKeySpecifier)[];
+export type DeliveryStatusKeySpecifier = ('createdAt' | 'generalDeliveryState' | 'id' | 'statusName' | 'updatedAt' | DeliveryStatusKeySpecifier)[];
 export type DeliveryStatusFieldPolicy = {
 	createdAt?: FieldPolicy<any> | FieldReadFunction<any>,
+	generalDeliveryState?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	statusName?: FieldPolicy<any> | FieldReadFunction<any>,
 	updatedAt?: FieldPolicy<any> | FieldReadFunction<any>
