@@ -31,6 +31,7 @@
     "graphql": "^16.8.1",
     "graphql-ws": "^5.16.0",
     "lucide-react": "^0.378.0",
+    "million": "^3.0.6",
     "next": "14.2.3",
     "next-view-transitions": "^0.1.1",
     "numerable": "^0.3.15",
