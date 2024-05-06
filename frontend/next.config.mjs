@@ -1,12 +1,15 @@
+import million from "million/compiler";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    experimental: {
-        optimizePackageImports: [
-            '@apollo/client',
-            '@noble/hashes',
-            '@noble/hashes'
-        ]
+    reactStrictMode: true, experimental: {
+        optimizePackageImports: ['@apollo/client', '@noble/hashes', '@noble/hashes']
     }
 };
 
-export default nextConfig;
+const millionConfig = {
+    // auto: true,// if you're using RSC: auto: { rsc: true },
+    auto: {rsc: true},// if you're using RSC: auto: { rsc: true },
+};
+
+export default million.next(nextConfig, millionConfig);

@@ -1,3 +1,5 @@
+'use client'
+
 import { FC } from 'react'
 import { NavbarHeader } from '@/components/tracking-service/layout/navbar/NavbarHeader'
 import { NavbarNavigation } from '@/components/tracking-service/layout/navbar/NavbarNavigation'
