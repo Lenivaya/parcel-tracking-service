@@ -48,7 +48,7 @@ export const ParcelPageStatusBlock: FC<{
           {statusString} status:
         </p>
         <p className='text-sm text-muted-foreground'>
-          <p>{status.statusDescription}</p>
+          {status.statusDescription}
         </p>
       </div>
 

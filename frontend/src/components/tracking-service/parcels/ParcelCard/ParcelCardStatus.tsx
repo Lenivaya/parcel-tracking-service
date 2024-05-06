@@ -32,7 +32,7 @@ export const ParcelCardStatus: FC<ParcelCardStatusItemFragment> = ({
       <div className='flex-1 space-y-1'>
         <p className='text-sm font-medium leading-none'>Current status:</p>
         <p className='text-sm text-muted-foreground'>
-          <p>{currentStatus.statusDescription}</p>
+          {currentStatus.statusDescription}
         </p>
       </div>
     </div>

@@ -16,7 +16,7 @@ export const ParcelPageStatusesList: FC<ParcelPageStatusesListItemFragment> = ({
 }) => (
   <div className='flex flex-col justify-between w-full md:w-3/4 lg:w-1/2 xl:w-1/2 mx-auto my-auto'>
     {parcelStatusHistory.map((status, idx) => (
-      <div className='mx-auto my-auto w-full'>
+      <div className='mx-auto my-auto w-full' key={status.id}>
         <ParcelPageStatusBlock
           key={status.id}
           status={status}
