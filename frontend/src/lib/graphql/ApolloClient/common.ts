@@ -6,6 +6,7 @@ import { sha256 } from '@noble/hashes/sha256'
 import { isBrowser } from 'browser-or-node'
 
 export const HTTP_ENDPOINT = process.env.NEXT_PUBLIC_API_URL
+export const WS_ENDPOINT = process.env.NEXT_PUBLIC_API_WS_URL ?? ''
 
 export const authLink = setContext((_, { headers, ...context }) => {
   const token = isBrowser ? localStorage?.getItem('auth:token') : null
