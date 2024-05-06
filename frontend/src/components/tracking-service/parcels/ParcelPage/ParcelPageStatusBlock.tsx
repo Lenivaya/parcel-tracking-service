@@ -9,6 +9,7 @@ import {
 } from '@/components/tracking-service/generic'
 import { ClockIcon } from 'lucide-react'
 import { gql } from '@apollo/client'
+import { Separator } from '@/components/ui'
 
 const ParcelPageStatusBlockFragment = gql`
   fragment ParcelPageStatusBlockItem on ParcelStatus {
@@ -33,7 +34,7 @@ export const ParcelPageStatusBlock: FC<{
   return (
     <div
       className={clsx(
-        'flex items-center space-x-4 rounded-md border m-3 p-3 relative',
+        'flex max-md:items-start items-center rounded-md border m-3 p-3 relative max-md:flex-col',
         {
           'border-green-500 bg-green-50':
             status?.deliveryStatus?.generalDeliveryState === 'DELIVERED',
@@ -51,11 +52,13 @@ export const ParcelPageStatusBlock: FC<{
         </p>
       </div>
 
-      <div className='absolute right-5 flex gap-2 justify-center'>
+      <Separator className='hidden max-md:block my-3' />
+
+      <div className='absolute right-5 flex gap-2 justify-center max-md:static'>
         <AppTooltip text={dateFormatterWithHours(date)}>
           <ClockIcon className={'w-4 my-auto hover:scale-150'} />
         </AppTooltip>
-        <p className='text-sm text-muted-foreground my-auto'>
+        <p className='text-sm text-muted-foreground my-auto max-md:text-xs'>
           {dateFormatter(date)}
         </p>
       </div>

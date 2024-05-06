@@ -713,6 +713,13 @@ export type ParcelPageStatusesListItemFragment = { __typename?: 'Parcel', parcel
 
 export type ParcelQrCodeDrawerItemFragment = { __typename?: 'Parcel', id: any };
 
+export type GetParcelForSearchQueryVariables = Exact<{
+  id: Scalars['UUID']['input'];
+}>;
+
+
+export type GetParcelForSearchQuery = { __typename?: 'Query', parcels?: { __typename?: 'ParcelsConnection', nodes?: Array<{ __typename?: 'Parcel', id: any }> | null } | null };
+
 export type WithIndex<TObject> = TObject & Record<string, any>;
 export type ResolversObject<TObject> = WithIndex<TObject>;
 
@@ -1393,6 +1400,48 @@ export type GetParcelForPageQueryHookResult = ReturnType<typeof useGetParcelForP
 export type GetParcelForPageLazyQueryHookResult = ReturnType<typeof useGetParcelForPageLazyQuery>;
 export type GetParcelForPageSuspenseQueryHookResult = ReturnType<typeof useGetParcelForPageSuspenseQuery>;
 export type GetParcelForPageQueryResult = Apollo.QueryResult<GetParcelForPageQuery, GetParcelForPageQueryVariables>;
+export const GetParcelForSearchDocument = gql`
+    query GetParcelForSearch($id: UUID!) {
+  parcels(where: {id: {eq: $id}}) {
+    nodes {
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetParcelForSearchQuery__
+ *
+ * To run a query within a React component, call `useGetParcelForSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetParcelForSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetParcelForSearchQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetParcelForSearchQuery(baseOptions: Apollo.QueryHookOptions<GetParcelForSearchQuery, GetParcelForSearchQueryVariables> & ({ variables: GetParcelForSearchQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetParcelForSearchQuery, GetParcelForSearchQueryVariables>(GetParcelForSearchDocument, options);
+      }
+export function useGetParcelForSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetParcelForSearchQuery, GetParcelForSearchQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetParcelForSearchQuery, GetParcelForSearchQueryVariables>(GetParcelForSearchDocument, options);
+        }
+export function useGetParcelForSearchSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetParcelForSearchQuery, GetParcelForSearchQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetParcelForSearchQuery, GetParcelForSearchQueryVariables>(GetParcelForSearchDocument, options);
+        }
+export type GetParcelForSearchQueryHookResult = ReturnType<typeof useGetParcelForSearchQuery>;
+export type GetParcelForSearchLazyQueryHookResult = ReturnType<typeof useGetParcelForSearchLazyQuery>;
+export type GetParcelForSearchSuspenseQueryHookResult = ReturnType<typeof useGetParcelForSearchSuspenseQuery>;
+export type GetParcelForSearchQueryResult = Apollo.QueryResult<GetParcelForSearchQuery, GetParcelForSearchQueryVariables>;
 export type AddDeliveryStatusPayloadKeySpecifier = ('deliveryStatus' | 'errors' | AddDeliveryStatusPayloadKeySpecifier)[];
 export type AddDeliveryStatusPayloadFieldPolicy = {
 	deliveryStatus?: FieldPolicy<any> | FieldReadFunction<any>,
