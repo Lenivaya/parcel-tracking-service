@@ -9,10 +9,13 @@ import {
   CardTitle
 } from '@/components/ui'
 import { Link } from 'next-view-transitions'
+import { ParcelSearchInputBar } from '@/components/tracking-service/parcels'
 
 export default function Home() {
   return (
     <main className='flex min-h-screen flex-col items-center justify-between max-md:p-2 p-20'>
+      <ParcelSearchInputBar />
+
       <div className='w-full justify-center m-auto flex gap-10 flex-row flex-wrap'>
         <HomeCard
           title='Parcels tracker'
