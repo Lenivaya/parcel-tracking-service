@@ -12,8 +12,8 @@ import { Link } from 'next-view-transitions'
 
 export default function Home() {
   return (
-    <main className='flex min-h-screen flex-col items-center justify-between p-24'>
-      <div className='w-full  justify-center flex gap-10 flex-row flex-wrap'>
+    <main className='flex min-h-screen flex-col items-center justify-between max-md:p-2 p-20'>
+      <div className='w-full justify-center m-auto flex gap-10 flex-row flex-wrap'>
         <HomeCard
           title='Parcels tracker'
           description='Track your parcels'
@@ -35,7 +35,7 @@ const HomeCard: FC<{ title: string; description: string; link: string }> = ({
   description,
   link
 }) => (
-  <div className='w-1/3'>
+  <div className='max-xl:w-full w-1/3'>
     <Link href={link}>
       <Card>
         <CardHeader>

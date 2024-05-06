@@ -1,6 +1,7 @@
 export * from './button'
 export * from './card'
 export * from './drawer'
+export * from './input'
 export * from './navigation-menu'
 export * from './separator'
 export * from './toast'
