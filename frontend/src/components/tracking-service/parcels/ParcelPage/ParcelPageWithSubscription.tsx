@@ -22,12 +22,12 @@ export const ParcelPageWithSubscription = ({
   parcelId: string
 }) => {
   const { data: queryData } = useGetParcelForPageSuspenseQuery({
-    variables: { parcelId: parcelId }
+    variables: { parcelId }
   })
   const parcel = queryData?.parcelById
 
   useParcelStatusUpdatesSubscription({
-    variables: { parcelId: parcelId },
+    variables: { parcelId },
     onData: ({ data: { data: subscriptionData }, client: { cache } }) => {
       const newStatus = subscriptionData?.parcelStatusUpdated
       if (isNone(newStatus)) return
