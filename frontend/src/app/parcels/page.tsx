@@ -1,18 +1,24 @@
 'use client'
 
 import { gql } from '@apollo/client'
-import { useGetParcelsSuspenseQuery } from '@/lib'
+import { useGetTrackedParcelsIdsQuery, useGetParcelsSuspenseQuery } from '@/lib'
 import { Suspense } from 'react'
 import { ParcelCardList } from '@/components/tracking-service/parcels'
 import { Loader } from '@/components/tracking-service/generic/Loading'
 
 const GET_PARCELS = gql`
-  query GetParcels {
-    parcels {
+  query GetParcels($trackedParcelsIds: [UUID]!) {
+    parcels(where: { id: { in: $trackedParcelsIds } }) {
       nodes {
         ...ParcelCardItem
       }
     }
+  }
+`
+
+const GET_TRACKED_PARCELS_IDS = gql`
+  query GetTrackedParcelsIds {
+    trackedParcelsIds @client
   }
 `
 
@@ -29,6 +35,12 @@ export default function ParcelsPage() {
 }
 
 const ParcelsPageCardListSuspense = () => {
-  const { data } = useGetParcelsSuspenseQuery()
+  const { data: trackedParcelsData } = useGetTrackedParcelsIdsQuery()
+  const { data } = useGetParcelsSuspenseQuery({
+    variables: {
+      trackedParcelsIds: trackedParcelsData?.trackedParcelsIds
+    }
+  })
+
   return <ParcelCardList parcels={data?.parcels?.nodes} />
 }

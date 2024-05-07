@@ -1,13 +1,14 @@
-import { type CodegenConfig } from "@graphql-codegen/cli";
+import { type CodegenConfig } from '@graphql-codegen/cli'
 
 const config: CodegenConfig = {
-  schema: "http://localhost:5157/graphql/",
-  documents: ["src/**/*.{ts,tsx}"],
+  schema: 'http://localhost:5157/graphql/',
+  documents: ['src/**/*.{ts,tsx}'],
   generates: {
-    "./src/lib/graphql/__generated__/graphql.ts": {
+    './src/lib/graphql/__generated__/graphql.ts': {
+      schema: './client-schema.graphql',
       // preset: 'client',
       presetConfig: {
-        gqlTagName: "gql",
+        gqlTagName: 'gql'
       },
       config: {
         useIndexSignature: true,
@@ -16,18 +17,18 @@ const config: CodegenConfig = {
         withComponent: false,
         withHOC: false,
         useTypeImports: true,
-        enumsAsTypes: true,
+        enumsAsTypes: true
       },
       plugins: [
-        "typescript",
-        "typescript-operations",
-        "typescript-resolvers",
-        "typescript-react-apollo",
-        "typescript-apollo-client-helpers",
-      ],
-    },
+        'typescript',
+        'typescript-operations',
+        'typescript-resolvers',
+        'typescript-react-apollo',
+        'typescript-apollo-client-helpers'
+      ]
+    }
   },
-  ignoreNoDocuments: true,
-};
+  ignoreNoDocuments: true
+}
 
-export default config;
+export default config

@@ -1,15 +1,25 @@
-import million from "million/compiler";
+// import million from 'million/compiler'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    reactStrictMode: true, experimental: {
-        optimizePackageImports: ['@apollo/client', '@noble/hashes', '@noble/hashes']
+    reactStrictMode: true,
+    experimental: {
+        optimizePackageImports: [
+            '@apollo/client',
+            '@apollo/experimental-nextjs-app-support',
+            'apollo3-cache-persist',
+            'graphql',
+            'graphql-ws',
+            'react-qr-code',
+            '@noble/hashes',
+            'ts-pattern'
+        ]
     }
-};
+}
 
-const millionConfig = {
-    // auto: true,// if you're using RSC: auto: { rsc: true },
-    auto: {rsc: true},// if you're using RSC: auto: { rsc: true },
-};
+// const millionConfig = {
+//     auto: true // if you're using RSC: auto: { rsc: true },
+// }
 
-export default million.next(nextConfig, millionConfig);
+// export default million.next(nextConfig, millionConfig)
+export default nextConfig;
