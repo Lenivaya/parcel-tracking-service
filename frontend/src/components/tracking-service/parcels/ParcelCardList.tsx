@@ -10,8 +10,11 @@ export type ParcelCardListProps = {
 export const ParcelCardList: FC<ParcelCardListProps> = ({ parcels }) => {
   return (
     <div className='flex flex-shrink flex-grow flex-row flex-wrap justify-center gap-5'>
-      {isSome(parcels) &&
-        parcels.map((parcel) => <ParcelCard parcel={parcel} key={parcel.id} />)}
+      {isSome(parcels) && parcels.length > 0 ? (
+        parcels.map((parcel) => <ParcelCard parcel={parcel} key={parcel.id} />)
+      ) : (
+        <p className={'m-auto text-center font-bold'}>No parcels tracked :(</p>
+      )}
     </div>
   )
 }

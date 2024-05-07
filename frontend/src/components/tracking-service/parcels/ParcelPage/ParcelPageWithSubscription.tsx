@@ -22,7 +22,8 @@ export const ParcelPageWithSubscription = ({
   parcelId: string
 }) => {
   const { data: queryData } = useGetParcelForPageSuspenseQuery({
-    variables: { parcelId }
+    variables: { parcelId },
+    fetchPolicy: 'cache-and-network'
   })
   const parcel = queryData?.parcelById
 
@@ -47,5 +48,5 @@ export const ParcelPageWithSubscription = ({
     }
   })
 
-  return <ParcelPage parcel={parcel} />
+  return isNone(parcel) || <ParcelPage parcel={parcel} />
 }

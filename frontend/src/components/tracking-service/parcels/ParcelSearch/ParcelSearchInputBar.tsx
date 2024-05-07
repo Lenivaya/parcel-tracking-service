@@ -6,12 +6,12 @@ import { isNone, isSome } from '@/lib/types'
 import { redirect } from 'next/navigation'
 import { Loader } from '@/components/tracking-service/generic/Loading'
 
+import { trackedParcelsIds } from '@/lib/graphql/ApolloClient/cache/policies/trackedParcelIdsTypePolicy'
+
 export const GET_PARCEL_FOR_SEARCH_BY_ID = gql`
-  query GetParcelForSearch($id: UUID!) {
-    parcels(where: { id: { eq: $id } }) {
-      nodes {
-        id
-      }
+  query GetParcelForSearch($parcelId: UUID!) {
+    parcelById(parcelId: $parcelId) {
+      id
     }
   }
 `
@@ -25,14 +25,8 @@ export const ParcelSearchInputBar = () => {
     if (!searchHappened) return
     if (loading) return
 
-    const nodes = data?.parcels?.nodes
-    const parcel = nodes?.at(0)
-    if (
-      isSome(error) ||
-      isNone(nodes) ||
-      isNone(parcel) ||
-      nodes.length === 0
-    ) {
+    const parcelId = data?.parcelById?.id
+    if (isSome(error) || isNone(parcelId)) {
       toast({
         title: 'Parcel search',
         description: 'Parcel not found'
@@ -40,7 +34,8 @@ export const ParcelSearchInputBar = () => {
       return
     }
 
-    redirect('/parcels/' + parcel!.id)
+    trackedParcelsIds([...trackedParcelsIds(), parcelId])
+    redirect('/parcels/' + parcelId)
   }, [data, loading, error, searchHappened])
 
   const onInputChange = useCallback(
@@ -52,7 +47,7 @@ export const ParcelSearchInputBar = () => {
 
   const onSearchButtonClick = useCallback(
     async (_event: React.MouseEvent<HTMLButtonElement>) => {
-      await getParcel({ variables: { id: searchInput } })
+      await getParcel({ variables: { parcelId: searchInput } })
       setSearchHappened(true)
     },
     [getParcel, searchInput]

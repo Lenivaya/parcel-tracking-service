@@ -54,7 +54,7 @@ export const ParcelPageFragment = gql`
 `
 
 export type ParcelPageProps = {
-  parcel: Option<ParcelPageItemFragment>
+  parcel: ParcelPageItemFragment
   subscribeToUpdates?: () => void
 }
 
@@ -62,8 +62,6 @@ export const ParcelPage: FC<ParcelPageProps> = ({
   parcel,
   subscribeToUpdates
 }) => {
-  if (isNone(parcel)) return null
-
   const statusHistory = useMemo(() => {
     return [...parcel.parcelStatusHistory].sort(
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
