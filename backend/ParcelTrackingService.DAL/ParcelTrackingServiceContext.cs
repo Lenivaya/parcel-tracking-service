@@ -24,6 +24,8 @@ public partial class ParcelTrackingServiceContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.HasPostgresExtension("pgroonga");
+
         modelBuilder
             .Entity<BaseEntity>()
             .Property(e => e.Id)
@@ -31,6 +33,34 @@ public partial class ParcelTrackingServiceContext : DbContext
 
         modelBuilder.Entity<BaseEntity>().Property(e => e.CreatedAt).HasDefaultValueSql("now()");
         modelBuilder.Entity<BaseEntity>().Property(e => e.UpdatedAt).HasDefaultValueSql("now()");
+
+        modelBuilder
+            .Entity<ParcelInfo>()
+            .HasIndex(p => p.Description)
+            .HasMethod("pgroonga")
+            .HasOperators("pgroonga_varchar_full_text_search_ops_v2");
+        modelBuilder
+            .Entity<ParcelInfo>()
+            .HasIndex(p => p.DeliverySourceAddress)
+            .HasMethod("pgroonga")
+            .HasOperators("pgroonga_varchar_full_text_search_ops_v2");
+        modelBuilder
+            .Entity<ParcelInfo>()
+            .HasIndex(p => p.DeliveryDestinationAddress)
+            .HasMethod("pgroonga")
+            .HasOperators("pgroonga_varchar_full_text_search_ops_v2");
+
+        modelBuilder
+            .Entity<PostOffice>()
+            .HasIndex(p => p.Address)
+            .HasMethod("pgroonga")
+            .HasOperators("pgroonga_varchar_full_text_search_ops_v2");
+        modelBuilder
+            .Entity<PostOffice>()
+            .HasIndex(p => p.Code)
+            .HasMethod("pgroonga")
+            .HasOperators("pgroonga_varchar_full_text_search_ops_v2");
+        ;
 
         OnModelCreatingPartial(modelBuilder);
     }
