@@ -20,6 +20,7 @@ public class MutationParcelsResolver
         ParcelPatchDto
     > GraphQlMutationResolverService { get; } = new(unitOfWork => unitOfWork.ParcelsRepository);
 
+    [UseProjection]
     public Task<Parcel?> AddParcel(
         ParcelTrackingServiceUnitOfWork unitOfWork,
         [Service] IMapper mapper,
@@ -29,6 +30,7 @@ public class MutationParcelsResolver
         return GraphQlMutationResolverService.AddEntity(unitOfWork, mapper, createDto);
     }
 
+    [UseProjection]
     public Task<Parcel?> DeleteParcelById(ParcelTrackingServiceUnitOfWork unitOfWork, Guid parcelId)
     {
         return GraphQlMutationResolverService.DeleteEntity(unitOfWork, parcelId);

@@ -313,7 +313,6 @@ public class DatabaseSeeder(IDbContextFactory<ParcelTrackingServiceContext> cont
                     },
                 },
             },
-
             new()
             {
                 Id = Guid.NewGuid(),

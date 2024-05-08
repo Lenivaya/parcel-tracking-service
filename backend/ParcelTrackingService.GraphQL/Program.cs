@@ -22,7 +22,10 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 );
 
 builder
-    .Services.AddHttpLogging(options => { options.LoggingFields = HttpLoggingFields.Request; })
+    .Services.AddHttpLogging(options =>
+    {
+        options.LoggingFields = HttpLoggingFields.Request;
+    })
     .AddCors();
 
 builder
@@ -57,6 +60,7 @@ builder
     .AddMutationType<Mutation>()
     .AddTypeExtension<MutationPostOfficesResolver>()
     .AddTypeExtension<MutationDeliveryStatusesResolver>()
+    .AddTypeExtension<MutationParcelsResolver>()
     .AddSubscriptionType<Subscription>()
     .AddTypeExtension<SubscriptionParcelsResolver>()
     .AddTypeExtension<SubscriptionPostOfficesResolver>()
