@@ -13,7 +13,9 @@ export const ParcelCardList: FC<ParcelCardListProps> = ({ parcels }) => {
       {isSome(parcels) && parcels.length > 0 ? (
         parcels.map((parcel) => <ParcelCard parcel={parcel} key={parcel.id} />)
       ) : (
-        <p className={'m-auto text-center font-bold'}>No parcels tracked :(</p>
+        <p className={'m-auto p-10 text-center font-bold'}>
+          No parcels found :(
+        </p>
       )}
     </div>
   )
