@@ -2,6 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using ParcelTrackingService.DAL;
 using ParcelTrackingService.DAL.Entities;
 using ParcelTrackingService.GraphQL.Schema;
+using ParcelTrackingService.WebCommon.Search;
+using ParcelTrackingService.WebCommon.Search.Criteria.Parcel;
+using ParcelTrackingService.WebCommon.Search.Criteria.Parcel.Handlers;
 
 namespace ParcelTrackingService.GraphQL.Resolvers.Parcels;
 
@@ -73,32 +76,16 @@ public class QueryParcelsResolver
         ParcelSearchCriteria? searchCriteria
     )
     {
-        var query = context.Parcels.AsNoTracking().AsQueryable();
+        var queryHandlerChain = new SearchCriteriaHandlerChainBuilder().BuildChain(
+            [
+                new ParcelSearchCriteriaOverallMatchingQueryHandler(),
+                new ParcelSearchCriteriaDateRangeQueryHandler(),
+                new ParcelSearchCriteriaCurrentStatusHandler(),
+                new ParcelSearchCriteriaContentPriceHandler(),
+                new ParcelSearchCriteriaPriceToPayHandler()
+            ]
+        );
 
-        if (searchCriteria == null)
-            return query;
-
-        if (searchCriteria.Matching is string matching)
-        {
-            var patterns = matching.Split(' ').Select(word => $"%{word}%").ToArray();
-
-            query = context
-                .Parcels.Include(p => p.ParcelInfo)
-                .Include(p => p.ParcelStatusHistory)
-                .Where(p =>
-                    patterns.All(word =>
-                        EF.Functions.ILike(p.ParcelInfo.Description, word)
-                        || EF.Functions.ILike(p.ParcelInfo.DeliveryDestinationAddress, word)
-                        || EF.Functions.ILike(p.ParcelInfo.DeliverySourceAddress, word)
-                        || p.ParcelStatusHistory.Any(parcelStatus =>
-                            EF.Functions.ILike(parcelStatus.StatusDescription, word)
-                        )
-                    )
-                );
-        }
-
-        return query;
+        return queryHandlerChain.HandleQuery(context, searchCriteria).AsNoTracking();
     }
 }
-
-public record ParcelSearchCriteria(string? Matching);
