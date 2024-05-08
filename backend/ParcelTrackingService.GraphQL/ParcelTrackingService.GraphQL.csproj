@@ -38,6 +38,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2"/>
+        <PackageReference Include="PGroonga.EntityFrameworkCore" Version="5.0.156632" />
     </ItemGroup>
 
 </Project>

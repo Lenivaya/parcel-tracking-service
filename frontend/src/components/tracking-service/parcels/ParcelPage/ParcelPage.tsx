@@ -82,7 +82,7 @@ export const ParcelPage: FC<ParcelPageProps> = ({
   }
 
   return (
-    <Card className={'h-max'}>
+    <Card className={'h-max w-full'}>
       <CardHeader>
         <CardTitle className={'relative'}>
           <div className='absolute left-0 flex justify-center gap-3 my-auto'>

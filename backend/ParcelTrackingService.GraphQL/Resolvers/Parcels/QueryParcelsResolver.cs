@@ -8,15 +8,29 @@ namespace ParcelTrackingService.GraphQL.Resolvers.Parcels;
 [ExtendObjectType(typeof(Query))]
 public class QueryParcelsResolver
 {
-    [UsePaging]
+    [UseOffsetPaging(MaxPageSize = 50, IncludeTotalCount = true)]
     [UseProjection]
     [UseFiltering]
     [UseSorting]
-    public IQueryable<Parcel> GetParcels(ParcelTrackingServiceContext context)
+    public IQueryable<Parcel> GetParcelsOffset(
+        ParcelTrackingServiceContext context,
+        ParcelSearchCriteria? searchCriteria
+    )
     {
-        return context.Parcels.AsNoTracking();
+        return QueryHandler(context, searchCriteria);
     }
 
+    [UsePaging(MaxPageSize = 50, IncludeTotalCount = true)]
+    [UseProjection]
+    [UseFiltering]
+    [UseSorting]
+    public IQueryable<Parcel> GetParcelsCursor(
+        ParcelTrackingServiceContext context,
+        ParcelSearchCriteria? searchCriteria
+    )
+    {
+        return QueryHandler(context, searchCriteria);
+    }
 
     [UseFirstOrDefault]
     [UseProjection]
@@ -53,4 +67,28 @@ public class QueryParcelsResolver
             .Where(parcelStatus => parcelStatus.ParcelId == parcelId)
             .OrderByDescending(parcelStatus => parcelStatus.Date);
     }
+
+    private IQueryable<Parcel> QueryHandler(
+        ParcelTrackingServiceContext context,
+        ParcelSearchCriteria? searchCriteria
+    )
+    {
+        var query = context.Parcels.AsNoTracking().AsQueryable();
+
+        if (searchCriteria == null)
+            return query;
+
+        if (searchCriteria.Matching is string matching)
+            query = context
+                .Parcels.Include(p => p.ParcelInfo)
+                .Where(p =>
+                    EF.Functions.ILike(p.ParcelInfo.Description, $"%{matching}%")
+                    || EF.Functions.ILike(p.ParcelInfo.DeliverySourceAddress, $"%{matching}%")
+                    || EF.Functions.ILike(p.ParcelInfo.DeliverySourceAddress, $"%{matching}%")
+                );
+
+        return query;
+    }
 }
+
+public record ParcelSearchCriteria(string? Matching);

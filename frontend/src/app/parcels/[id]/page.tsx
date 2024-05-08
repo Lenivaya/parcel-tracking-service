@@ -6,7 +6,11 @@ import { ParcelPageWithSubscription } from '@/components/tracking-service/parcel
 
 export default function OneParcelPage({ params }: { params: { id: string } }) {
   return (
-    <div className={'p-5 min-h-svh'}>
+    <div
+      className={
+        'p-5 min-h-svh max-md:w-full w-4/5 mx-auto flex justify-center'
+      }
+    >
       <Suspense fallback={<Loader />}>
         <ParcelPageWithSubscription parcelId={params.id} />
       </Suspense>
