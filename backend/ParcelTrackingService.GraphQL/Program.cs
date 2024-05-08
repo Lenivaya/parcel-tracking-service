@@ -22,10 +22,7 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 );
 
 builder
-    .Services.AddHttpLogging(options =>
-    {
-        options.LoggingFields = HttpLoggingFields.Request;
-    })
+    .Services.AddHttpLogging(options => { options.LoggingFields = HttpLoggingFields.Request; })
     .AddCors();
 
 builder

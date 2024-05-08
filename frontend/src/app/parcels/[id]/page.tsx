@@ -8,7 +8,7 @@ export default function OneParcelPage({ params }: { params: { id: string } }) {
   return (
     <div
       className={
-        'p-5 min-h-svh max-md:w-full w-4/5 mx-auto flex justify-center'
+        'p-5 min-h-svh max-lg:w-full w-5/6 mx-auto flex justify-center'
       }
     >
       <Suspense fallback={<Loader />}>

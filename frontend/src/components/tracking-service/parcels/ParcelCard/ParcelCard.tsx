@@ -15,12 +15,13 @@ import { truncate } from '@/lib/strings'
 import { AppTooltip } from '@/components/tracking-service/generic/AppTooltip'
 import { dateFormatterWithHours } from '@/components/tracking-service/generic/dates'
 import {
-  ParcelDeliveryPath,
   ParcelCardPrice,
-  ParcelCardStatus
+  ParcelCardStatus,
+  ParcelDeliveryPath
 } from '@/components/tracking-service/parcels/ParcelCard'
 import { clsx } from 'clsx'
 import { Link } from 'next-view-transitions'
+import { ParcelDeliveryProgress } from '@/components/tracking-service/parcels'
 
 export const ParcelCardFragment = gql`
   fragment ParcelCardItem on Parcel {
@@ -33,13 +34,14 @@ export const ParcelCardFragment = gql`
     }
 
     currentStatus {
-      updatedAt
+      date
     }
 
     updatedAt
 
     ...ParcelCardStatusItem
     ...ParcelDeliveryPathItem
+    ...ParcelProgressItem
   }
 `
 
@@ -86,6 +88,9 @@ export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
 
       <Separator className='mb-3' />
 
+      <AppTooltip text={parcel.currentStatus?.statusDescription ?? ''}>
+        <ParcelDeliveryProgress {...parcel} />
+      </AppTooltip>
       <ParcelCardStatus currentStatus={parcel.currentStatus} />
 
       <CardContent className='flex-col'>
@@ -112,9 +117,7 @@ export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
                 <Clock className={'w-5 my-auto'} />
                 <span className={'my-auto'}>
                   {dateFormatterWithHours(
-                    new Date(
-                      parcel.currentStatus?.updatedAt ?? parcel.updatedAt
-                    )
+                    new Date(parcel.currentStatus?.date ?? parcel.updatedAt)
                   )}
                 </span>
               </div>

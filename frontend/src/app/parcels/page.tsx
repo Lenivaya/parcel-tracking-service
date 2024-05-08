@@ -49,12 +49,14 @@ export default function ParcelsPage() {
       handleFieldChange(field, value)
 
   return (
-    <main className='flex min-h-screen flex-col gap-5 items-center max-md:p-5 p-20'>
-      <SearchBar
-        search={searchCriteria.matching || ''}
-        handleSearch={onInputFieldChange('matching')}
-        placeholder='Search for a parcel'
-      />
+    <main className='flex min-h-screen flex-col gap-5 items-center max-md:p-5 p-7'>
+      <div className={'max-lg:w-full w-5/6'}>
+        <SearchBar
+          search={searchCriteria.matching || ''}
+          handleSearch={onInputFieldChange('matching')}
+          placeholder='Search for a parcel'
+        />
+      </div>
       <div className='z-10 w-full max-w-5xl items-center justify-between lg:flex'>
         <Suspense fallback={<Loader />}>
           <ParcelsPageCardListSuspense searchCriteria={searchCriteria} />

@@ -13,7 +13,8 @@ import { AppTooltip } from '@/components/tracking-service/generic'
 import { truncate } from '@/lib/strings'
 import {
   ParcelCardPrice,
-  ParcelDeliveryPath
+  ParcelDeliveryPath,
+  ParcelDeliveryProgress
 } from '@/components/tracking-service/parcels'
 import { ParcelPageItemFragment } from '@/lib'
 import { PackageIcon } from 'lucide-react'
@@ -50,6 +51,7 @@ export const ParcelPageFragment = gql`
     ...ParcelPageStatusesListItem
     ...ParcelQrCodeDrawerItem
     ...ParcelDeliveryPathItem
+    ...ParcelProgressItem
   }
 `
 
@@ -125,6 +127,12 @@ export const ParcelPage: FC<ParcelPageProps> = ({
       <Separator />
 
       <CardContent className={'mt-5'}>
+        <AppTooltip text={currentStatus?.statusDescription ?? ''}>
+          <div className='m-10'>
+            <ParcelDeliveryProgress {...parcel} />
+          </div>
+        </AppTooltip>
+
         <ParcelDeliveryPath {...parcel} maxAddressLength={80} />
 
         <Separator className='my-5' />

@@ -254,9 +254,123 @@ public class DatabaseSeeder(IDbContextFactory<ParcelTrackingServiceContext> cont
                     {
                         Id = Guid.NewGuid(),
                         StatusDescription = "Parcel is preparing for the delivery",
-                        Date = DateTime.UtcNow,
+                        Date = new DateTime(2023, 10, 11).ToUniversalTime(),
                         DeliveryStatus = DeliveryStatuses.First(x =>
                             x.GeneralDeliveryState == GeneralDeliveryState.Preparing
+                        ),
+                    },
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        StatusDescription = "Parcel is sent",
+                        Date = new DateTime(2023, 10, 15).ToUniversalTime(),
+                        DeliveryStatus = DeliveryStatuses.First(x =>
+                            x.GeneralDeliveryState == GeneralDeliveryState.Sent
+                        ),
+                    },
+                },
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                ParcelInfo = new ParcelInfo
+                {
+                    Id = Guid.NewGuid(),
+                    Description = "Razer Blade 15",
+                    ParcelContentPrice = 1500,
+                    PriceToPay = 20,
+                    DeliverySourceAddress = "Kyiv, Ukraine, 02000, 1, Ivanova street",
+                    DeliveryDestinationAddress = "Zhytomyr, Ukraine, 79000, 1, Shevchenka street",
+                },
+                ParcelStatusHistory = new List<ParcelStatus>
+                {
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        StatusDescription = "Parcel is preparing for the delivery",
+                        Date = new DateTime(2023, 10, 11).ToUniversalTime(),
+                        DeliveryStatus = DeliveryStatuses.First(x =>
+                            x.GeneralDeliveryState == GeneralDeliveryState.Preparing
+                        ),
+                    },
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        StatusDescription = "Parcel is sent",
+                        Date = new DateTime(2023, 10, 15).ToUniversalTime(),
+                        DeliveryStatus = DeliveryStatuses.First(x =>
+                            x.GeneralDeliveryState == GeneralDeliveryState.Sent
+                        ),
+                    },
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        StatusDescription = "Parcel is in transit",
+                        Date = new DateTime(2023, 10, 16).ToUniversalTime(),
+                        DeliveryStatus = DeliveryStatuses.First(x =>
+                            x.GeneralDeliveryState == GeneralDeliveryState.InTransit
+                        ),
+                    },
+                },
+            },
+
+            new()
+            {
+                Id = Guid.NewGuid(),
+                ParcelInfo = new ParcelInfo
+                {
+                    Id = Guid.NewGuid(),
+                    Description = "Microsoft Surface Laptop 4",
+                    ParcelContentPrice = 2500,
+                    PriceToPay = 25,
+                    DeliverySourceAddress = "Kyiv, Ukraine, 02000, 1, Shevchenka street",
+                    DeliveryDestinationAddress = "Lviv, Ukraine, 79000, 1, Shevchenka street",
+                },
+                ParcelStatusHistory = new List<ParcelStatus>
+                {
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        StatusDescription = "Parcel is preparing for the delivery",
+                        Date = new DateTime(2021, 10, 10).ToUniversalTime(),
+                        DeliveryStatus = DeliveryStatuses.First(x =>
+                            x.GeneralDeliveryState == GeneralDeliveryState.Preparing
+                        ),
+                    },
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        StatusDescription = "Parcel is sent",
+                        Date = new DateTime(2021, 10, 11).ToUniversalTime(),
+                        DeliveryStatus = DeliveryStatuses.First(x =>
+                            x.GeneralDeliveryState == GeneralDeliveryState.Sent
+                        ),
+                    },
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        StatusDescription = "Parcel is in transit",
+                        Date = new DateTime(2021, 10, 12).ToUniversalTime(),
+                        DeliveryStatus = DeliveryStatuses.First(x =>
+                            x.GeneralDeliveryState == GeneralDeliveryState.InTransit
+                        ),
+                    },
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        StatusDescription = "Parcel is delivered to the office",
+                        Date = new DateTime(2021, 10, 13).ToUniversalTime(),
+                        DeliveryStatus = DeliveryStatuses.First(x =>
+                            x.GeneralDeliveryState == GeneralDeliveryState.Delivered
+                        ),
+                    },
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        StatusDescription = "Receiver refused to accept the package",
+                        Date = new DateTime(2021, 10, 17).ToUniversalTime(),
+                        DeliveryStatus = DeliveryStatuses.First(x =>
+                            x.GeneralDeliveryState == GeneralDeliveryState.Returned
                         ),
                     },
                 },
