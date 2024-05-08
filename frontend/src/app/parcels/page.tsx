@@ -6,24 +6,47 @@ import {
   useGetParcelsSuspenseQuery,
   useGetTrackedParcelsIdsQuery
 } from '@/lib'
-import { FC, Suspense, useCallback, useEffect, useState } from 'react'
+import {
+  Dispatch,
+  FC,
+  SetStateAction,
+  Suspense,
+  useCallback,
+  useEffect,
+  useState
+} from 'react'
 import { ParcelCardList } from '@/components/tracking-service/parcels'
 import { Loader } from '@/components/tracking-service/generic/Loading'
 import { Input } from '@/components/ui'
 import { fieldChanger } from '@/lib/objects/fieldChanger'
 import { F } from '@mobily/ts-belt'
+import {
+  IOffsetPagination,
+  IOffsetPaginationProps,
+  OffsetPagination
+} from '@/components/tracking-service/generic/pagination/OffsetPagination'
 
 const GET_PARCELS = gql`
   query GetParcels(
     $trackedParcelsIds: [UUID]!
     $searchCriteria: ParcelSearchCriteriaInput
+    $pageSize: Int!
+    $offset: Int
   ) {
-    parcelsCursor(
+    parcelsOffset(
       where: { id: { in: $trackedParcelsIds } }
       searchCriteria: $searchCriteria
+      take: $pageSize
+      skip: $offset
     ) {
-      nodes {
+      items {
         ...ParcelCardItem
+      }
+
+      totalCount
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
       }
     }
   }
@@ -35,9 +58,35 @@ const GET_TRACKED_PARCELS_IDS = gql`
   }
 `
 
+const DEFAULT_PAGE_SIZE = 5
+
 export default function ParcelsPage() {
   const [searchCriteria, setSearchCriteria] =
     useState<ParcelSearchCriteriaInput>({ matching: null })
+
+  const [pagination, setPagination] = useState<IOffsetPagination>({
+    currentPage: 1,
+    offset: null,
+    pageSize: DEFAULT_PAGE_SIZE
+  })
+
+  const [paginationProps, setPaginationProps] = useState<
+    Omit<IOffsetPaginationProps, 'pagination' | 'setPagination'>
+  >({
+    totalCount: 0,
+    hasNextPage: false,
+    hasPreviousPage: false
+  })
+
+  useEffect(
+    () =>
+      setPagination({
+        offset: null,
+        currentPage: 1,
+        pageSize: DEFAULT_PAGE_SIZE
+      }),
+    [searchCriteria]
+  )
 
   const handleFieldChange = <T = string,>(
     field: keyof ParcelSearchCriteriaInput,
@@ -49,7 +98,7 @@ export default function ParcelsPage() {
       handleFieldChange(field, value)
 
   return (
-    <main className='flex min-h-screen flex-col gap-5 items-center max-md:p-5 p-7'>
+    <main className='flex min-h-[100vh] w-full flex-col gap-5 items-center justify-between max-md:pt-5 pt-7'>
       <div className={'max-lg:w-full w-5/6'}>
         <SearchBar
           search={searchCriteria.matching || ''}
@@ -57,10 +106,23 @@ export default function ParcelsPage() {
           placeholder='Search for a parcel'
         />
       </div>
-      <div className='z-10 w-full max-w-5xl items-center justify-between lg:flex'>
+
+      <div className='w-max min-h-[80vh] flex justify-start'>
         <Suspense fallback={<Loader />}>
-          <ParcelsPageCardListSuspense searchCriteria={searchCriteria} />
+          <ParcelsPageCardListSuspense
+            searchCriteria={searchCriteria}
+            pagination={pagination}
+            setPaginationProps={setPaginationProps}
+          />
         </Suspense>
+      </div>
+
+      <div className='sticky bottom-0 mt-3 h-[5vh] w-full overflow-hidden bg-neutral-100/80 transition-all hover:h-[12vh] dark:bg-transparent/60'>
+        <OffsetPagination
+          {...paginationProps}
+          pagination={pagination}
+          setPagination={setPagination}
+        />
       </div>
     </main>
   )
@@ -68,17 +130,35 @@ export default function ParcelsPage() {
 
 const ParcelsPageCardListSuspense: FC<{
   searchCriteria: ParcelSearchCriteriaInput
-}> = ({ searchCriteria }) => {
+  pagination: IOffsetPagination
+  setPaginationProps: Dispatch<
+    SetStateAction<Omit<IOffsetPaginationProps, 'setPagination' | 'pagination'>>
+  >
+}> = ({ searchCriteria, pagination, setPaginationProps }) => {
   const { data: trackedParcelsData } = useGetTrackedParcelsIdsQuery()
   const { data } = useGetParcelsSuspenseQuery({
     variables: {
       trackedParcelsIds: trackedParcelsData?.trackedParcelsIds,
-      searchCriteria
+      searchCriteria,
+      ...pagination
     },
     fetchPolicy: 'cache-and-network'
   })
 
-  return <ParcelCardList parcels={data?.parcelsCursor?.nodes} />
+  useEffect(() => {
+    setPaginationProps((props) => ({
+      ...props,
+      hasNextPage: data?.parcelsOffset?.pageInfo.hasNextPage ?? false,
+      hasPreviousPage: data?.parcelsOffset?.pageInfo.hasPreviousPage ?? false,
+      totalCount: data?.parcelsOffset?.totalCount ?? 0
+    }))
+  }, [data])
+
+  return (
+    <div className={'flex flex-col w-full h-full justify-start max-w-5xl'}>
+      <ParcelCardList parcels={data?.parcelsOffset?.items} />
+    </div>
+  )
 }
 
 const SearchBar: FC<{

@@ -38,6 +38,15 @@ export type AddDeliveryStatusPayload = {
   errors?: Maybe<Array<AddDeliveryStatusError>>;
 };
 
+export type AddParcelInput = {
+  createDto: ParcelCreateDtoInput;
+};
+
+export type AddParcelPayload = {
+  __typename?: 'AddParcelPayload';
+  parcel?: Maybe<Parcel>;
+};
+
 export type AddPostOfficeError = ParcelTrackingServiceError;
 
 export type AddPostOfficeInput = {
@@ -96,6 +105,15 @@ export type DeleteDeliveryStatusByIdInput = {
 export type DeleteDeliveryStatusByIdPayload = {
   __typename?: 'DeleteDeliveryStatusByIdPayload';
   deliveryStatus?: Maybe<DeliveryStatus>;
+};
+
+export type DeleteParcelByIdInput = {
+  parcelId: Scalars['UUID']['input'];
+};
+
+export type DeleteParcelByIdPayload = {
+  __typename?: 'DeleteParcelByIdPayload';
+  parcel?: Maybe<Parcel>;
 };
 
 export type DeletePostOfficeByIdInput = {
@@ -192,9 +210,12 @@ export type ListFilterInputTypeOfParcelStatusFilterInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   addDeliveryStatus: AddDeliveryStatusPayload;
+  addParcel: AddParcelPayload;
   addPostOffice: AddPostOfficePayload;
   deleteDeliveryStatusById: DeleteDeliveryStatusByIdPayload;
+  deleteParcelById: DeleteParcelByIdPayload;
   deletePostOfficeById: DeletePostOfficeByIdPayload;
+  pushOneMoreParcelStatus: PushOneMoreParcelStatusPayload;
   updateDeliveryStatus: UpdateDeliveryStatusPayload;
   updatePostOffice: UpdatePostOfficePayload;
 };
@@ -202,6 +223,11 @@ export type Mutation = {
 
 export type MutationAddDeliveryStatusArgs = {
   input: AddDeliveryStatusInput;
+};
+
+
+export type MutationAddParcelArgs = {
+  input: AddParcelInput;
 };
 
 
@@ -215,8 +241,18 @@ export type MutationDeleteDeliveryStatusByIdArgs = {
 };
 
 
+export type MutationDeleteParcelByIdArgs = {
+  input: DeleteParcelByIdInput;
+};
+
+
 export type MutationDeletePostOfficeByIdArgs = {
   input: DeletePostOfficeByIdInput;
+};
+
+
+export type MutationPushOneMoreParcelStatusArgs = {
+  input: PushOneMoreParcelStatusInput;
 };
 
 
@@ -251,6 +287,11 @@ export type Parcel = {
   parcelInfoId: Scalars['UUID']['output'];
   parcelStatusHistory: Array<ParcelStatus>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
+};
+
+export type ParcelCreateDtoInput = {
+  parcelInfo: ParcelInfoDtoInput;
+  parcelStatusHistory?: InputMaybe<Array<ParcelStatusDtoInput>>;
 };
 
 export type ParcelFilterInput = {
@@ -298,6 +339,14 @@ export type ParcelInfo = {
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
 
+export type ParcelInfoDtoInput = {
+  deliveryDestinationAddress: Scalars['String']['input'];
+  deliverySourceAddress: Scalars['String']['input'];
+  description: Scalars['String']['input'];
+  parcelContentPrice: Scalars['Decimal']['input'];
+  priceToPay: Scalars['Decimal']['input'];
+};
+
 export type ParcelInfoFilterInput = {
   and?: InputMaybe<Array<ParcelInfoFilterInput>>;
   createdAt?: InputMaybe<DateTimeOperationFilterInput>;
@@ -326,8 +375,20 @@ export type ParcelInfoSortInput = {
   updatedAt?: InputMaybe<SortEnumType>;
 };
 
+export type ParcelNotFoundError = Error & {
+  __typename?: 'ParcelNotFoundError';
+  message: Scalars['String']['output'];
+};
+
 export type ParcelSearchCriteriaInput = {
+  currentStatusMatching?: InputMaybe<Scalars['String']['input']>;
   matching?: InputMaybe<Scalars['String']['input']>;
+  maxContentPrice?: InputMaybe<Scalars['Decimal']['input']>;
+  maxDate?: InputMaybe<Scalars['DateTime']['input']>;
+  maxPriceToPay?: InputMaybe<Scalars['Decimal']['input']>;
+  minContentPrice?: InputMaybe<Scalars['Decimal']['input']>;
+  minDate?: InputMaybe<Scalars['DateTime']['input']>;
+  minPriceToPay?: InputMaybe<Scalars['Decimal']['input']>;
 };
 
 export type ParcelSortInput = {
@@ -349,6 +410,12 @@ export type ParcelStatus = {
   parcelId: Scalars['UUID']['output'];
   statusDescription: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
+};
+
+export type ParcelStatusDtoInput = {
+  date?: InputMaybe<Scalars['DateTime']['input']>;
+  deliveryStatusId?: InputMaybe<Scalars['UUID']['input']>;
+  statusDescription: Scalars['String']['input'];
 };
 
 export type ParcelStatusFilterInput = {
@@ -469,6 +536,19 @@ export type PostOfficesEdge = {
   cursor: Scalars['String']['output'];
   /** The item at the end of the edge. */
   node: PostOffice;
+};
+
+export type PushOneMoreParcelStatusError = ParcelNotFoundError;
+
+export type PushOneMoreParcelStatusInput = {
+  createDto: ParcelStatusDtoInput;
+  parcelId: Scalars['UUID']['input'];
+};
+
+export type PushOneMoreParcelStatusPayload = {
+  __typename?: 'PushOneMoreParcelStatusPayload';
+  errors?: Maybe<Array<PushOneMoreParcelStatusError>>;
+  parcel?: Maybe<Array<Parcel>>;
 };
 
 export type Query = {
@@ -662,10 +742,12 @@ export type UuidOperationFilterInput = {
 export type GetParcelsQueryVariables = Exact<{
   trackedParcelsIds: Array<InputMaybe<Scalars['UUID']['input']>> | InputMaybe<Scalars['UUID']['input']>;
   searchCriteria?: InputMaybe<ParcelSearchCriteriaInput>;
+  pageSize: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type GetParcelsQuery = { __typename?: 'Query', parcelsCursor?: { __typename?: 'ParcelsCursorConnection', nodes?: Array<{ __typename?: 'Parcel', id: any, updatedAt?: any | null, parcelInfo: { __typename?: 'ParcelInfo', id: any, description: string, priceToPay: any, parcelContentPrice: any, deliveryDestinationAddress: string, deliverySourceAddress: string }, currentStatus?: { __typename?: 'ParcelStatus', date: any, statusDescription: string, deliveryStatus?: { __typename?: 'DeliveryStatus', generalDeliveryState: GeneralDeliveryState } | null } | null }> | null } | null };
+export type GetParcelsQuery = { __typename?: 'Query', parcelsOffset?: { __typename?: 'ParcelsOffsetCollectionSegment', totalCount: number, items?: Array<{ __typename?: 'Parcel', id: any, updatedAt?: any | null, parcelInfo: { __typename?: 'ParcelInfo', id: any, description: string, priceToPay: any, parcelContentPrice: any, deliveryDestinationAddress: string, deliverySourceAddress: string }, currentStatus?: { __typename?: 'ParcelStatus', date: any, statusDescription: string, deliveryStatus?: { __typename?: 'DeliveryStatus', generalDeliveryState: GeneralDeliveryState } | null } | null }> | null, pageInfo: { __typename?: 'CollectionSegmentInfo', hasNextPage: boolean, hasPreviousPage: boolean } } | null };
 
 export type GetTrackedParcelsIdsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -781,11 +863,12 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversUnionTypes<RefType extends Record<string, unknown>> = ResolversObject<{
   AddDeliveryStatusError: ( ParcelTrackingServiceError );
   AddPostOfficeError: ( ParcelTrackingServiceError );
+  PushOneMoreParcelStatusError: ( ParcelNotFoundError );
 }>;
 
 /** Mapping of interface types */
 export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = ResolversObject<{
-  Error: ( ParcelTrackingServiceError );
+  Error: ( ParcelNotFoundError ) | ( ParcelTrackingServiceError );
 }>;
 
 /** Mapping between all available schema types and the resolvers types */
@@ -793,6 +876,8 @@ export type ResolversTypes = ResolversObject<{
   AddDeliveryStatusError: ResolverTypeWrapper<ResolversUnionTypes<ResolversTypes>['AddDeliveryStatusError']>;
   AddDeliveryStatusInput: AddDeliveryStatusInput;
   AddDeliveryStatusPayload: ResolverTypeWrapper<Omit<AddDeliveryStatusPayload, 'errors'> & { errors?: Maybe<Array<ResolversTypes['AddDeliveryStatusError']>> }>;
+  AddParcelInput: AddParcelInput;
+  AddParcelPayload: ResolverTypeWrapper<AddParcelPayload>;
   AddPostOfficeError: ResolverTypeWrapper<ResolversUnionTypes<ResolversTypes>['AddPostOfficeError']>;
   AddPostOfficeInput: AddPostOfficeInput;
   AddPostOfficePayload: ResolverTypeWrapper<Omit<AddPostOfficePayload, 'errors'> & { errors?: Maybe<Array<ResolversTypes['AddPostOfficeError']>> }>;
@@ -804,6 +889,8 @@ export type ResolversTypes = ResolversObject<{
   DecimalOperationFilterInput: DecimalOperationFilterInput;
   DeleteDeliveryStatusByIdInput: DeleteDeliveryStatusByIdInput;
   DeleteDeliveryStatusByIdPayload: ResolverTypeWrapper<DeleteDeliveryStatusByIdPayload>;
+  DeleteParcelByIdInput: DeleteParcelByIdInput;
+  DeleteParcelByIdPayload: ResolverTypeWrapper<DeleteParcelByIdPayload>;
   DeletePostOfficeByIdInput: DeletePostOfficeByIdInput;
   DeletePostOfficeByIdPayload: ResolverTypeWrapper<DeletePostOfficeByIdPayload>;
   DeliveryStatus: ResolverTypeWrapper<DeliveryStatus>;
@@ -821,15 +908,19 @@ export type ResolversTypes = ResolversObject<{
   Mutation: ResolverTypeWrapper<{}>;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Parcel: ResolverTypeWrapper<Parcel>;
+  ParcelCreateDtoInput: ParcelCreateDtoInput;
   ParcelFilterInput: ParcelFilterInput;
   ParcelHistoryConnection: ResolverTypeWrapper<ParcelHistoryConnection>;
   ParcelHistoryEdge: ResolverTypeWrapper<ParcelHistoryEdge>;
   ParcelInfo: ResolverTypeWrapper<ParcelInfo>;
+  ParcelInfoDtoInput: ParcelInfoDtoInput;
   ParcelInfoFilterInput: ParcelInfoFilterInput;
   ParcelInfoSortInput: ParcelInfoSortInput;
+  ParcelNotFoundError: ResolverTypeWrapper<ParcelNotFoundError>;
   ParcelSearchCriteriaInput: ParcelSearchCriteriaInput;
   ParcelSortInput: ParcelSortInput;
   ParcelStatus: ResolverTypeWrapper<ParcelStatus>;
+  ParcelStatusDtoInput: ParcelStatusDtoInput;
   ParcelStatusFilterInput: ParcelStatusFilterInput;
   ParcelStatusSortInput: ParcelStatusSortInput;
   ParcelTrackingServiceError: ResolverTypeWrapper<ParcelTrackingServiceError>;
@@ -843,6 +934,9 @@ export type ResolversTypes = ResolversObject<{
   PostOfficeSortInput: PostOfficeSortInput;
   PostOfficesConnection: ResolverTypeWrapper<PostOfficesConnection>;
   PostOfficesEdge: ResolverTypeWrapper<PostOfficesEdge>;
+  PushOneMoreParcelStatusError: ResolverTypeWrapper<ResolversUnionTypes<ResolversTypes>['PushOneMoreParcelStatusError']>;
+  PushOneMoreParcelStatusInput: PushOneMoreParcelStatusInput;
+  PushOneMoreParcelStatusPayload: ResolverTypeWrapper<Omit<PushOneMoreParcelStatusPayload, 'errors'> & { errors?: Maybe<Array<ResolversTypes['PushOneMoreParcelStatusError']>> }>;
   Query: ResolverTypeWrapper<{}>;
   SortEnumType: SortEnumType;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
@@ -864,6 +958,8 @@ export type ResolversParentTypes = ResolversObject<{
   AddDeliveryStatusError: ResolversUnionTypes<ResolversParentTypes>['AddDeliveryStatusError'];
   AddDeliveryStatusInput: AddDeliveryStatusInput;
   AddDeliveryStatusPayload: Omit<AddDeliveryStatusPayload, 'errors'> & { errors?: Maybe<Array<ResolversParentTypes['AddDeliveryStatusError']>> };
+  AddParcelInput: AddParcelInput;
+  AddParcelPayload: AddParcelPayload;
   AddPostOfficeError: ResolversUnionTypes<ResolversParentTypes>['AddPostOfficeError'];
   AddPostOfficeInput: AddPostOfficeInput;
   AddPostOfficePayload: Omit<AddPostOfficePayload, 'errors'> & { errors?: Maybe<Array<ResolversParentTypes['AddPostOfficeError']>> };
@@ -875,6 +971,8 @@ export type ResolversParentTypes = ResolversObject<{
   DecimalOperationFilterInput: DecimalOperationFilterInput;
   DeleteDeliveryStatusByIdInput: DeleteDeliveryStatusByIdInput;
   DeleteDeliveryStatusByIdPayload: DeleteDeliveryStatusByIdPayload;
+  DeleteParcelByIdInput: DeleteParcelByIdInput;
+  DeleteParcelByIdPayload: DeleteParcelByIdPayload;
   DeletePostOfficeByIdInput: DeletePostOfficeByIdInput;
   DeletePostOfficeByIdPayload: DeletePostOfficeByIdPayload;
   DeliveryStatus: DeliveryStatus;
@@ -891,15 +989,19 @@ export type ResolversParentTypes = ResolversObject<{
   Mutation: {};
   PageInfo: PageInfo;
   Parcel: Parcel;
+  ParcelCreateDtoInput: ParcelCreateDtoInput;
   ParcelFilterInput: ParcelFilterInput;
   ParcelHistoryConnection: ParcelHistoryConnection;
   ParcelHistoryEdge: ParcelHistoryEdge;
   ParcelInfo: ParcelInfo;
+  ParcelInfoDtoInput: ParcelInfoDtoInput;
   ParcelInfoFilterInput: ParcelInfoFilterInput;
   ParcelInfoSortInput: ParcelInfoSortInput;
+  ParcelNotFoundError: ParcelNotFoundError;
   ParcelSearchCriteriaInput: ParcelSearchCriteriaInput;
   ParcelSortInput: ParcelSortInput;
   ParcelStatus: ParcelStatus;
+  ParcelStatusDtoInput: ParcelStatusDtoInput;
   ParcelStatusFilterInput: ParcelStatusFilterInput;
   ParcelStatusSortInput: ParcelStatusSortInput;
   ParcelTrackingServiceError: ParcelTrackingServiceError;
@@ -913,6 +1015,9 @@ export type ResolversParentTypes = ResolversObject<{
   PostOfficeSortInput: PostOfficeSortInput;
   PostOfficesConnection: PostOfficesConnection;
   PostOfficesEdge: PostOfficesEdge;
+  PushOneMoreParcelStatusError: ResolversUnionTypes<ResolversParentTypes>['PushOneMoreParcelStatusError'];
+  PushOneMoreParcelStatusInput: PushOneMoreParcelStatusInput;
+  PushOneMoreParcelStatusPayload: Omit<PushOneMoreParcelStatusPayload, 'errors'> & { errors?: Maybe<Array<ResolversParentTypes['PushOneMoreParcelStatusError']>> };
   Query: {};
   String: Scalars['String']['output'];
   StringOperationFilterInput: StringOperationFilterInput;
@@ -939,6 +1044,11 @@ export type AddDeliveryStatusErrorResolvers<ContextType = any, ParentType extend
 export type AddDeliveryStatusPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['AddDeliveryStatusPayload'] = ResolversParentTypes['AddDeliveryStatusPayload']> = ResolversObject<{
   deliveryStatus?: Resolver<Maybe<ResolversTypes['DeliveryStatus']>, ParentType, ContextType>;
   errors?: Resolver<Maybe<Array<ResolversTypes['AddDeliveryStatusError']>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type AddParcelPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['AddParcelPayload'] = ResolversParentTypes['AddParcelPayload']> = ResolversObject<{
+  parcel?: Resolver<Maybe<ResolversTypes['Parcel']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -971,6 +1081,11 @@ export type DeleteDeliveryStatusByIdPayloadResolvers<ContextType = any, ParentTy
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type DeleteParcelByIdPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteParcelByIdPayload'] = ResolversParentTypes['DeleteParcelByIdPayload']> = ResolversObject<{
+  parcel?: Resolver<Maybe<ResolversTypes['Parcel']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type DeletePostOfficeByIdPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeletePostOfficeByIdPayload'] = ResolversParentTypes['DeletePostOfficeByIdPayload']> = ResolversObject<{
   postOffice?: Resolver<Maybe<ResolversTypes['PostOffice']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -999,15 +1114,18 @@ export type DeliveryStatusesEdgeResolvers<ContextType = any, ParentType extends 
 }>;
 
 export type ErrorResolvers<ContextType = any, ParentType extends ResolversParentTypes['Error'] = ResolversParentTypes['Error']> = ResolversObject<{
-  __resolveType: TypeResolveFn<'ParcelTrackingServiceError', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'ParcelNotFoundError' | 'ParcelTrackingServiceError', ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 }>;
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   addDeliveryStatus?: Resolver<ResolversTypes['AddDeliveryStatusPayload'], ParentType, ContextType, RequireFields<MutationAddDeliveryStatusArgs, 'input'>>;
+  addParcel?: Resolver<ResolversTypes['AddParcelPayload'], ParentType, ContextType, RequireFields<MutationAddParcelArgs, 'input'>>;
   addPostOffice?: Resolver<ResolversTypes['AddPostOfficePayload'], ParentType, ContextType, RequireFields<MutationAddPostOfficeArgs, 'input'>>;
   deleteDeliveryStatusById?: Resolver<ResolversTypes['DeleteDeliveryStatusByIdPayload'], ParentType, ContextType, RequireFields<MutationDeleteDeliveryStatusByIdArgs, 'input'>>;
+  deleteParcelById?: Resolver<ResolversTypes['DeleteParcelByIdPayload'], ParentType, ContextType, RequireFields<MutationDeleteParcelByIdArgs, 'input'>>;
   deletePostOfficeById?: Resolver<ResolversTypes['DeletePostOfficeByIdPayload'], ParentType, ContextType, RequireFields<MutationDeletePostOfficeByIdArgs, 'input'>>;
+  pushOneMoreParcelStatus?: Resolver<ResolversTypes['PushOneMoreParcelStatusPayload'], ParentType, ContextType, RequireFields<MutationPushOneMoreParcelStatusArgs, 'input'>>;
   updateDeliveryStatus?: Resolver<ResolversTypes['UpdateDeliveryStatusPayload'], ParentType, ContextType, RequireFields<MutationUpdateDeliveryStatusArgs, 'input'>>;
   updatePostOffice?: Resolver<ResolversTypes['UpdatePostOfficePayload'], ParentType, ContextType, RequireFields<MutationUpdatePostOfficeArgs, 'input'>>;
 }>;
@@ -1055,6 +1173,11 @@ export type ParcelInfoResolvers<ContextType = any, ParentType extends ResolversP
   sender?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   senderId?: Resolver<Maybe<ResolversTypes['UUID']>, ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type ParcelNotFoundErrorResolvers<ContextType = any, ParentType extends ResolversParentTypes['ParcelNotFoundError'] = ResolversParentTypes['ParcelNotFoundError']> = ResolversObject<{
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -1119,6 +1242,16 @@ export type PostOfficesEdgeResolvers<ContextType = any, ParentType extends Resol
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type PushOneMoreParcelStatusErrorResolvers<ContextType = any, ParentType extends ResolversParentTypes['PushOneMoreParcelStatusError'] = ResolversParentTypes['PushOneMoreParcelStatusError']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'ParcelNotFoundError', ParentType, ContextType>;
+}>;
+
+export type PushOneMoreParcelStatusPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['PushOneMoreParcelStatusPayload'] = ResolversParentTypes['PushOneMoreParcelStatusPayload']> = ResolversObject<{
+  errors?: Resolver<Maybe<Array<ResolversTypes['PushOneMoreParcelStatusError']>>, ParentType, ContextType>;
+  parcel?: Resolver<Maybe<Array<ResolversTypes['Parcel']>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   currentParcelStatus?: Resolver<Maybe<ResolversTypes['ParcelStatus']>, ParentType, ContextType, RequireFields<QueryCurrentParcelStatusArgs, 'parcelId'>>;
   deliveryStatuses?: Resolver<Maybe<ResolversTypes['DeliveryStatusesConnection']>, ParentType, ContextType, Partial<QueryDeliveryStatusesArgs>>;
@@ -1167,12 +1300,14 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 export type Resolvers<ContextType = any> = ResolversObject<{
   AddDeliveryStatusError?: AddDeliveryStatusErrorResolvers<ContextType>;
   AddDeliveryStatusPayload?: AddDeliveryStatusPayloadResolvers<ContextType>;
+  AddParcelPayload?: AddParcelPayloadResolvers<ContextType>;
   AddPostOfficeError?: AddPostOfficeErrorResolvers<ContextType>;
   AddPostOfficePayload?: AddPostOfficePayloadResolvers<ContextType>;
   CollectionSegmentInfo?: CollectionSegmentInfoResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
   Decimal?: GraphQLScalarType;
   DeleteDeliveryStatusByIdPayload?: DeleteDeliveryStatusByIdPayloadResolvers<ContextType>;
+  DeleteParcelByIdPayload?: DeleteParcelByIdPayloadResolvers<ContextType>;
   DeletePostOfficeByIdPayload?: DeletePostOfficeByIdPayloadResolvers<ContextType>;
   DeliveryStatus?: DeliveryStatusResolvers<ContextType>;
   DeliveryStatusesConnection?: DeliveryStatusesConnectionResolvers<ContextType>;
@@ -1184,6 +1319,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   ParcelHistoryConnection?: ParcelHistoryConnectionResolvers<ContextType>;
   ParcelHistoryEdge?: ParcelHistoryEdgeResolvers<ContextType>;
   ParcelInfo?: ParcelInfoResolvers<ContextType>;
+  ParcelNotFoundError?: ParcelNotFoundErrorResolvers<ContextType>;
   ParcelStatus?: ParcelStatusResolvers<ContextType>;
   ParcelTrackingServiceError?: ParcelTrackingServiceErrorResolvers<ContextType>;
   ParcelsCursorConnection?: ParcelsCursorConnectionResolvers<ContextType>;
@@ -1192,6 +1328,8 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   PostOffice?: PostOfficeResolvers<ContextType>;
   PostOfficesConnection?: PostOfficesConnectionResolvers<ContextType>;
   PostOfficesEdge?: PostOfficesEdgeResolvers<ContextType>;
+  PushOneMoreParcelStatusError?: PushOneMoreParcelStatusErrorResolvers<ContextType>;
+  PushOneMoreParcelStatusPayload?: PushOneMoreParcelStatusPayloadResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
   UUID?: GraphQLScalarType;
@@ -1296,13 +1434,20 @@ ${ParcelQrCodeDrawerItemFragmentDoc}
 ${ParcelDeliveryPathItemFragmentDoc}
 ${ParcelProgressItemFragmentDoc}`;
 export const GetParcelsDocument = gql`
-    query GetParcels($trackedParcelsIds: [UUID]!, $searchCriteria: ParcelSearchCriteriaInput) {
-  parcelsCursor(
+    query GetParcels($trackedParcelsIds: [UUID]!, $searchCriteria: ParcelSearchCriteriaInput, $pageSize: Int!, $offset: Int) {
+  parcelsOffset(
     where: {id: {in: $trackedParcelsIds}}
     searchCriteria: $searchCriteria
+    take: $pageSize
+    skip: $offset
   ) {
-    nodes {
+    items {
       ...ParcelCardItem
+    }
+    totalCount
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
     }
   }
 }
@@ -1322,6 +1467,8 @@ export const GetParcelsDocument = gql`
  *   variables: {
  *      trackedParcelsIds: // value for 'trackedParcelsIds'
  *      searchCriteria: // value for 'searchCriteria'
+ *      pageSize: // value for 'pageSize'
+ *      offset: // value for 'offset'
  *   },
  * });
  */
@@ -1494,6 +1641,10 @@ export type AddDeliveryStatusPayloadFieldPolicy = {
 	deliveryStatus?: FieldPolicy<any> | FieldReadFunction<any>,
 	errors?: FieldPolicy<any> | FieldReadFunction<any>
 };
+export type AddParcelPayloadKeySpecifier = ('parcel' | AddParcelPayloadKeySpecifier)[];
+export type AddParcelPayloadFieldPolicy = {
+	parcel?: FieldPolicy<any> | FieldReadFunction<any>
+};
 export type AddPostOfficePayloadKeySpecifier = ('errors' | 'postOffice' | AddPostOfficePayloadKeySpecifier)[];
 export type AddPostOfficePayloadFieldPolicy = {
 	errors?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -1507,6 +1658,10 @@ export type CollectionSegmentInfoFieldPolicy = {
 export type DeleteDeliveryStatusByIdPayloadKeySpecifier = ('deliveryStatus' | DeleteDeliveryStatusByIdPayloadKeySpecifier)[];
 export type DeleteDeliveryStatusByIdPayloadFieldPolicy = {
 	deliveryStatus?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type DeleteParcelByIdPayloadKeySpecifier = ('parcel' | DeleteParcelByIdPayloadKeySpecifier)[];
+export type DeleteParcelByIdPayloadFieldPolicy = {
+	parcel?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type DeletePostOfficeByIdPayloadKeySpecifier = ('postOffice' | DeletePostOfficeByIdPayloadKeySpecifier)[];
 export type DeletePostOfficeByIdPayloadFieldPolicy = {
@@ -1535,12 +1690,15 @@ export type ErrorKeySpecifier = ('message' | ErrorKeySpecifier)[];
 export type ErrorFieldPolicy = {
 	message?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type MutationKeySpecifier = ('addDeliveryStatus' | 'addPostOffice' | 'deleteDeliveryStatusById' | 'deletePostOfficeById' | 'updateDeliveryStatus' | 'updatePostOffice' | MutationKeySpecifier)[];
+export type MutationKeySpecifier = ('addDeliveryStatus' | 'addParcel' | 'addPostOffice' | 'deleteDeliveryStatusById' | 'deleteParcelById' | 'deletePostOfficeById' | 'pushOneMoreParcelStatus' | 'updateDeliveryStatus' | 'updatePostOffice' | MutationKeySpecifier)[];
 export type MutationFieldPolicy = {
 	addDeliveryStatus?: FieldPolicy<any> | FieldReadFunction<any>,
+	addParcel?: FieldPolicy<any> | FieldReadFunction<any>,
 	addPostOffice?: FieldPolicy<any> | FieldReadFunction<any>,
 	deleteDeliveryStatusById?: FieldPolicy<any> | FieldReadFunction<any>,
+	deleteParcelById?: FieldPolicy<any> | FieldReadFunction<any>,
 	deletePostOfficeById?: FieldPolicy<any> | FieldReadFunction<any>,
+	pushOneMoreParcelStatus?: FieldPolicy<any> | FieldReadFunction<any>,
 	updateDeliveryStatus?: FieldPolicy<any> | FieldReadFunction<any>,
 	updatePostOffice?: FieldPolicy<any> | FieldReadFunction<any>
 };
@@ -1584,6 +1742,10 @@ export type ParcelInfoFieldPolicy = {
 	sender?: FieldPolicy<any> | FieldReadFunction<any>,
 	senderId?: FieldPolicy<any> | FieldReadFunction<any>,
 	updatedAt?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type ParcelNotFoundErrorKeySpecifier = ('message' | ParcelNotFoundErrorKeySpecifier)[];
+export type ParcelNotFoundErrorFieldPolicy = {
+	message?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type ParcelStatusKeySpecifier = ('createdAt' | 'date' | 'deliveryStatus' | 'deliveryStatusId' | 'id' | 'parcel' | 'parcelId' | 'statusDescription' | 'updatedAt' | ParcelStatusKeySpecifier)[];
 export type ParcelStatusFieldPolicy = {
@@ -1638,6 +1800,11 @@ export type PostOfficesEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
 };
+export type PushOneMoreParcelStatusPayloadKeySpecifier = ('errors' | 'parcel' | PushOneMoreParcelStatusPayloadKeySpecifier)[];
+export type PushOneMoreParcelStatusPayloadFieldPolicy = {
+	errors?: FieldPolicy<any> | FieldReadFunction<any>,
+	parcel?: FieldPolicy<any> | FieldReadFunction<any>
+};
 export type QueryKeySpecifier = ('currentParcelStatus' | 'deliveryStatuses' | 'parcelById' | 'parcelHistory' | 'parcelsCursor' | 'parcelsOffset' | 'postOffices' | 'trackedParcelsIds' | QueryKeySpecifier)[];
 export type QueryFieldPolicy = {
 	currentParcelStatus?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -1681,6 +1848,10 @@ export type StrictTypedTypePolicies = {
 		keyFields?: false | AddDeliveryStatusPayloadKeySpecifier | (() => undefined | AddDeliveryStatusPayloadKeySpecifier),
 		fields?: AddDeliveryStatusPayloadFieldPolicy,
 	},
+	AddParcelPayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | AddParcelPayloadKeySpecifier | (() => undefined | AddParcelPayloadKeySpecifier),
+		fields?: AddParcelPayloadFieldPolicy,
+	},
 	AddPostOfficePayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | AddPostOfficePayloadKeySpecifier | (() => undefined | AddPostOfficePayloadKeySpecifier),
 		fields?: AddPostOfficePayloadFieldPolicy,
@@ -1692,6 +1863,10 @@ export type StrictTypedTypePolicies = {
 	DeleteDeliveryStatusByIdPayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | DeleteDeliveryStatusByIdPayloadKeySpecifier | (() => undefined | DeleteDeliveryStatusByIdPayloadKeySpecifier),
 		fields?: DeleteDeliveryStatusByIdPayloadFieldPolicy,
+	},
+	DeleteParcelByIdPayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | DeleteParcelByIdPayloadKeySpecifier | (() => undefined | DeleteParcelByIdPayloadKeySpecifier),
+		fields?: DeleteParcelByIdPayloadFieldPolicy,
 	},
 	DeletePostOfficeByIdPayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | DeletePostOfficeByIdPayloadKeySpecifier | (() => undefined | DeletePostOfficeByIdPayloadKeySpecifier),
@@ -1737,6 +1912,10 @@ export type StrictTypedTypePolicies = {
 		keyFields?: false | ParcelInfoKeySpecifier | (() => undefined | ParcelInfoKeySpecifier),
 		fields?: ParcelInfoFieldPolicy,
 	},
+	ParcelNotFoundError?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | ParcelNotFoundErrorKeySpecifier | (() => undefined | ParcelNotFoundErrorKeySpecifier),
+		fields?: ParcelNotFoundErrorFieldPolicy,
+	},
 	ParcelStatus?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | ParcelStatusKeySpecifier | (() => undefined | ParcelStatusKeySpecifier),
 		fields?: ParcelStatusFieldPolicy,
@@ -1768,6 +1947,10 @@ export type StrictTypedTypePolicies = {
 	PostOfficesEdge?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | PostOfficesEdgeKeySpecifier | (() => undefined | PostOfficesEdgeKeySpecifier),
 		fields?: PostOfficesEdgeFieldPolicy,
+	},
+	PushOneMoreParcelStatusPayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | PushOneMoreParcelStatusPayloadKeySpecifier | (() => undefined | PushOneMoreParcelStatusPayloadKeySpecifier),
+		fields?: PushOneMoreParcelStatusPayloadFieldPolicy,
 	},
 	Query?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | QueryKeySpecifier | (() => undefined | QueryKeySpecifier),

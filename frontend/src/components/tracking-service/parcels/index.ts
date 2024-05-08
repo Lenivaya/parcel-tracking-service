@@ -1,6 +1,5 @@
 export * from './ParcelCardList'
+export * from './ParcelDeliveryProgress'
 export * from './ParcelCard'
 export * from './ParcelPage'
 export * from './ParcelSearch'
-export { ParcelDeliveryProgress } from '@/components/tracking-service/parcels/ParcelDeliveryProgress'
-export { ParcelProgressFragment } from '@/components/tracking-service/parcels/ParcelDeliveryProgress'
