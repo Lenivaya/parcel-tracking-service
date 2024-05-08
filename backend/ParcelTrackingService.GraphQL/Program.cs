@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using HotChocolate.AspNetCore.Voyager;
 using HotChocolate.Language;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
@@ -22,10 +23,7 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 );
 
 builder
-    .Services.AddHttpLogging(options =>
-    {
-        options.LoggingFields = HttpLoggingFields.Request;
-    })
+    .Services.AddHttpLogging(options => { options.LoggingFields = HttpLoggingFields.Request; })
     .AddCors();
 
 builder
@@ -87,6 +85,8 @@ if (app.Environment.IsDevelopment())
 app.UseCors(corsPolicyBuilder =>
     corsPolicyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
 );
+
+app.UseVoyager("/graphql", "/voyager");
 
 app.MapGraphQL();
 await app.RunWithGraphQLCommandsAsync(args);
