@@ -79,13 +79,23 @@ public class QueryParcelsResolver
             return query;
 
         if (searchCriteria.Matching is string matching)
+        {
+            var patterns = matching.Split(' ').Select(word => $"%{word}%").ToArray();
+
             query = context
                 .Parcels.Include(p => p.ParcelInfo)
+                .Include(p => p.ParcelStatusHistory)
                 .Where(p =>
-                    EF.Functions.ILike(p.ParcelInfo.Description, $"%{matching}%")
-                    || EF.Functions.ILike(p.ParcelInfo.DeliverySourceAddress, $"%{matching}%")
-                    || EF.Functions.ILike(p.ParcelInfo.DeliverySourceAddress, $"%{matching}%")
+                    patterns.All(word =>
+                        EF.Functions.ILike(p.ParcelInfo.Description, word)
+                        || EF.Functions.ILike(p.ParcelInfo.DeliveryDestinationAddress, word)
+                        || EF.Functions.ILike(p.ParcelInfo.DeliverySourceAddress, word)
+                        || p.ParcelStatusHistory.Any(parcelStatus =>
+                            EF.Functions.ILike(parcelStatus.StatusDescription, word)
+                        )
+                    )
                 );
+        }
 
         return query;
     }

@@ -13,21 +13,21 @@ type AddDeliveryStatusPayload {
   errors: [AddDeliveryStatusError!]
 }
 
-type AddParcelPayload {
-  parcel: Parcel
-}
-
 type AddPostOfficePayload {
   postOffice: PostOffice
   errors: [AddPostOfficeError!]
 }
 
-type DeleteDeliveryStatusByIdPayload {
-  deliveryStatus: DeliveryStatus
+"Information about the offset pagination."
+type CollectionSegmentInfo {
+  "Indicates whether more items exist following the set defined by the clients arguments."
+  hasNextPage: Boolean!
+  "Indicates whether more items exist prior the set defined by the clients arguments."
+  hasPreviousPage: Boolean!
 }
 
-type DeleteParcelByIdPayload {
-  parcel: Parcel
+type DeleteDeliveryStatusByIdPayload {
+  deliveryStatus: DeliveryStatus
 }
 
 type DeletePostOfficeByIdPayload {
@@ -67,9 +67,6 @@ type Mutation {
   addDeliveryStatus(input: AddDeliveryStatusInput!): AddDeliveryStatusPayload!
   deleteDeliveryStatusById(input: DeleteDeliveryStatusByIdInput!): DeleteDeliveryStatusByIdPayload!
   updateDeliveryStatus(input: UpdateDeliveryStatusInput!): UpdateDeliveryStatusPayload!
-  addParcel(input: AddParcelInput!): AddParcelPayload!
-  deleteParcelById(input: DeleteParcelByIdInput!): DeleteParcelByIdPayload!
-  pushOneMoreParcelStatus(input: PushOneMoreParcelStatusInput!): PushOneMoreParcelStatusPayload!
 }
 
 "Information about pagination in a connection."
@@ -125,10 +122,6 @@ type ParcelInfo {
   updatedAt: DateTime
 }
 
-type ParcelNotFoundError implements Error {
-  message: String!
-}
-
 type ParcelStatus {
   statusDescription: String!
   date: DateTime!
@@ -146,21 +139,32 @@ type ParcelTrackingServiceError implements Error {
 }
 
 "A connection to a list of items."
-type ParcelsConnection {
+type ParcelsCursorConnection {
   "Information to aid in pagination."
   pageInfo: PageInfo!
   "A list of edges."
-  edges: [ParcelsEdge!]
+  edges: [ParcelsCursorEdge!]
   "A flattened list of the nodes."
   nodes: [Parcel!]
+  "Identifies the total count of items in the connection."
+  totalCount: Int!
 }
 
 "An edge in a connection."
-type ParcelsEdge {
+type ParcelsCursorEdge {
   "A cursor for use in pagination."
   cursor: String!
   "The item at the end of the edge."
   node: Parcel!
+}
+
+"A segment of a collection."
+type ParcelsOffsetCollectionSegment {
+  "Information to aid in pagination."
+  pageInfo: CollectionSegmentInfo!
+  "A flattened list of the items."
+  items: [Parcel!]
+  totalCount: Int!
 }
 
 type PostOffice {
@@ -189,15 +193,11 @@ type PostOfficesEdge {
   node: PostOffice!
 }
 
-type PushOneMoreParcelStatusPayload {
-  parcel: [Parcel!]
-  errors: [PushOneMoreParcelStatusError!]
-}
-
 type Query {
   postOffices("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: PostOfficeFilterInput order: [PostOfficeSortInput!]): PostOfficesConnection
   deliveryStatuses("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DeliveryStatusFilterInput order: [DeliveryStatusSortInput!]): DeliveryStatusesConnection
-  parcels("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: ParcelFilterInput order: [ParcelSortInput!]): ParcelsConnection
+  parcelsOffset(skip: Int take: Int searchCriteria: ParcelSearchCriteriaInput where: ParcelFilterInput order: [ParcelSortInput!]): ParcelsOffsetCollectionSegment
+  parcelsCursor(searchCriteria: ParcelSearchCriteriaInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: ParcelFilterInput order: [ParcelSortInput!]): ParcelsCursorConnection
   parcelById(parcelId: UUID!): Parcel
   parcelHistory(parcelId: UUID! "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: ParcelStatusFilterInput order: [ParcelStatusSortInput!]): ParcelHistoryConnection
   currentParcelStatus(parcelId: UUID! where: ParcelStatusFilterInput order: [ParcelStatusSortInput!]): ParcelStatus
@@ -234,14 +234,8 @@ union AddDeliveryStatusError = ParcelTrackingServiceError
 
 union AddPostOfficeError = ParcelTrackingServiceError
 
-union PushOneMoreParcelStatusError = ParcelNotFoundError
-
 input AddDeliveryStatusInput {
   createDto: DeliveryStatusCreateDtoInput!
-}
-
-input AddParcelInput {
-  createDto: ParcelCreateDtoInput!
 }
 
 input AddPostOfficeInput {
@@ -280,10 +274,6 @@ input DecimalOperationFilterInput {
 
 input DeleteDeliveryStatusByIdInput {
   statusId: UUID!
-}
-
-input DeleteParcelByIdInput {
-  parcelId: UUID!
 }
 
 input DeletePostOfficeByIdInput {
@@ -332,11 +322,6 @@ input ListFilterInputTypeOfParcelStatusFilterInput {
   any: Boolean
 }
 
-input ParcelCreateDtoInput {
-  parcelInfo: ParcelInfoDtoInput!
-  parcelStatusHistory: [ParcelStatusDtoInput!]
-}
-
 input ParcelFilterInput {
   and: [ParcelFilterInput!]
   or: [ParcelFilterInput!]
@@ -346,14 +331,6 @@ input ParcelFilterInput {
   id: UuidOperationFilterInput
   createdAt: DateTimeOperationFilterInput
   updatedAt: DateTimeOperationFilterInput
-}
-
-input ParcelInfoDtoInput {
-  deliveryDestinationAddress: String!
-  deliverySourceAddress: String!
-  description: String!
-  priceToPay: Decimal!
-  parcelContentPrice: Decimal!
 }
 
 input ParcelInfoFilterInput {
@@ -384,18 +361,16 @@ input ParcelInfoSortInput {
   updatedAt: SortEnumType
 }
 
+input ParcelSearchCriteriaInput {
+  matching: String
+}
+
 input ParcelSortInput {
   parcelInfoId: SortEnumType
   parcelInfo: ParcelInfoSortInput
   id: SortEnumType
   createdAt: SortEnumType
   updatedAt: SortEnumType
-}
-
-input ParcelStatusDtoInput {
-  statusDescription: String!
-  deliveryStatusId: UUID
-  date: DateTime
 }
 
 input ParcelStatusFilterInput {
@@ -450,11 +425,6 @@ input PostOfficeSortInput {
   id: SortEnumType
   createdAt: SortEnumType
   updatedAt: SortEnumType
-}
-
-input PushOneMoreParcelStatusInput {
-  parcelId: UUID!
-  createDto: ParcelStatusDtoInput!
 }
 
 input StringOperationFilterInput {
