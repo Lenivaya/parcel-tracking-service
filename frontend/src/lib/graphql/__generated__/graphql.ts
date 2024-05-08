@@ -665,27 +665,29 @@ export type GetParcelsQueryVariables = Exact<{
 }>;
 
 
-export type GetParcelsQuery = { __typename?: 'Query', parcelsCursor?: { __typename?: 'ParcelsCursorConnection', nodes?: Array<{ __typename?: 'Parcel', id: any, updatedAt?: any | null, parcelInfo: { __typename?: 'ParcelInfo', id: any, description: string, priceToPay: any, parcelContentPrice: any, deliveryDestinationAddress: string, deliverySourceAddress: string }, currentStatus?: { __typename?: 'ParcelStatus', updatedAt?: any | null, statusDescription: string, deliveryStatus?: { __typename?: 'DeliveryStatus', generalDeliveryState: GeneralDeliveryState } | null } | null }> | null } | null };
+export type GetParcelsQuery = { __typename?: 'Query', parcelsCursor?: { __typename?: 'ParcelsCursorConnection', nodes?: Array<{ __typename?: 'Parcel', id: any, updatedAt?: any | null, parcelInfo: { __typename?: 'ParcelInfo', id: any, description: string, priceToPay: any, parcelContentPrice: any, deliveryDestinationAddress: string, deliverySourceAddress: string }, currentStatus?: { __typename?: 'ParcelStatus', date: any, statusDescription: string, deliveryStatus?: { __typename?: 'DeliveryStatus', generalDeliveryState: GeneralDeliveryState } | null } | null }> | null } | null };
 
 export type GetTrackedParcelsIdsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetTrackedParcelsIdsQuery = { __typename?: 'Query', trackedParcelsIds?: Array<any> | null };
 
-export type ParcelCardItemFragment = { __typename?: 'Parcel', id: any, updatedAt?: any | null, parcelInfo: { __typename?: 'ParcelInfo', id: any, description: string, priceToPay: any, parcelContentPrice: any, deliveryDestinationAddress: string, deliverySourceAddress: string }, currentStatus?: { __typename?: 'ParcelStatus', updatedAt?: any | null, statusDescription: string, deliveryStatus?: { __typename?: 'DeliveryStatus', generalDeliveryState: GeneralDeliveryState } | null } | null };
+export type ParcelCardItemFragment = { __typename?: 'Parcel', id: any, updatedAt?: any | null, parcelInfo: { __typename?: 'ParcelInfo', id: any, description: string, priceToPay: any, parcelContentPrice: any, deliveryDestinationAddress: string, deliverySourceAddress: string }, currentStatus?: { __typename?: 'ParcelStatus', date: any, statusDescription: string, deliveryStatus?: { __typename?: 'DeliveryStatus', generalDeliveryState: GeneralDeliveryState } | null } | null };
 
 export type ParcelCardStatusItemFragment = { __typename?: 'Parcel', currentStatus?: { __typename?: 'ParcelStatus', statusDescription: string, deliveryStatus?: { __typename?: 'DeliveryStatus', generalDeliveryState: GeneralDeliveryState } | null } | null };
 
 export type ParcelDeliveryPathItemFragment = { __typename?: 'Parcel', parcelInfo: { __typename?: 'ParcelInfo', deliveryDestinationAddress: string, deliverySourceAddress: string } };
+
+export type ParcelProgressItemFragment = { __typename?: 'Parcel', currentStatus?: { __typename?: 'ParcelStatus', deliveryStatus?: { __typename?: 'DeliveryStatus', generalDeliveryState: GeneralDeliveryState } | null } | null };
 
 export type GetParcelForPageQueryVariables = Exact<{
   parcelId: Scalars['UUID']['input'];
 }>;
 
 
-export type GetParcelForPageQuery = { __typename?: 'Query', parcelById?: { __typename?: 'Parcel', id: any, updatedAt?: any | null, parcelInfo: { __typename?: 'ParcelInfo', id: any, description: string, priceToPay: any, parcelContentPrice: any, deliveryDestinationAddress: string, deliverySourceAddress: string }, parcelStatusHistory: Array<{ __typename?: 'ParcelStatus', updatedAt?: any | null, id: any, date: any, statusDescription: string, deliveryStatus?: { __typename?: 'DeliveryStatus', generalDeliveryState: GeneralDeliveryState } | null }> } | null };
+export type GetParcelForPageQuery = { __typename?: 'Query', parcelById?: { __typename?: 'Parcel', id: any, updatedAt?: any | null, parcelInfo: { __typename?: 'ParcelInfo', id: any, description: string, priceToPay: any, parcelContentPrice: any, deliveryDestinationAddress: string, deliverySourceAddress: string }, parcelStatusHistory: Array<{ __typename?: 'ParcelStatus', updatedAt?: any | null, id: any, date: any, statusDescription: string, deliveryStatus?: { __typename?: 'DeliveryStatus', generalDeliveryState: GeneralDeliveryState } | null }>, currentStatus?: { __typename?: 'ParcelStatus', deliveryStatus?: { __typename?: 'DeliveryStatus', generalDeliveryState: GeneralDeliveryState } | null } | null } | null };
 
-export type ParcelPageItemFragment = { __typename?: 'Parcel', id: any, updatedAt?: any | null, parcelInfo: { __typename?: 'ParcelInfo', id: any, description: string, priceToPay: any, parcelContentPrice: any, deliveryDestinationAddress: string, deliverySourceAddress: string }, parcelStatusHistory: Array<{ __typename?: 'ParcelStatus', updatedAt?: any | null, id: any, date: any, statusDescription: string, deliveryStatus?: { __typename?: 'DeliveryStatus', generalDeliveryState: GeneralDeliveryState } | null }> };
+export type ParcelPageItemFragment = { __typename?: 'Parcel', id: any, updatedAt?: any | null, parcelInfo: { __typename?: 'ParcelInfo', id: any, description: string, priceToPay: any, parcelContentPrice: any, deliveryDestinationAddress: string, deliverySourceAddress: string }, parcelStatusHistory: Array<{ __typename?: 'ParcelStatus', updatedAt?: any | null, id: any, date: any, statusDescription: string, deliveryStatus?: { __typename?: 'DeliveryStatus', generalDeliveryState: GeneralDeliveryState } | null }>, currentStatus?: { __typename?: 'ParcelStatus', deliveryStatus?: { __typename?: 'DeliveryStatus', generalDeliveryState: GeneralDeliveryState } | null } | null };
 
 export type ParcelPageStatusBlockItemFragment = { __typename?: 'ParcelStatus', id: any, date: any, statusDescription: string, deliveryStatus?: { __typename?: 'DeliveryStatus', generalDeliveryState: GeneralDeliveryState } | null };
 
@@ -1220,6 +1222,15 @@ export const ParcelDeliveryPathItemFragmentDoc = gql`
   }
 }
     `;
+export const ParcelProgressItemFragmentDoc = gql`
+    fragment ParcelProgressItem on Parcel {
+  currentStatus {
+    deliveryStatus {
+      generalDeliveryState
+    }
+  }
+}
+    `;
 export const ParcelCardItemFragmentDoc = gql`
     fragment ParcelCardItem on Parcel {
   id
@@ -1230,14 +1241,16 @@ export const ParcelCardItemFragmentDoc = gql`
     parcelContentPrice
   }
   currentStatus {
-    updatedAt
+    date
   }
   updatedAt
   ...ParcelCardStatusItem
   ...ParcelDeliveryPathItem
+  ...ParcelProgressItem
 }
     ${ParcelCardStatusItemFragmentDoc}
-${ParcelDeliveryPathItemFragmentDoc}`;
+${ParcelDeliveryPathItemFragmentDoc}
+${ParcelProgressItemFragmentDoc}`;
 export const ParcelPageStatusBlockItemFragmentDoc = gql`
     fragment ParcelPageStatusBlockItem on ParcelStatus {
   id
@@ -1276,10 +1289,12 @@ export const ParcelPageItemFragmentDoc = gql`
   ...ParcelPageStatusesListItem
   ...ParcelQrCodeDrawerItem
   ...ParcelDeliveryPathItem
+  ...ParcelProgressItem
 }
     ${ParcelPageStatusesListItemFragmentDoc}
 ${ParcelQrCodeDrawerItemFragmentDoc}
-${ParcelDeliveryPathItemFragmentDoc}`;
+${ParcelDeliveryPathItemFragmentDoc}
+${ParcelProgressItemFragmentDoc}`;
 export const GetParcelsDocument = gql`
     query GetParcels($trackedParcelsIds: [UUID]!, $searchCriteria: ParcelSearchCriteriaInput) {
   parcelsCursor(

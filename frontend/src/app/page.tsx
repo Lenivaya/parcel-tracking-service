@@ -13,7 +13,7 @@ import { ParcelSearchInputBar } from '@/components/tracking-service/parcels'
 
 export default function Home() {
   return (
-    <main className='flex min-h-screen flex-col items-center justify-between max-md:p-2 p-20'>
+    <main className='flex min-h-screen flex-col items-center justify-center max-md:p-2 p-10'>
       <ParcelSearchInputBar />
 
       <div className='w-full justify-center m-auto flex gap-10 flex-row flex-wrap'>
