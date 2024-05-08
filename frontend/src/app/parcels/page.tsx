@@ -15,7 +15,10 @@ import {
   useEffect,
   useState
 } from 'react'
-import { ParcelCardList } from '@/components/tracking-service/parcels'
+import {
+  ParcelCardList,
+  ParcelSearchInputBar
+} from '@/components/tracking-service/parcels'
 import { Loader } from '@/components/tracking-service/generic/Loading'
 import { Input } from '@/components/ui'
 import { fieldChanger } from '@/lib/objects/fieldChanger'
@@ -25,6 +28,17 @@ import {
   IOffsetPaginationProps,
   OffsetPagination
 } from '@/components/tracking-service/generic/pagination/OffsetPagination'
+import { PackagePlus } from 'lucide-react'
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger
+} from '@/components/ui/sheet'
+
+import { motion } from 'framer-motion'
 
 const GET_PARCELS = gql`
   query GetParcels(
@@ -98,7 +112,7 @@ export default function ParcelsPage() {
       handleFieldChange(field, value)
 
   return (
-    <main className='flex min-h-[100vh] w-full flex-col gap-5 items-center justify-between max-md:pt-5 pt-7'>
+    <main className='relative flex min-h-[100vh] w-full flex-col gap-5 items-center justify-between max-md:pt-5 pt-7'>
       <div className={'max-lg:w-full w-5/6'}>
         <SearchBar
           search={searchCriteria.matching || ''}
@@ -107,7 +121,7 @@ export default function ParcelsPage() {
         />
       </div>
 
-      <div className='w-max min-h-[80vh] flex justify-start'>
+      <div className='w-max min-h-[90vh] flex justify-start pb-5'>
         <Suspense fallback={<Loader />}>
           <ParcelsPageCardListSuspense
             searchCriteria={searchCriteria}
@@ -120,10 +134,34 @@ export default function ParcelsPage() {
       <div className='sticky bottom-0 mt-3 h-[5vh] w-full overflow-hidden bg-neutral-100/80 transition-all hover:h-[12vh] dark:bg-transparent/60'>
         <OffsetPagination
           {...paginationProps}
+          alwaysShowPagination
           pagination={pagination}
           setPagination={setPagination}
         />
       </div>
+
+      <motion.div
+        className='fixed z-50 bottom-[90px] -right-10 focus:ring-0 focus:ring-transparent focus:ring-offset-0'
+        whileHover={{ scale: 1.3 }}
+        whileTap={{ scale: 0.9 }}
+        animate={{ x: -70 }}
+        transition={{ type: 'spring', duration: 0.8 }}
+      >
+        <Sheet>
+          <SheetTrigger>
+            <PackagePlus size={40} opacity={100} />
+          </SheetTrigger>
+          <SheetContent>
+            <SheetHeader>
+              <SheetTitle>Track new parcel</SheetTitle>
+            </SheetHeader>
+
+            <div className={'mt-5'}>
+              <ParcelSearchInputBar />
+            </div>
+          </SheetContent>
+        </Sheet>
+      </motion.div>
     </main>
   )
 }

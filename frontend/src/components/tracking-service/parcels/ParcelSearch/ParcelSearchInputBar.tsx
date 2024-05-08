@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { gql } from '@apollo/client'
 import { useGetParcelForSearchLazyQuery } from '@/lib'
 import { isNone, isSome } from '@/lib/types'
-import { redirect } from 'next/navigation'
 import { Loader } from '@/components/tracking-service/generic/Loading'
 
 import { trackedParcelsIds } from '@/lib/graphql/ApolloClient/cache/policies/trackedParcelIdsTypePolicy'
@@ -67,13 +66,14 @@ export const ParcelSearchInputBar = () => {
   return (
     <div className='flex w-full max-w-md items-center space-x-2'>
       <Input
+        className={'truncate'}
         value={searchInput}
         type='text'
         placeholder='Id of parcel you want to track'
         onChange={onInputChange}
       />
       <Button type='submit' onClick={onSearchButtonClick}>
-        Search parcel
+        Track parcel
       </Button>
     </div>
   )
