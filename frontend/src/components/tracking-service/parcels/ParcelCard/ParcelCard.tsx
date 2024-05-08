@@ -89,7 +89,9 @@ export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
       <Separator className='mb-3' />
 
       <AppTooltip text={parcel.currentStatus?.statusDescription ?? ''}>
-        <ParcelDeliveryProgress {...parcel} />
+        <div>
+          <ParcelDeliveryProgress {...parcel} />
+        </div>
       </AppTooltip>
       <ParcelCardStatus currentStatus={parcel.currentStatus} />
 
