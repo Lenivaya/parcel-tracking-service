@@ -43,6 +43,7 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install frontend dependencies
+        working-directory: frontend
         run: pnpm install
 
       - name: Format project source code
