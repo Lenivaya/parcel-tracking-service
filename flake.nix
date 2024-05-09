@@ -33,11 +33,14 @@
           };
 
           ci-format = pkgs.mkShell {
-            name = "ci-format";
-            nativeBuildInputs = with pkgs;
-              [
-              ]
-              ++ bareMinimum;
+            nativeBuildInputs = with pkgs; [corepack];
+          };
+
+          ci-reviewdog = pkgs.mkShell {
+            nativeBuildInputs = with pkgs; [
+              corepack
+              nodejs_22
+            ];
           };
         };
 
