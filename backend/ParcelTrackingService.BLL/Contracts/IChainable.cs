@@ -16,5 +16,5 @@ public interface IChainable<TChainElement>
     /// </summary>
     /// <param name="next"></param>
     /// <returns></returns>
-    TChainElement addNextHandler(TChainElement next);
+    TChainElement AddNextHandler(TChainElement next);
 }

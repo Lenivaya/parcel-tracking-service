@@ -2,11 +2,6 @@
 
 import { gql } from '@apollo/client'
 import {
-  ParcelSearchCriteriaInput,
-  useGetParcelsSuspenseQuery,
-  useGetTrackedParcelsIdsQuery
-} from '@/lib'
-import {
   Dispatch,
   FC,
   SetStateAction,
@@ -15,42 +10,34 @@ import {
   useState
 } from 'react'
 import {
-  ParcelCardList,
-  ParcelSearchInputBar
-} from '@/components/tracking-service/parcels'
-import { Loader } from '@/components/tracking-service/generic/Loading'
-import { fieldChanger } from '@/lib/objects/fieldChanger'
+  fieldChanger,
+  ParcelSearchCriteriaInput,
+  PostOfficeSearchCriteriaInput,
+  useGetPostOfficesSuspenseQuery
+} from '@/lib'
 import {
   IOffsetPagination,
   IOffsetPaginationProps,
-  OffsetPagination
-} from '@/components/tracking-service/generic/pagination/OffsetPagination'
-import { PackagePlus } from 'lucide-react'
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger
-} from '@/components/ui/sheet'
+  Loader,
+  OffsetPagination,
+  SearchBar
+} from '@/components/tracking-service/generic'
+import { PostOfficeCardList } from '@/components/tracking-service/post-offices'
 import { motion } from 'framer-motion'
-import { SearchBar } from '@/components/tracking-service/generic/search/SearchBar'
 
-const GET_PARCELS = gql`
-  query GetParcels(
-    $trackedParcelsIds: [UUID]!
-    $searchCriteria: ParcelSearchCriteriaInput
+const GET_POST_OFFICES = gql`
+  query GetPostOffices(
+    $searchCriteria: PostOfficeSearchCriteriaInput
     $pageSize: Int!
     $offset: Int
   ) {
-    parcelsOffset(
-      where: { id: { in: $trackedParcelsIds } }
+    postOfficesOffset(
       searchCriteria: $searchCriteria
       take: $pageSize
       skip: $offset
     ) {
       items {
-        ...ParcelCardItem
+        ...PostOfficeCardItem
       }
 
       totalCount
@@ -62,15 +49,9 @@ const GET_PARCELS = gql`
   }
 `
 
-const GET_TRACKED_PARCELS_IDS = gql`
-  query GetTrackedParcelsIds {
-    trackedParcelsIds @client
-  }
-`
-
 const DEFAULT_PAGE_SIZE = 5
 
-export default function ParcelsPage() {
+export default function PostOfficesPage() {
   const [searchCriteria, setSearchCriteria] =
     useState<ParcelSearchCriteriaInput>({ matching: null })
 
@@ -113,13 +94,13 @@ export default function ParcelsPage() {
         <SearchBar
           search={searchCriteria.matching || ''}
           handleSearch={onInputFieldChange('matching')}
-          placeholder='Search for a parcel'
+          placeholder='Search for a post-office'
         />
       </div>
 
       <div className='w-max min-h-[90vh] flex justify-start pb-5'>
         <Suspense fallback={<Loader />}>
-          <ParcelsPageCardListSuspense
+          <PostOfficesPageCardListSuspense
             searchCriteria={searchCriteria}
             pagination={pagination}
             setPaginationProps={setPaginationProps}
@@ -142,44 +123,19 @@ export default function ParcelsPage() {
           setPagination={setPagination}
         />
       </motion.div>
-
-      <motion.div
-        className='fixed z-50 bottom-[90px] -right-10 focus:ring-0 focus:ring-transparent focus:ring-offset-0'
-        whileHover={{ scale: 1.3 }}
-        whileTap={{ scale: 0.9 }}
-        animate={{ x: -70 }}
-        transition={{ type: 'spring', duration: 0.8 }}
-      >
-        <Sheet>
-          <SheetTrigger>
-            <PackagePlus size={40} opacity={100} />
-          </SheetTrigger>
-          <SheetContent>
-            <SheetHeader>
-              <SheetTitle>Track new parcel</SheetTitle>
-            </SheetHeader>
-
-            <div className={'mt-5'}>
-              <ParcelSearchInputBar />
-            </div>
-          </SheetContent>
-        </Sheet>
-      </motion.div>
     </main>
   )
 }
 
-const ParcelsPageCardListSuspense: FC<{
-  searchCriteria: ParcelSearchCriteriaInput
+const PostOfficesPageCardListSuspense: FC<{
+  searchCriteria: PostOfficeSearchCriteriaInput
   pagination: IOffsetPagination
   setPaginationProps: Dispatch<
     SetStateAction<Omit<IOffsetPaginationProps, 'setPagination' | 'pagination'>>
   >
 }> = ({ searchCriteria, pagination, setPaginationProps }) => {
-  const { data: trackedParcelsData } = useGetTrackedParcelsIdsQuery()
-  const { data } = useGetParcelsSuspenseQuery({
+  const { data } = useGetPostOfficesSuspenseQuery({
     variables: {
-      trackedParcelsIds: trackedParcelsData?.trackedParcelsIds,
       searchCriteria,
       ...pagination
     },
@@ -189,15 +145,16 @@ const ParcelsPageCardListSuspense: FC<{
   useEffect(() => {
     setPaginationProps((props) => ({
       ...props,
-      hasNextPage: data?.parcelsOffset?.pageInfo.hasNextPage ?? false,
-      hasPreviousPage: data?.parcelsOffset?.pageInfo.hasPreviousPage ?? false,
-      totalCount: data?.parcelsOffset?.totalCount ?? 0
+      hasNextPage: data?.postOfficesOffset?.pageInfo.hasNextPage ?? false,
+      hasPreviousPage:
+        data?.postOfficesOffset?.pageInfo.hasPreviousPage ?? false,
+      totalCount: data?.postOfficesOffset?.totalCount ?? 0
     }))
   }, [data])
 
   return (
     <div className={'flex flex-col w-full h-full justify-start max-w-5xl'}>
-      <ParcelCardList parcels={data?.parcelsOffset?.items} />
+      <PostOfficeCardList postOffices={data?.postOfficesOffset?.items} />
     </div>
   )
 }

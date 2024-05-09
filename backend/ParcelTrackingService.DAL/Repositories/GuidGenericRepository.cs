@@ -1,7 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using ParcelTrackingService.DAL.Contracts;
-using ParcelTrackingService.DAL.Entities;
 
 namespace ParcelTrackingService.DAL.Repositories;
 

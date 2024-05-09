@@ -76,7 +76,11 @@ public class QueryParcelsResolver
         ParcelSearchCriteria? searchCriteria
     )
     {
-        var queryHandlerChain = new SearchCriteriaHandlerChainBuilder().BuildChain(
+        var queryHandlerChain = new SearchCriteriaHandlerChainBuilder<
+            ParcelTrackingServiceContext,
+            ParcelSearchCriteria,
+            Parcel
+        >().BuildChain(
             [
                 new ParcelSearchCriteriaOverallMatchingQueryHandler(),
                 new ParcelSearchCriteriaDateRangeQueryHandler(),

@@ -13,6 +13,10 @@ type AddDeliveryStatusPayload {
   errors: [AddDeliveryStatusError!]
 }
 
+type AddParcelPayload {
+  parcel: Parcel
+}
+
 type AddPostOfficePayload {
   postOffice: PostOffice
   errors: [AddPostOfficeError!]
@@ -28,6 +32,10 @@ type CollectionSegmentInfo {
 
 type DeleteDeliveryStatusByIdPayload {
   deliveryStatus: DeliveryStatus
+}
+
+type DeleteParcelByIdPayload {
+  parcel: Parcel
 }
 
 type DeletePostOfficeByIdPayload {
@@ -67,6 +75,9 @@ type Mutation {
   addDeliveryStatus(input: AddDeliveryStatusInput!): AddDeliveryStatusPayload!
   deleteDeliveryStatusById(input: DeleteDeliveryStatusByIdInput!): DeleteDeliveryStatusByIdPayload!
   updateDeliveryStatus(input: UpdateDeliveryStatusInput!): UpdateDeliveryStatusPayload!
+  addParcel(input: AddParcelInput!): AddParcelPayload!
+  deleteParcelById(input: DeleteParcelByIdInput!): DeleteParcelByIdPayload!
+  pushOneMoreParcelStatus(input: PushOneMoreParcelStatusInput!): PushOneMoreParcelStatusPayload!
 }
 
 "Information about pagination in a connection."
@@ -120,6 +131,10 @@ type ParcelInfo {
   id: UUID!
   createdAt: DateTime
   updatedAt: DateTime
+}
+
+type ParcelNotFoundError implements Error {
+  message: String!
 }
 
 type ParcelStatus {
@@ -176,25 +191,42 @@ type PostOffice {
 }
 
 "A connection to a list of items."
-type PostOfficesConnection {
+type PostOfficesCursorConnection {
   "Information to aid in pagination."
   pageInfo: PageInfo!
   "A list of edges."
-  edges: [PostOfficesEdge!]
+  edges: [PostOfficesCursorEdge!]
   "A flattened list of the nodes."
   nodes: [PostOffice!]
+  "Identifies the total count of items in the connection."
+  totalCount: Int!
 }
 
 "An edge in a connection."
-type PostOfficesEdge {
+type PostOfficesCursorEdge {
   "A cursor for use in pagination."
   cursor: String!
   "The item at the end of the edge."
   node: PostOffice!
 }
 
+"A segment of a collection."
+type PostOfficesOffsetCollectionSegment {
+  "Information to aid in pagination."
+  pageInfo: CollectionSegmentInfo!
+  "A flattened list of the items."
+  items: [PostOffice!]
+  totalCount: Int!
+}
+
+type PushOneMoreParcelStatusPayload {
+  parcel: [Parcel!]
+  errors: [PushOneMoreParcelStatusError!]
+}
+
 type Query {
-  postOffices("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: PostOfficeFilterInput order: [PostOfficeSortInput!]): PostOfficesConnection
+  postOfficesOffset(skip: Int take: Int searchCriteria: PostOfficeSearchCriteriaInput where: PostOfficeFilterInput order: [PostOfficeSortInput!]): PostOfficesOffsetCollectionSegment
+  postOfficesCursor(searchCriteria: PostOfficeSearchCriteriaInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: PostOfficeFilterInput order: [PostOfficeSortInput!]): PostOfficesCursorConnection
   deliveryStatuses("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DeliveryStatusFilterInput order: [DeliveryStatusSortInput!]): DeliveryStatusesConnection
   parcelsOffset(skip: Int take: Int searchCriteria: ParcelSearchCriteriaInput where: ParcelFilterInput order: [ParcelSortInput!]): ParcelsOffsetCollectionSegment
   parcelsCursor(searchCriteria: ParcelSearchCriteriaInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: ParcelFilterInput order: [ParcelSortInput!]): ParcelsCursorConnection
@@ -234,8 +266,14 @@ union AddDeliveryStatusError = ParcelTrackingServiceError
 
 union AddPostOfficeError = ParcelTrackingServiceError
 
+union PushOneMoreParcelStatusError = ParcelNotFoundError
+
 input AddDeliveryStatusInput {
   createDto: DeliveryStatusCreateDtoInput!
+}
+
+input AddParcelInput {
+  createDto: ParcelCreateDtoInput!
 }
 
 input AddPostOfficeInput {
@@ -274,6 +312,10 @@ input DecimalOperationFilterInput {
 
 input DeleteDeliveryStatusByIdInput {
   statusId: UUID!
+}
+
+input DeleteParcelByIdInput {
+  parcelId: UUID!
 }
 
 input DeletePostOfficeByIdInput {
@@ -322,6 +364,11 @@ input ListFilterInputTypeOfParcelStatusFilterInput {
   any: Boolean
 }
 
+input ParcelCreateDtoInput {
+  parcelInfo: ParcelInfoDtoInput!
+  parcelStatusHistory: [ParcelStatusDtoInput!]
+}
+
 input ParcelFilterInput {
   and: [ParcelFilterInput!]
   or: [ParcelFilterInput!]
@@ -331,6 +378,14 @@ input ParcelFilterInput {
   id: UuidOperationFilterInput
   createdAt: DateTimeOperationFilterInput
   updatedAt: DateTimeOperationFilterInput
+}
+
+input ParcelInfoDtoInput {
+  deliveryDestinationAddress: String!
+  deliverySourceAddress: String!
+  description: String!
+  priceToPay: Decimal!
+  parcelContentPrice: Decimal!
 }
 
 input ParcelInfoFilterInput {
@@ -363,6 +418,13 @@ input ParcelInfoSortInput {
 
 input ParcelSearchCriteriaInput {
   matching: String
+  currentStatusMatching: String
+  maxDate: DateTime
+  minDate: DateTime
+  minContentPrice: Decimal
+  maxContentPrice: Decimal
+  minPriceToPay: Decimal
+  maxPriceToPay: Decimal
 }
 
 input ParcelSortInput {
@@ -371,6 +433,12 @@ input ParcelSortInput {
   id: SortEnumType
   createdAt: SortEnumType
   updatedAt: SortEnumType
+}
+
+input ParcelStatusDtoInput {
+  statusDescription: String!
+  deliveryStatusId: UUID
+  date: DateTime
 }
 
 input ParcelStatusFilterInput {
@@ -419,12 +487,23 @@ input PostOfficePatchDtoInput {
   code: String
 }
 
+input PostOfficeSearchCriteriaInput {
+  matching: String
+  matchingCode: String
+  matchingAddress: String
+}
+
 input PostOfficeSortInput {
   address: SortEnumType
   code: SortEnumType
   id: SortEnumType
   createdAt: SortEnumType
   updatedAt: SortEnumType
+}
+
+input PushOneMoreParcelStatusInput {
+  parcelId: UUID!
+  createDto: ParcelStatusDtoInput!
 }
 
 input StringOperationFilterInput {
