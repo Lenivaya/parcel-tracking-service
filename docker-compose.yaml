@@ -15,7 +15,6 @@ services:
       - parcel-tracking-service-db-data:/var/lib/postgresql/data
     networks:
       - parcel-tracking-service-network
-  
   redis:
     container_name: parcel-tracking-service-redis
     image: redis:7.2.4-alpine
@@ -25,10 +24,8 @@ services:
       - "6379"
     networks:
       - parcel-tracking-service-network
-
 volumes:
   parcel-tracking-service-db-data:
-
 networks:
   parcel-tracking-service-network:
     driver: bridge
