@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ParcelTrackingService.DAL.Entities;
 
+
 [Table("users")]
 [Index(nameof(Email), Name = "users_email_key", IsUnique = true)]
 [Index(nameof(Username), Name = "users_username_key", IsUnique = true)]
