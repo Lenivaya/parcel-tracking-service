@@ -8,8 +8,12 @@ import {
   Separator
 } from '@/components/ui'
 import React, { FC } from 'react'
-import { ParcelCardItemFragment } from '@/lib'
-import { Clock } from 'lucide-react'
+import {
+  ParcelCardItemFragment,
+  trackedParcelsIds,
+  useGetTrackedParcelsIdsQuery
+} from '@/lib'
+import { BookX, Clock } from 'lucide-react'
 import { toast } from '@/components/ui/use-toast'
 import { truncate } from '@/lib/strings'
 import { AppTooltip } from '@/components/tracking-service/generic/AppTooltip'
@@ -22,6 +26,8 @@ import {
   ParcelDeliveryStatusIcon
 } from '@/components/tracking-service/parcels'
 import { Link } from 'next-view-transitions'
+import { isSome } from '@/lib/types'
+import { motion } from 'framer-motion'
 
 export const ParcelCardFragment = gql`
   fragment ParcelCardItem on Parcel {
@@ -50,6 +56,12 @@ export type ParcelCardProps = {
 }
 
 export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
+  const { data: trackedParcelsData } = useGetTrackedParcelsIdsQuery()
+
+  const isTracked =
+    isSome(trackedParcelsData?.trackedParcelsIds) &&
+    trackedParcelsData?.trackedParcelsIds?.includes(parcel.id)
+
   const handleCopyParcelId = async () => {
     await navigator.clipboard.writeText(parcel.id)
     toast({
@@ -58,8 +70,11 @@ export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
     })
   }
 
+  const handleUntrack = () =>
+    trackedParcelsIds(trackedParcelsIds().filter((id) => id !== parcel.id))
+
   return (
-    <Card className='flex flex-col justify-between max-w-80 w-80 max-h-full'>
+    <Card className='flex flex-col justify-between max-w-80 w-80 max-h-full relative'>
       <CardHeader>
         <CardTitle>
           <Link href={'parcels/' + parcel.id}>
@@ -118,6 +133,20 @@ export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
           </p>
         </div>
       </CardFooter>
+
+      {isTracked && (
+        <AppTooltip text={'Untrack'}>
+          <motion.div
+            onClick={handleUntrack}
+            className='absolute bottom-3 right-3 cursor-pointer'
+            whileHover={{ scale: 1.6, transition: { duration: 0.5 } }}
+            whileTap={{ scale: 0.9 }}
+            transition={{ type: 'spring', duration: 0.8 }}
+          >
+            <BookX />
+          </motion.div>
+        </AppTooltip>
+      )}
     </Card>
   )
 }

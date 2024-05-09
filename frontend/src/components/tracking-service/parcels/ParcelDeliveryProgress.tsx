@@ -1,9 +1,9 @@
-import { GeneralDeliveryState, ParcelProgressItemFragment } from '@/lib'
+import { cn, GeneralDeliveryState, ParcelProgressItemFragment } from '@/lib'
 import type { FC } from 'react'
-import { isNone, Option } from '@/lib/types'
+import { isNone } from '@/lib/types'
 import { Progress } from '@/components/ui'
-import { clsx } from 'clsx'
 import { gql } from '@apollo/client'
+import { Option } from '@mobily/ts-belt'
 
 export const ParcelProgressFragment = gql`
   fragment ParcelProgressItem on Parcel {
@@ -33,17 +33,15 @@ export const ParcelDeliveryProgress: FC<ParcelProgressItemFragment> = ({
   const deliveryState = currentStatus?.deliveryStatus?.generalDeliveryState
   const progress = stateToProgress(deliveryState)
 
-  if (isNone(deliveryState)) return null
-
   return (
     <div className={'m-2'}>
       <Progress
-        indicatorColor={clsx('bg-green-400', {
+        indicatorColor={cn('bg-green-400', {
           '!bg-green-600': progress >= 100 && deliveryState != 'RETURNED',
           '!bg-red-500': deliveryState === 'RETURNED'
         })}
         value={progress}
-        className={clsx('w-[60%] m-auto')}
+        className={cn('w-[60%] m-auto')}
       />
     </div>
   )

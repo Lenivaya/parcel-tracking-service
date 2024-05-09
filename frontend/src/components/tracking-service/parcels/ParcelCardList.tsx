@@ -1,7 +1,8 @@
 import { FC } from 'react'
 import type { ParcelCardItemFragment } from '@/lib'
 import { ParcelCard } from '@/components/tracking-service/parcels'
-import { isNone, isSome, Option } from '@/lib/types'
+import { isNone } from '@/lib/types'
+import { Option } from '@mobily/ts-belt'
 
 export type ParcelCardListProps = {
   parcels: Option<ParcelCardItemFragment[]>

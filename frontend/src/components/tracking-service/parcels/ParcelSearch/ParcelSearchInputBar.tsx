@@ -15,7 +15,11 @@ export const GET_PARCEL_FOR_SEARCH_BY_ID = gql`
   }
 `
 
-export const ParcelSearchInputBar = () => {
+export const ParcelSearchInputBar = ({
+  placeholder = 'Parcel id'
+}: {
+  placeholder?: string
+}) => {
   const [getParcel, { loading, data, error }] = useGetParcelForSearchLazyQuery()
   const [searchHappened, setSearchHappened] = useState(false)
   const [searchInput, setSearchInput] = useState('')
@@ -68,7 +72,7 @@ export const ParcelSearchInputBar = () => {
         className={'truncate'}
         value={searchInput}
         type='text'
-        placeholder='Id of parcel you want to track'
+        placeholder={placeholder}
         onChange={onInputChange}
       />
       <Button type='submit' onClick={onSearchButtonClick}>

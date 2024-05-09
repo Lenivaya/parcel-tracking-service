@@ -1,4 +1,4 @@
-import { Option } from '@/lib/types'
+import { Option } from '@mobily/ts-belt'
 
 export const fieldChanger = <T extends object, TField>(
   object: Option<T>,

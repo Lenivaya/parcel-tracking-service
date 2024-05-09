@@ -1,4 +1,4 @@
-export type Option<T> = T | null | undefined
+import { Option } from '@mobily/ts-belt'
 
 export const isSome = <T>(x: Option<T>): x is Exclude<T, null | undefined> =>
   x !== null && x !== undefined

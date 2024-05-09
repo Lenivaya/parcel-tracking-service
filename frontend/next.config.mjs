@@ -12,7 +12,9 @@ const nextConfig = {
             'graphql-ws',
             'react-qr-code',
             '@noble/hashes',
-            'ts-pattern'
+            'ts-pattern',
+            '@mobily/ts-belt',
+            'framer-motion',
         ]
     }
 }

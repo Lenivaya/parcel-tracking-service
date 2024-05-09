@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { ParcelPageStatusBlockItemFragment } from '@/lib'
+import { cn, ParcelPageStatusBlockItemFragment } from '@/lib'
 import { isNone } from '@/lib/types'
 import { clsx } from 'clsx'
 import {
@@ -33,7 +33,7 @@ export const ParcelPageStatusBlock: FC<{
 
   return (
     <div
-      className={clsx(
+      className={cn(
         'flex max-md:items-start items-center rounded-md border m-3 p-3 relative max-md:flex-col',
         {
           'border-green-500 bg-green-50':

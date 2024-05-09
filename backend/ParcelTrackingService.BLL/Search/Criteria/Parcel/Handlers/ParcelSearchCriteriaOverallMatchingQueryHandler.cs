@@ -33,6 +33,7 @@ public class ParcelSearchCriteriaOverallMatchingQueryHandler
                         EF.Functions.ILike(p.ParcelInfo.Description, word)
                         || EF.Functions.ILike(p.ParcelInfo.DeliveryDestinationAddress, word)
                         || EF.Functions.ILike(p.ParcelInfo.DeliverySourceAddress, word)
+                        || EF.Functions.ILike(p.Id.ToString(), word)
                         || p.ParcelStatusHistory.Any(parcelStatus =>
                             EF.Functions.ILike(parcelStatus.StatusDescription, word)
                         )
