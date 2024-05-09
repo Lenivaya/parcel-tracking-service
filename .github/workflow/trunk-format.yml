@@ -1,0 +1,58 @@
+name: Style
+
+on:
+  push:
+    branches:
+      - main
+    tags-ignore: [ "v[0-9]+.[0-9]+.[0-9]+*" ]
+    paths:
+      - "**.ts"
+      - "**.tsx"
+      - "**.js"
+      - "**.mjs"
+      - "**.cs"
+      - ".github/workflows/**.yml"
+
+jobs:
+  code_coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v10
+
+      - name: Run the Magic Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@v4
+
+      - name: Setup environment
+        run: nix develop .#ci-format
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install frontend dependencies
+        run: pnpm install
+
+      - name: Format project source code
+        run: nix fmt
+
+      - name: Format frontend source code
+        working-directory: frontend
+        run: pnpm run code:format
+
+      - name: Commit formatting changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Apply formatting changes
+          status_options: "--untracked-files=no"

@@ -57,7 +57,7 @@ const GET_PARCELS = gql`
       pageInfo {
         hasNextPage
         hasPreviousPage
-      }
+        }
     }
   }
 `
@@ -68,7 +68,7 @@ const GET_TRACKED_PARCELS_IDS = gql`
   }
 `
 
-const DEFAULT_PAGE_SIZE = 5
+const DEFAULT_PAGE_SIZE = 5;
 
 export default function ParcelsPage() {
   const [searchCriteria, setSearchCriteria] =
