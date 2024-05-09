@@ -1,12 +1,12 @@
-import { Button, Input, toast } from '@/components/ui'
+import { Button, Input, toast, ToastAction } from '@/components/ui'
 import React, { useCallback, useEffect, useState } from 'react'
 import { gql } from '@apollo/client'
 import { useGetParcelForSearchLazyQuery } from '@/lib'
 import { isNone, isSome } from '@/lib/types'
-import { redirect } from 'next/navigation'
 import { Loader } from '@/components/tracking-service/generic/Loading'
 
 import { trackedParcelsIds } from '@/lib/graphql/ApolloClient/cache/policies/trackedParcelIdsTypePolicy'
+import { Link } from 'next-view-transitions'
 
 export const GET_PARCEL_FOR_SEARCH_BY_ID = gql`
   query GetParcelForSearch($parcelId: UUID!) {
@@ -35,7 +35,15 @@ export const ParcelSearchInputBar = () => {
     }
 
     trackedParcelsIds([...trackedParcelsIds(), parcelId])
-    redirect('/parcels/' + parcelId)
+    toast({
+      title: 'Parcel search',
+      description: `Parcel was added to tracking list`,
+      action: (
+        <Link href={'/parcels/' + parcelId}>
+          <ToastAction altText='Goto schedule to undo'>View</ToastAction>
+        </Link>
+      )
+    })
   }, [data, loading, error, searchHappened])
 
   const onInputChange = useCallback(
@@ -58,13 +66,14 @@ export const ParcelSearchInputBar = () => {
   return (
     <div className='flex w-full max-w-md items-center space-x-2'>
       <Input
+        className={'truncate'}
         value={searchInput}
         type='text'
         placeholder='Id of parcel you want to track'
         onChange={onInputChange}
       />
       <Button type='submit' onClick={onSearchButtonClick}>
-        Search parcel
+        Track parcel
       </Button>
     </div>
   )
