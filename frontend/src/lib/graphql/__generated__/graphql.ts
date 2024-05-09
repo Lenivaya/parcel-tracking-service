@@ -510,6 +510,12 @@ export type PostOfficePatchDtoInput = {
   code?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type PostOfficeSearchCriteriaInput = {
+  matching?: InputMaybe<Scalars['String']['input']>;
+  matchingAddress?: InputMaybe<Scalars['String']['input']>;
+  matchingCode?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type PostOfficeSortInput = {
   address?: InputMaybe<SortEnumType>;
   code?: InputMaybe<SortEnumType>;
@@ -519,23 +525,35 @@ export type PostOfficeSortInput = {
 };
 
 /** A connection to a list of items. */
-export type PostOfficesConnection = {
-  __typename?: 'PostOfficesConnection';
+export type PostOfficesCursorConnection = {
+  __typename?: 'PostOfficesCursorConnection';
   /** A list of edges. */
-  edges?: Maybe<Array<PostOfficesEdge>>;
+  edges?: Maybe<Array<PostOfficesCursorEdge>>;
   /** A flattened list of the nodes. */
   nodes?: Maybe<Array<PostOffice>>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
+  /** Identifies the total count of items in the connection. */
+  totalCount: Scalars['Int']['output'];
 };
 
 /** An edge in a connection. */
-export type PostOfficesEdge = {
-  __typename?: 'PostOfficesEdge';
+export type PostOfficesCursorEdge = {
+  __typename?: 'PostOfficesCursorEdge';
   /** A cursor for use in pagination. */
   cursor: Scalars['String']['output'];
   /** The item at the end of the edge. */
   node: PostOffice;
+};
+
+/** A segment of a collection. */
+export type PostOfficesOffsetCollectionSegment = {
+  __typename?: 'PostOfficesOffsetCollectionSegment';
+  /** A flattened list of the items. */
+  items?: Maybe<Array<PostOffice>>;
+  /** Information to aid in pagination. */
+  pageInfo: CollectionSegmentInfo;
+  totalCount: Scalars['Int']['output'];
 };
 
 export type PushOneMoreParcelStatusError = ParcelNotFoundError;
@@ -559,7 +577,8 @@ export type Query = {
   parcelHistory?: Maybe<ParcelHistoryConnection>;
   parcelsCursor?: Maybe<ParcelsCursorConnection>;
   parcelsOffset?: Maybe<ParcelsOffsetCollectionSegment>;
-  postOffices?: Maybe<PostOfficesConnection>;
+  postOfficesCursor?: Maybe<PostOfficesCursorConnection>;
+  postOfficesOffset?: Maybe<PostOfficesOffsetCollectionSegment>;
   trackedParcelsIds?: Maybe<Array<Scalars['UUID']['output']>>;
 };
 
@@ -617,12 +636,22 @@ export type QueryParcelsOffsetArgs = {
 };
 
 
-export type QueryPostOfficesArgs = {
+export type QueryPostOfficesCursorArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   order?: InputMaybe<Array<PostOfficeSortInput>>;
+  searchCriteria?: InputMaybe<PostOfficeSearchCriteriaInput>;
+  where?: InputMaybe<PostOfficeFilterInput>;
+};
+
+
+export type QueryPostOfficesOffsetArgs = {
+  order?: InputMaybe<Array<PostOfficeSortInput>>;
+  searchCriteria?: InputMaybe<PostOfficeSearchCriteriaInput>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  take?: InputMaybe<Scalars['Int']['input']>;
   where?: InputMaybe<PostOfficeFilterInput>;
 };
 
@@ -754,6 +783,15 @@ export type GetTrackedParcelsIdsQueryVariables = Exact<{ [key: string]: never; }
 
 export type GetTrackedParcelsIdsQuery = { __typename?: 'Query', trackedParcelsIds?: Array<any> | null };
 
+export type GetPostOfficesQueryVariables = Exact<{
+  searchCriteria?: InputMaybe<PostOfficeSearchCriteriaInput>;
+  pageSize: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type GetPostOfficesQuery = { __typename?: 'Query', postOfficesOffset?: { __typename?: 'PostOfficesOffsetCollectionSegment', totalCount: number, items?: Array<{ __typename?: 'PostOffice', id: any, code: string, address: string, updatedAt?: any | null }> | null, pageInfo: { __typename?: 'CollectionSegmentInfo', hasNextPage: boolean, hasPreviousPage: boolean } } | null };
+
 export type ParcelCardItemFragment = { __typename?: 'Parcel', id: any, updatedAt?: any | null, parcelInfo: { __typename?: 'ParcelInfo', id: any, description: string, priceToPay: any, parcelContentPrice: any, deliveryDestinationAddress: string, deliverySourceAddress: string }, currentStatus?: { __typename?: 'ParcelStatus', date: any, statusDescription: string, deliveryStatus?: { __typename?: 'DeliveryStatus', generalDeliveryState: GeneralDeliveryState } | null } | null };
 
 export type ParcelCardStatusItemFragment = { __typename?: 'Parcel', currentStatus?: { __typename?: 'ParcelStatus', statusDescription: string, deliveryStatus?: { __typename?: 'DeliveryStatus', generalDeliveryState: GeneralDeliveryState } | null } | null };
@@ -790,6 +828,8 @@ export type GetParcelForSearchQueryVariables = Exact<{
 
 
 export type GetParcelForSearchQuery = { __typename?: 'Query', parcelById?: { __typename?: 'Parcel', id: any } | null };
+
+export type PostOfficeCardItemFragment = { __typename?: 'PostOffice', id: any, code: string, address: string, updatedAt?: any | null };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
 export type ResolversObject<TObject> = WithIndex<TObject>;
@@ -931,9 +971,11 @@ export type ResolversTypes = ResolversObject<{
   PostOfficeCreateDtoInput: PostOfficeCreateDtoInput;
   PostOfficeFilterInput: PostOfficeFilterInput;
   PostOfficePatchDtoInput: PostOfficePatchDtoInput;
+  PostOfficeSearchCriteriaInput: PostOfficeSearchCriteriaInput;
   PostOfficeSortInput: PostOfficeSortInput;
-  PostOfficesConnection: ResolverTypeWrapper<PostOfficesConnection>;
-  PostOfficesEdge: ResolverTypeWrapper<PostOfficesEdge>;
+  PostOfficesCursorConnection: ResolverTypeWrapper<PostOfficesCursorConnection>;
+  PostOfficesCursorEdge: ResolverTypeWrapper<PostOfficesCursorEdge>;
+  PostOfficesOffsetCollectionSegment: ResolverTypeWrapper<PostOfficesOffsetCollectionSegment>;
   PushOneMoreParcelStatusError: ResolverTypeWrapper<ResolversUnionTypes<ResolversTypes>['PushOneMoreParcelStatusError']>;
   PushOneMoreParcelStatusInput: PushOneMoreParcelStatusInput;
   PushOneMoreParcelStatusPayload: ResolverTypeWrapper<Omit<PushOneMoreParcelStatusPayload, 'errors'> & { errors?: Maybe<Array<ResolversTypes['PushOneMoreParcelStatusError']>> }>;
@@ -1012,9 +1054,11 @@ export type ResolversParentTypes = ResolversObject<{
   PostOfficeCreateDtoInput: PostOfficeCreateDtoInput;
   PostOfficeFilterInput: PostOfficeFilterInput;
   PostOfficePatchDtoInput: PostOfficePatchDtoInput;
+  PostOfficeSearchCriteriaInput: PostOfficeSearchCriteriaInput;
   PostOfficeSortInput: PostOfficeSortInput;
-  PostOfficesConnection: PostOfficesConnection;
-  PostOfficesEdge: PostOfficesEdge;
+  PostOfficesCursorConnection: PostOfficesCursorConnection;
+  PostOfficesCursorEdge: PostOfficesCursorEdge;
+  PostOfficesOffsetCollectionSegment: PostOfficesOffsetCollectionSegment;
   PushOneMoreParcelStatusError: ResolversUnionTypes<ResolversParentTypes>['PushOneMoreParcelStatusError'];
   PushOneMoreParcelStatusInput: PushOneMoreParcelStatusInput;
   PushOneMoreParcelStatusPayload: Omit<PushOneMoreParcelStatusPayload, 'errors'> & { errors?: Maybe<Array<ResolversParentTypes['PushOneMoreParcelStatusError']>> };
@@ -1229,16 +1273,24 @@ export type PostOfficeResolvers<ContextType = any, ParentType extends ResolversP
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type PostOfficesConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['PostOfficesConnection'] = ResolversParentTypes['PostOfficesConnection']> = ResolversObject<{
-  edges?: Resolver<Maybe<Array<ResolversTypes['PostOfficesEdge']>>, ParentType, ContextType>;
+export type PostOfficesCursorConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['PostOfficesCursorConnection'] = ResolversParentTypes['PostOfficesCursorConnection']> = ResolversObject<{
+  edges?: Resolver<Maybe<Array<ResolversTypes['PostOfficesCursorEdge']>>, ParentType, ContextType>;
   nodes?: Resolver<Maybe<Array<ResolversTypes['PostOffice']>>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type PostOfficesEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['PostOfficesEdge'] = ResolversParentTypes['PostOfficesEdge']> = ResolversObject<{
+export type PostOfficesCursorEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['PostOfficesCursorEdge'] = ResolversParentTypes['PostOfficesCursorEdge']> = ResolversObject<{
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   node?: Resolver<ResolversTypes['PostOffice'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type PostOfficesOffsetCollectionSegmentResolvers<ContextType = any, ParentType extends ResolversParentTypes['PostOfficesOffsetCollectionSegment'] = ResolversParentTypes['PostOfficesOffsetCollectionSegment']> = ResolversObject<{
+  items?: Resolver<Maybe<Array<ResolversTypes['PostOffice']>>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['CollectionSegmentInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -1259,7 +1311,8 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   parcelHistory?: Resolver<Maybe<ResolversTypes['ParcelHistoryConnection']>, ParentType, ContextType, RequireFields<QueryParcelHistoryArgs, 'parcelId'>>;
   parcelsCursor?: Resolver<Maybe<ResolversTypes['ParcelsCursorConnection']>, ParentType, ContextType, Partial<QueryParcelsCursorArgs>>;
   parcelsOffset?: Resolver<Maybe<ResolversTypes['ParcelsOffsetCollectionSegment']>, ParentType, ContextType, Partial<QueryParcelsOffsetArgs>>;
-  postOffices?: Resolver<Maybe<ResolversTypes['PostOfficesConnection']>, ParentType, ContextType, Partial<QueryPostOfficesArgs>>;
+  postOfficesCursor?: Resolver<Maybe<ResolversTypes['PostOfficesCursorConnection']>, ParentType, ContextType, Partial<QueryPostOfficesCursorArgs>>;
+  postOfficesOffset?: Resolver<Maybe<ResolversTypes['PostOfficesOffsetCollectionSegment']>, ParentType, ContextType, Partial<QueryPostOfficesOffsetArgs>>;
   trackedParcelsIds?: Resolver<Maybe<Array<ResolversTypes['UUID']>>, ParentType, ContextType>;
 }>;
 
@@ -1326,8 +1379,9 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   ParcelsCursorEdge?: ParcelsCursorEdgeResolvers<ContextType>;
   ParcelsOffsetCollectionSegment?: ParcelsOffsetCollectionSegmentResolvers<ContextType>;
   PostOffice?: PostOfficeResolvers<ContextType>;
-  PostOfficesConnection?: PostOfficesConnectionResolvers<ContextType>;
-  PostOfficesEdge?: PostOfficesEdgeResolvers<ContextType>;
+  PostOfficesCursorConnection?: PostOfficesCursorConnectionResolvers<ContextType>;
+  PostOfficesCursorEdge?: PostOfficesCursorEdgeResolvers<ContextType>;
+  PostOfficesOffsetCollectionSegment?: PostOfficesOffsetCollectionSegmentResolvers<ContextType>;
   PushOneMoreParcelStatusError?: PushOneMoreParcelStatusErrorResolvers<ContextType>;
   PushOneMoreParcelStatusPayload?: PushOneMoreParcelStatusPayloadResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
@@ -1433,6 +1487,14 @@ export const ParcelPageItemFragmentDoc = gql`
 ${ParcelQrCodeDrawerItemFragmentDoc}
 ${ParcelDeliveryPathItemFragmentDoc}
 ${ParcelProgressItemFragmentDoc}`;
+export const PostOfficeCardItemFragmentDoc = gql`
+    fragment PostOfficeCardItem on PostOffice {
+  id
+  code
+  address
+  updatedAt
+}
+    `;
 export const GetParcelsDocument = gql`
     query GetParcels($trackedParcelsIds: [UUID]!, $searchCriteria: ParcelSearchCriteriaInput, $pageSize: Int!, $offset: Int) {
   parcelsOffset(
@@ -1525,6 +1587,59 @@ export type GetTrackedParcelsIdsQueryHookResult = ReturnType<typeof useGetTracke
 export type GetTrackedParcelsIdsLazyQueryHookResult = ReturnType<typeof useGetTrackedParcelsIdsLazyQuery>;
 export type GetTrackedParcelsIdsSuspenseQueryHookResult = ReturnType<typeof useGetTrackedParcelsIdsSuspenseQuery>;
 export type GetTrackedParcelsIdsQueryResult = Apollo.QueryResult<GetTrackedParcelsIdsQuery, GetTrackedParcelsIdsQueryVariables>;
+export const GetPostOfficesDocument = gql`
+    query GetPostOffices($searchCriteria: PostOfficeSearchCriteriaInput, $pageSize: Int!, $offset: Int) {
+  postOfficesOffset(
+    searchCriteria: $searchCriteria
+    take: $pageSize
+    skip: $offset
+  ) {
+    items {
+      ...PostOfficeCardItem
+    }
+    totalCount
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+    }
+  }
+}
+    ${PostOfficeCardItemFragmentDoc}`;
+
+/**
+ * __useGetPostOfficesQuery__
+ *
+ * To run a query within a React component, call `useGetPostOfficesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPostOfficesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPostOfficesQuery({
+ *   variables: {
+ *      searchCriteria: // value for 'searchCriteria'
+ *      pageSize: // value for 'pageSize'
+ *      offset: // value for 'offset'
+ *   },
+ * });
+ */
+export function useGetPostOfficesQuery(baseOptions: Apollo.QueryHookOptions<GetPostOfficesQuery, GetPostOfficesQueryVariables> & ({ variables: GetPostOfficesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPostOfficesQuery, GetPostOfficesQueryVariables>(GetPostOfficesDocument, options);
+      }
+export function useGetPostOfficesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPostOfficesQuery, GetPostOfficesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPostOfficesQuery, GetPostOfficesQueryVariables>(GetPostOfficesDocument, options);
+        }
+export function useGetPostOfficesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetPostOfficesQuery, GetPostOfficesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetPostOfficesQuery, GetPostOfficesQueryVariables>(GetPostOfficesDocument, options);
+        }
+export type GetPostOfficesQueryHookResult = ReturnType<typeof useGetPostOfficesQuery>;
+export type GetPostOfficesLazyQueryHookResult = ReturnType<typeof useGetPostOfficesLazyQuery>;
+export type GetPostOfficesSuspenseQueryHookResult = ReturnType<typeof useGetPostOfficesSuspenseQuery>;
+export type GetPostOfficesQueryResult = Apollo.QueryResult<GetPostOfficesQuery, GetPostOfficesQueryVariables>;
 export const GetParcelForPageDocument = gql`
     query GetParcelForPage($parcelId: UUID!) {
   parcelById(parcelId: $parcelId) {
@@ -1789,23 +1904,30 @@ export type PostOfficeFieldPolicy = {
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	updatedAt?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type PostOfficesConnectionKeySpecifier = ('edges' | 'nodes' | 'pageInfo' | PostOfficesConnectionKeySpecifier)[];
-export type PostOfficesConnectionFieldPolicy = {
+export type PostOfficesCursorConnectionKeySpecifier = ('edges' | 'nodes' | 'pageInfo' | 'totalCount' | PostOfficesCursorConnectionKeySpecifier)[];
+export type PostOfficesCursorConnectionFieldPolicy = {
 	edges?: FieldPolicy<any> | FieldReadFunction<any>,
 	nodes?: FieldPolicy<any> | FieldReadFunction<any>,
-	pageInfo?: FieldPolicy<any> | FieldReadFunction<any>
+	pageInfo?: FieldPolicy<any> | FieldReadFunction<any>,
+	totalCount?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type PostOfficesEdgeKeySpecifier = ('cursor' | 'node' | PostOfficesEdgeKeySpecifier)[];
-export type PostOfficesEdgeFieldPolicy = {
+export type PostOfficesCursorEdgeKeySpecifier = ('cursor' | 'node' | PostOfficesCursorEdgeKeySpecifier)[];
+export type PostOfficesCursorEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type PostOfficesOffsetCollectionSegmentKeySpecifier = ('items' | 'pageInfo' | 'totalCount' | PostOfficesOffsetCollectionSegmentKeySpecifier)[];
+export type PostOfficesOffsetCollectionSegmentFieldPolicy = {
+	items?: FieldPolicy<any> | FieldReadFunction<any>,
+	pageInfo?: FieldPolicy<any> | FieldReadFunction<any>,
+	totalCount?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type PushOneMoreParcelStatusPayloadKeySpecifier = ('errors' | 'parcel' | PushOneMoreParcelStatusPayloadKeySpecifier)[];
 export type PushOneMoreParcelStatusPayloadFieldPolicy = {
 	errors?: FieldPolicy<any> | FieldReadFunction<any>,
 	parcel?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type QueryKeySpecifier = ('currentParcelStatus' | 'deliveryStatuses' | 'parcelById' | 'parcelHistory' | 'parcelsCursor' | 'parcelsOffset' | 'postOffices' | 'trackedParcelsIds' | QueryKeySpecifier)[];
+export type QueryKeySpecifier = ('currentParcelStatus' | 'deliveryStatuses' | 'parcelById' | 'parcelHistory' | 'parcelsCursor' | 'parcelsOffset' | 'postOfficesCursor' | 'postOfficesOffset' | 'trackedParcelsIds' | QueryKeySpecifier)[];
 export type QueryFieldPolicy = {
 	currentParcelStatus?: FieldPolicy<any> | FieldReadFunction<any>,
 	deliveryStatuses?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -1813,7 +1935,8 @@ export type QueryFieldPolicy = {
 	parcelHistory?: FieldPolicy<any> | FieldReadFunction<any>,
 	parcelsCursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	parcelsOffset?: FieldPolicy<any> | FieldReadFunction<any>,
-	postOffices?: FieldPolicy<any> | FieldReadFunction<any>,
+	postOfficesCursor?: FieldPolicy<any> | FieldReadFunction<any>,
+	postOfficesOffset?: FieldPolicy<any> | FieldReadFunction<any>,
 	trackedParcelsIds?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type SubscriptionKeySpecifier = ('deliveryStatusCreated' | 'deliveryStatusDeleted' | 'deliveryStatusUpdated' | 'parcelStatusUpdated' | 'postOfficeCreated' | 'postOfficeDeleted' | 'postOfficeUpdated' | SubscriptionKeySpecifier)[];
@@ -1940,13 +2063,17 @@ export type StrictTypedTypePolicies = {
 		keyFields?: false | PostOfficeKeySpecifier | (() => undefined | PostOfficeKeySpecifier),
 		fields?: PostOfficeFieldPolicy,
 	},
-	PostOfficesConnection?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | PostOfficesConnectionKeySpecifier | (() => undefined | PostOfficesConnectionKeySpecifier),
-		fields?: PostOfficesConnectionFieldPolicy,
+	PostOfficesCursorConnection?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | PostOfficesCursorConnectionKeySpecifier | (() => undefined | PostOfficesCursorConnectionKeySpecifier),
+		fields?: PostOfficesCursorConnectionFieldPolicy,
 	},
-	PostOfficesEdge?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | PostOfficesEdgeKeySpecifier | (() => undefined | PostOfficesEdgeKeySpecifier),
-		fields?: PostOfficesEdgeFieldPolicy,
+	PostOfficesCursorEdge?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | PostOfficesCursorEdgeKeySpecifier | (() => undefined | PostOfficesCursorEdgeKeySpecifier),
+		fields?: PostOfficesCursorEdgeFieldPolicy,
+	},
+	PostOfficesOffsetCollectionSegment?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | PostOfficesOffsetCollectionSegmentKeySpecifier | (() => undefined | PostOfficesOffsetCollectionSegmentKeySpecifier),
+		fields?: PostOfficesOffsetCollectionSegmentFieldPolicy,
 	},
 	PushOneMoreParcelStatusPayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | PushOneMoreParcelStatusPayloadKeySpecifier | (() => undefined | PushOneMoreParcelStatusPayloadKeySpecifier),

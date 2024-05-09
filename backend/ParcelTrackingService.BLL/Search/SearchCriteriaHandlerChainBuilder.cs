@@ -1,55 +1,34 @@
-using ParcelTrackingService.DAL;
-using ParcelTrackingService.DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 using ParcelTrackingService.WebCommon.Contracts;
-using ParcelTrackingService.WebCommon.Search.Criteria.Parcel;
 
 namespace ParcelTrackingService.WebCommon.Search;
 
-public class SearchCriteriaHandlerChainBuilder
-    : IChainable<
-        ISearchCriteriaQueryHandler<ParcelTrackingServiceContext, ParcelSearchCriteria, Parcel>
-    >
+public class SearchCriteriaHandlerChainBuilder<TContext, TCriteria, TEntity>
+    : IChainable<ISearchCriteriaQueryHandler<TContext, TCriteria, TEntity>>
+    where TContext : DbContext
+    where TCriteria : class
+    where TEntity : class
 {
-    public ISearchCriteriaQueryHandler<
-        ParcelTrackingServiceContext,
-        ParcelSearchCriteria,
-        Parcel
-    >? Next { get; set; }
+    public ISearchCriteriaQueryHandler<TContext, TCriteria, TEntity>? Next { get; set; }
 
-    public ISearchCriteriaQueryHandler<
-        ParcelTrackingServiceContext,
-        ParcelSearchCriteria,
-        Parcel
-    > SetNextHandler(
-        ISearchCriteriaQueryHandler<ParcelTrackingServiceContext, ParcelSearchCriteria, Parcel> next
+    public ISearchCriteriaQueryHandler<TContext, TCriteria, TEntity> SetNextHandler(
+        ISearchCriteriaQueryHandler<TContext, TCriteria, TEntity> next
     )
     {
         Next = next;
         return Next;
     }
 
-    public ISearchCriteriaQueryHandler<
-        ParcelTrackingServiceContext,
-        ParcelSearchCriteria,
-        Parcel
-    > addNextHandler(
-        ISearchCriteriaQueryHandler<ParcelTrackingServiceContext, ParcelSearchCriteria, Parcel> next
+    public ISearchCriteriaQueryHandler<TContext, TCriteria, TEntity> AddNextHandler(
+        ISearchCriteriaQueryHandler<TContext, TCriteria, TEntity> next
     )
     {
         Next = next;
         return Next;
     }
 
-    public ISearchCriteriaQueryHandler<
-        ParcelTrackingServiceContext,
-        ParcelSearchCriteria,
-        Parcel
-    > BuildChain(
-        ISearchCriteriaQueryHandler<
-            ParcelTrackingServiceContext,
-            ParcelSearchCriteria,
-            Parcel
-        >[] handlers
+    public ISearchCriteriaQueryHandler<TContext, TCriteria, TEntity> BuildChain(
+        ISearchCriteriaQueryHandler<TContext, TCriteria, TEntity>[] handlers
     )
     {
         if (handlers.Length == 0)

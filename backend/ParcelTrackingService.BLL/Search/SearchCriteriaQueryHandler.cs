@@ -28,7 +28,7 @@ public abstract class SearchCriteriaQueryHandler<TContext, TSearchCriteria, TQue
         TContext,
         TSearchCriteria,
         TQueryResult
-    > addNextHandler(ISearchCriteriaQueryHandler<TContext, TSearchCriteria, TQueryResult> next)
+    > AddNextHandler(ISearchCriteriaQueryHandler<TContext, TSearchCriteria, TQueryResult> next)
     {
         Next = next;
         return Next;

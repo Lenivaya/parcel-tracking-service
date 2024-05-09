@@ -4,7 +4,6 @@ import { gql } from '@apollo/client'
 import { useGetParcelForSearchLazyQuery } from '@/lib'
 import { isNone, isSome } from '@/lib/types'
 import { Loader } from '@/components/tracking-service/generic/Loading'
-
 import { trackedParcelsIds } from '@/lib/graphql/ApolloClient/cache/policies/trackedParcelIdsTypePolicy'
 import { Link } from 'next-view-transitions'
 
