@@ -98,12 +98,16 @@ export const ParcelPage: FC<ParcelPageProps> = ({
           </div>
 
           <AppTooltip text={parcel.parcelInfo.description}>
-            <p className={'text-center z-10'}>
+            <p
+              className={
+                'mx-auto text-center line-clamp-1 z-10 max-md:max-w-[11em]'
+              }
+            >
               {truncate(parcel.parcelInfo.description, 70)}
             </p>
           </AppTooltip>
 
-          <div className='absolute m-auto right-0 top-1'>
+          <div className='absolute m-auto right-0 top-0.5'>
             <AppTooltip text={'Create qr code for the parcel'}>
               <ParcelQrCodeDrawer {...parcel} />
             </AppTooltip>
@@ -114,6 +118,10 @@ export const ParcelPage: FC<ParcelPageProps> = ({
       <Separator />
 
       <CardContent className={'mt-5'}>
+        <p>{parcel.parcelInfo.description}</p>
+
+        <Separator className='my-5' />
+
         <AppTooltip text={currentStatus?.statusDescription ?? ''}>
           <div className='m-10'>
             <ParcelDeliveryProgress {...parcel} />

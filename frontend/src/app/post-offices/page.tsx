@@ -90,7 +90,7 @@ export default function PostOfficesPage() {
 
   return (
     <main className='relative flex min-h-[100vh] w-full flex-col gap-5 items-center justify-between max-md:pt-5 pt-7'>
-      <div className={'max-lg:w-full w-5/6'}>
+      <div className={'max-lg:w-full w-5/6 pr-2 pl-2'}>
         <SearchBar
           search={searchCriteria.matching || ''}
           handleSearch={onInputFieldChange('matching')}
@@ -98,7 +98,7 @@ export default function PostOfficesPage() {
         />
       </div>
 
-      <div className='w-max min-h-[90vh] flex justify-start pb-5'>
+      <div className='w-full min-h-[90vh] flex justify-center pb-5'>
         <Suspense fallback={<Loader />}>
           <PostOfficesPageCardListSuspense
             searchCriteria={searchCriteria}

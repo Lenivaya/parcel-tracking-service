@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 import { PaginationNavButton } from '@/components/tracking-service/generic/pagination/OffsetPagination/PaginationNavButton'
 import { IOffsetPagination } from '@/components/tracking-service/generic/pagination/OffsetPagination/IOffsetPagination'
+import { cn } from '@/lib'
 
 export interface IOffsetPaginationProps {
   totalCount: number
@@ -68,7 +69,7 @@ export const OffsetPagination: FC<IOffsetPaginationProps> = ({
         <button
           key={pageIndex}
           disabled={isThreeDotsButton}
-          className={clsx(
+          className={cn(
             'min-w-[5em] max-w-[10em] rounded-xl bg-black/30 p-5 shadow-md hover:bg-white hover:text-black dark:bg-neutral-800 dark:hover:bg-neutral-500',
             {
               '!bg-black text-white hover:text-white':

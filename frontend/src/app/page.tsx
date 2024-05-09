@@ -13,10 +13,10 @@ import { ParcelSearchInputBar } from '@/components/tracking-service/parcels'
 
 export default function Home() {
   return (
-    <main className='flex min-h-screen flex-col items-center justify-center max-md:p-2 p-10'>
-      <ParcelSearchInputBar />
+    <main className='flex h-dvh flex-col items-center max-md:p-2 p-10'>
+      <ParcelSearchInputBar placeholder={'Id of parcel you want to track'} />
 
-      <div className='w-full justify-center m-auto flex gap-10 flex-row flex-wrap'>
+      <div className='w-full justify-center mx-auto my-5 flex gap-5 flex-row flex-wrap'>
         <HomeCard
           title='Parcels tracker'
           description='Track your parcels'

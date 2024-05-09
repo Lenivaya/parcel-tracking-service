@@ -6,12 +6,14 @@ export const SearchBar: FC<{
   search: string
   handleSearch: (search: string) => void
   placeholder?: string
-}> = ({ search, handleSearch, placeholder }) => {
+  debounceDelay?: number
+}> = ({ search, handleSearch, placeholder, debounceDelay = 300 }) => {
   const [input, setInput] = useState(search)
 
-  const changeHandlerDebounced = useCallback(F.debounce(handleSearch, 300), [
-    handleSearch
-  ])
+  const changeHandlerDebounced = useCallback(
+    F.debounce(handleSearch, debounceDelay),
+    [handleSearch, debounceDelay]
+  )
 
   useEffect(() => {
     changeHandlerDebounced(input)

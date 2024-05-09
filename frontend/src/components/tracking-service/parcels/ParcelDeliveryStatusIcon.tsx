@@ -1,10 +1,9 @@
-import { Option } from '@/lib/types'
-import { GeneralDeliveryState } from '@/lib'
+import { cn, GeneralDeliveryState } from '@/lib'
 import { AppTooltip } from '@/components/tracking-service/generic'
 import { motion } from 'framer-motion'
 import { PackageIcon } from 'lucide-react'
-import { clsx } from 'clsx'
 import React from 'react'
+import { Option } from '@mobily/ts-belt'
 
 export function ParcelDeliveryStatusIcon(props: {
   currentStatus: Option<{
@@ -22,7 +21,7 @@ export function ParcelDeliveryStatusIcon(props: {
         transition={{ type: 'spring', duration: 0.8 }}
       >
         <PackageIcon
-          className={clsx('my-auto cursor-pointer', {
+          className={cn('my-auto cursor-pointer', {
             'text-green-500':
               props.currentStatus?.deliveryStatus?.generalDeliveryState ===
               'DELIVERED',

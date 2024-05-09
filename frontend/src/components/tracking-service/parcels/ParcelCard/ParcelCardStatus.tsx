@@ -1,5 +1,5 @@
 import type { FC } from 'react'
-import { ParcelCardStatusItemFragment } from '@/lib'
+import { cn, ParcelCardStatusItemFragment } from '@/lib'
 import { isNone } from '@/lib/types'
 import { clsx } from 'clsx'
 import { gql } from '@apollo/client'
@@ -22,7 +22,7 @@ export const ParcelCardStatus: FC<ParcelCardStatusItemFragment> = ({
 
   return (
     <div
-      className={clsx('flex items-center space-x-4 rounded-md border m-3 p-3', {
+      className={cn('flex items-center space-x-4 rounded-md border m-3 p-3', {
         'border-green-500 bg-green-50':
           currentStatus?.deliveryStatus?.generalDeliveryState === 'DELIVERED',
         'border-red-500 bg-red-50':

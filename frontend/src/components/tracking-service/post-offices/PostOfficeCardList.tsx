@@ -1,7 +1,8 @@
 import { FC } from 'react'
-import { isNone, Option } from '@/lib/types'
+import { isNone } from '@/lib/types'
 import { PostOfficeCardItemFragment } from '@/lib'
 import { PostOfficeCard } from '@/components/tracking-service/post-offices/PostOfficeCard/PostOfficeCard'
+import { Option } from '@mobily/ts-belt'
 
 export const PostOfficeCardList: FC<{
   postOffices: Option<PostOfficeCardItemFragment[]>
