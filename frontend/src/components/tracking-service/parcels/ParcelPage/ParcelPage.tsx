@@ -14,16 +14,14 @@ import { truncate } from '@/lib/strings'
 import {
   ParcelCardPrice,
   ParcelDeliveryPath,
-  ParcelDeliveryProgress
+  ParcelDeliveryProgress,
+  ParcelDeliveryStatusIcon
 } from '@/components/tracking-service/parcels'
 import { ParcelPageItemFragment } from '@/lib'
-import { PackageIcon } from 'lucide-react'
-import { clsx } from 'clsx'
 import {
   ParcelPageStatusesList,
   ParcelQrCodeDrawer
 } from '@/components/tracking-service/parcels/ParcelPage'
-import { isNone, Option } from '@/lib/types'
 
 const GET_PARCEL_FOR_PAGE = gql`
   query GetParcelForPage($parcelId: UUID!) {
@@ -88,18 +86,7 @@ export const ParcelPage: FC<ParcelPageProps> = ({
       <CardHeader>
         <CardTitle className={'relative'}>
           <div className='absolute left-0 flex justify-center gap-3 my-auto'>
-            <AppTooltip text={currentStatus?.statusDescription ?? ''}>
-              <PackageIcon
-                className={clsx('my-auto hover:scale-150 cursor-pointer', {
-                  'text-green-500':
-                    currentStatus?.deliveryStatus?.generalDeliveryState ===
-                    'DELIVERED',
-                  'text-red-500':
-                    currentStatus?.deliveryStatus?.generalDeliveryState ===
-                    'RETURNED'
-                })}
-              />
-            </AppTooltip>
+            <ParcelDeliveryStatusIcon currentStatus={currentStatus} />
 
             <AppTooltip text={parcel.id}>
               <button className={'my-auto'} onClick={handleCopyParcelId}>

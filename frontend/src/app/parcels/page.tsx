@@ -37,7 +37,6 @@ import {
   SheetTitle,
   SheetTrigger
 } from '@/components/ui/sheet'
-
 import { motion } from 'framer-motion'
 
 const GET_PARCELS = gql`
@@ -131,14 +130,21 @@ export default function ParcelsPage() {
         </Suspense>
       </div>
 
-      <div className='sticky bottom-0 mt-3 h-[5vh] w-full overflow-hidden bg-neutral-100/80 transition-all hover:h-[12vh] dark:bg-transparent/60'>
+      <motion.div
+        className='sticky bottom-0 mt-3 h-[5vh] w-full overflow-hidden bg-neutral-100/80 transition-all hover:h-[12vh] dark:bg-transparent/60'
+        whileHover={{
+          height: '12vh',
+          type: 'spring',
+          speed: 1.5
+        }}
+      >
         <OffsetPagination
           {...paginationProps}
           alwaysShowPagination
           pagination={pagination}
           setPagination={setPagination}
         />
-      </div>
+      </motion.div>
 
       <motion.div
         className='fixed z-50 bottom-[90px] -right-10 focus:ring-0 focus:ring-transparent focus:ring-offset-0'

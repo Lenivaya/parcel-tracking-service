@@ -7,9 +7,9 @@ import {
   CardTitle,
   Separator
 } from '@/components/ui'
-import type { FC } from 'react'
+import React, { FC } from 'react'
 import { ParcelCardItemFragment } from '@/lib'
-import { Clock, PackageIcon } from 'lucide-react'
+import { Clock } from 'lucide-react'
 import { toast } from '@/components/ui/use-toast'
 import { truncate } from '@/lib/strings'
 import { AppTooltip } from '@/components/tracking-service/generic/AppTooltip'
@@ -17,11 +17,11 @@ import { dateFormatterWithHours } from '@/components/tracking-service/generic/da
 import {
   ParcelCardPrice,
   ParcelCardStatus,
-  ParcelDeliveryPath
-} from '@/components/tracking-service/parcels/ParcelCard'
-import { clsx } from 'clsx'
+  ParcelDeliveryPath,
+  ParcelDeliveryProgress,
+  ParcelDeliveryStatusIcon
+} from '@/components/tracking-service/parcels'
 import { Link } from 'next-view-transitions'
-import { ParcelDeliveryProgress } from '@/components/tracking-service/parcels'
 
 export const ParcelCardFragment = gql`
   fragment ParcelCardItem on Parcel {
@@ -64,16 +64,7 @@ export const ParcelCard: FC<ParcelCardProps> = ({ parcel }) => {
         <CardTitle>
           <Link href={'parcels/' + parcel.id}>
             <div className={'flex flex-row gap-3 text-md'}>
-              <PackageIcon
-                className={clsx('hover:scale-150 cursor-pointer', {
-                  'text-green-500':
-                    parcel.currentStatus?.deliveryStatus
-                      ?.generalDeliveryState === 'DELIVERED',
-                  'text-red-500':
-                    parcel.currentStatus?.deliveryStatus
-                      ?.generalDeliveryState === 'RETURNED'
-                })}
-              />
+              <ParcelDeliveryStatusIcon currentStatus={parcel.currentStatus} />
               <AppTooltip text={parcel.parcelInfo.description}>
                 <p>{truncate(parcel.parcelInfo.description, 20)}</p>
               </AppTooltip>
