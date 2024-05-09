@@ -17,5 +17,4 @@ public class User : BaseEntity
     [Column("password_hash")]
     [StringLength(60)]
     public string PasswordHash { get; set; } = null!;
-
 }
