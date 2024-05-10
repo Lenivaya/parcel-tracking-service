@@ -1,6 +1,5 @@
 import { gql } from '@apollo/client'
 import {
-  GetParcelForPageDocument,
   useGetParcelForPageSuspenseQuery,
   useParcelStatusUpdatesSubscription
 } from '@/lib'
@@ -16,12 +15,13 @@ const PARCEL_STATUS_UPDATES_SUBSCRIPTION = gql`
     }
   }
 `
+
 export const ParcelPageWithSubscription = ({
   parcelId
 }: {
   parcelId: string
 }) => {
-  const { data: queryData } = useGetParcelForPageSuspenseQuery({
+  const { data: queryData, refetch } = useGetParcelForPageSuspenseQuery({
     variables: { parcelId },
     fetchPolicy: 'cache-and-network'
   })
@@ -29,22 +29,8 @@ export const ParcelPageWithSubscription = ({
 
   useParcelStatusUpdatesSubscription({
     variables: { parcelId },
-    onData: ({ data: { data: subscriptionData }, client: { cache } }) => {
-      const newStatus = subscriptionData?.parcelStatusUpdated
-      if (isNone(newStatus)) return
-
-      cache.writeQuery({
-        query: GetParcelForPageDocument,
-        data: {
-          parcelById: {
-            ...parcel,
-            parcelStatusHistory: [
-              newStatus,
-              ...(parcel?.parcelStatusHistory ?? [])
-            ]
-          }
-        }
-      })
+    onData: () => {
+      refetch()
     }
   })
 
