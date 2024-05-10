@@ -1,6 +1,6 @@
 using ParcelTrackingService.DAL.Entities;
 
-namespace ParcelTrackingService.WebCommon.DTO;
+namespace ParcelTrackingService.BLL.DTO;
 
 public record DeliveryStatusCreateDto(string StatusName, GeneralDeliveryState GeneralDeliveryState);
 

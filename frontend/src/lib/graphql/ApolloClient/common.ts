@@ -2,8 +2,11 @@
 import { loadDevMessages, loadErrorMessages } from '@apollo/client/dev'
 import { setContext } from '@apollo/client/link/context'
 import { createPersistedQueryLink } from '@apollo/client/link/persisted-queries'
-import { sha256 } from '@noble/hashes/sha256'
 import { isBrowser } from 'browser-or-node'
+import { sha256 as sha256Nobel } from '@noble/hashes/sha256'
+import { toString as hashToString } from 'uint8arrays/to-string'
+
+const sha256 = async (input: string) => hashToString(sha256Nobel(input), 'hex')
 
 export const HTTP_ENDPOINT = process.env.NEXT_PUBLIC_API_URL
 export const WS_ENDPOINT = process.env.NEXT_PUBLIC_API_WS_URL ?? ''
@@ -20,7 +23,8 @@ export const authLink = setContext((_, { headers, ...context }) => {
 })
 
 export const persistedQueryLink = createPersistedQueryLink({
-  sha256: (args) => sha256(args).toString()
+  sha256,
+  useGETForHashedQueries: true
 })
 
 if (process.env.NODE_ENV === 'development') {

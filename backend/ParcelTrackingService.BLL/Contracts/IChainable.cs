@@ -1,4 +1,4 @@
-namespace ParcelTrackingService.WebCommon.Contracts;
+namespace ParcelTrackingService.BLL.Contracts;
 
 public interface IChainable<TChainElement>
 {

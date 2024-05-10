@@ -1,7 +1,6 @@
 services:
   db:
     container_name: parcel-tracking-service-db
-    #    image: postgres:16-alpine
     image: groonga/pgroonga:latest-alpine-16
     ports:
       - "5432:5432"
@@ -15,6 +14,7 @@ services:
       - parcel-tracking-service-db-data:/var/lib/postgresql/data
     networks:
       - parcel-tracking-service-network
+  
   redis:
     container_name: parcel-tracking-service-redis
     image: redis:7.2.4-alpine
@@ -24,8 +24,74 @@ services:
       - "6379"
     networks:
       - parcel-tracking-service-network
+  
+  db-migrations:
+    profiles: [ 'migrations' ]
+    build:
+      context: backend
+      dockerfile: ParcelTrackingService.GraphQL/db-migrations.Dockerfile
+    networks:
+      - parcel-tracking-service-network
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
+      - ConnectionStrings__DefaultConnection=Server=db;Username=parcel_tracking_service;Database=parcel_tracking_service;Password=${POSTGRES_PASSWORD}
+      - ConnectionStrings__Redis=redis:6379
+    depends_on:
+      - db
+  
+  parcel-tracking-graphql-api:
+    container_name: parcel-tracking-service-backend
+    ports:
+      - "5157:80"
+    expose:
+      - "80"
+    build:
+      context: backend
+      dockerfile: ParcelTrackingService.GraphQL/Dockerfile
+    networks:
+      - parcel-tracking-service-network
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
+      - ConnectionStrings__DefaultConnection=Server=db;Username=parcel_tracking_service;Database=parcel_tracking_service;Password=${POSTGRES_PASSWORD}
+      - ConnectionStrings__Redis=redis:6379
+    depends_on:
+      - redis
+      - db
+  
+  parcel-tracking-frontend:
+    container_name: parcel-tracking-service-frontend
+    build:
+      context: frontend
+      dockerfile: local.dev.Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - parcel-tracking-service-network
+    depends_on:
+      - parcel-tracking-graphql-api
+  
+  nginx:
+    container_name: parcel-tracking-service-nginx
+    image: nginx:stable-alpine
+    volumes:
+      - ./nginx/:/etc/nginx/:ro
+    ports:
+      - 80:80
+      - 443:443
+      - 8443:8443
+    networks:
+      - parcel-tracking-service-network
+    depends_on:
+      - parcel-tracking-graphql-api
+      - parcel-tracking-frontend
+
 volumes:
   parcel-tracking-service-db-data:
+
 networks:
   parcel-tracking-service-network:
     driver: bridge

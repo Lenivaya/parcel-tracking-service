@@ -3,15 +3,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
+    output: "standalone",
     experimental: {
         optimizePackageImports: [
             '@apollo/client',
             '@apollo/experimental-nextjs-app-support',
+            '@apollo/persisted-query-lists',
             'apollo3-cache-persist',
             'graphql',
             'graphql-ws',
             'react-qr-code',
             '@noble/hashes',
+            'uint8arrays',
             'ts-pattern',
             '@mobily/ts-belt',
             'framer-motion',

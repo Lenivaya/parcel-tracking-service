@@ -2,10 +2,10 @@ using HotChocolate;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using ParcelTrackingService.BLL.Exceptions;
 using ParcelTrackingService.DAL.Contracts;
-using ParcelTrackingService.WebCommon.Exceptions;
 
-namespace ParcelTrackingService.WebCommon.Services;
+namespace ParcelTrackingService.BLL.Services;
 
 public delegate IEntityRepository<TEntity, TPrimaryKey> GetRepositoryFunc<TEntity, in TPrimaryKey>(
     IParcelTrackingServiceUnitOfWork unitOfWork

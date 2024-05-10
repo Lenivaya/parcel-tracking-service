@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using ParcelTrackingService.BLL.Search;
+using ParcelTrackingService.BLL.Search.Criteria.PostOffice;
+using ParcelTrackingService.BLL.Search.Criteria.PostOffice.Handlers;
 using ParcelTrackingService.DAL;
 using ParcelTrackingService.DAL.Entities;
 using ParcelTrackingService.GraphQL.Schema;
-using ParcelTrackingService.WebCommon.Search;
-using ParcelTrackingService.WebCommon.Search.Criteria.PostOffice;
-using ParcelTrackingService.WebCommon.Search.Criteria.PostOffice.Handlers;
 
 namespace ParcelTrackingService.GraphQL.Resolvers.PostOffices;
 
