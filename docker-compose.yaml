@@ -14,7 +14,6 @@ services:
       - parcel-tracking-service-db-data:/var/lib/postgresql/data
     networks:
       - parcel-tracking-service-network
-  
   redis:
     container_name: parcel-tracking-service-redis
     image: redis:7.2.4-alpine
@@ -24,9 +23,8 @@ services:
       - "6379"
     networks:
       - parcel-tracking-service-network
-  
   db-migrations:
-    profiles: [ 'migrations' ]
+    profiles: ['migrations']
     build:
       context: backend
       dockerfile: ParcelTrackingService.GraphQL/db-migrations.Dockerfile
@@ -40,7 +38,6 @@ services:
       - ConnectionStrings__Redis=redis:6379
     depends_on:
       - db
-  
   parcel-tracking-graphql-api:
     container_name: parcel-tracking-service-backend
     ports:
@@ -61,7 +58,6 @@ services:
     depends_on:
       - redis
       - db
-  
   parcel-tracking-frontend:
     container_name: parcel-tracking-service-frontend
     build:
@@ -73,7 +69,6 @@ services:
       - parcel-tracking-service-network
     depends_on:
       - parcel-tracking-graphql-api
-  
   nginx:
     container_name: parcel-tracking-service-nginx
     image: nginx:stable-alpine
@@ -88,10 +83,8 @@ services:
     depends_on:
       - parcel-tracking-graphql-api
       - parcel-tracking-frontend
-
 volumes:
   parcel-tracking-service-db-data:
-
 networks:
   parcel-tracking-service-network:
     driver: bridge

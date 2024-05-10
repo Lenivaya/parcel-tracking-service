@@ -23,7 +23,10 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 );
 
 builder
-    .Services.AddHttpLogging(options => { options.LoggingFields = HttpLoggingFields.Request; })
+    .Services.AddHttpLogging(options =>
+    {
+        options.LoggingFields = HttpLoggingFields.Request;
+    })
     .AddCors();
 
 builder
@@ -74,17 +77,18 @@ builder
     .InitializeOnStartup();
 ;
 
-
 var app = builder.Build();
 
 await app.Services.GetRequiredService<DatabaseSeeder>().Seed();
 
 app.UseRouting().UseWebSockets();
 
-app.UseForwardedHeaders(new ForwardedHeadersOptions
-{
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-});
+app.UseForwardedHeaders(
+    new ForwardedHeadersOptions
+    {
+        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+    }
+);
 
 if (app.Environment.IsDevelopment())
 {

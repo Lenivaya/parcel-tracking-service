@@ -2243,10 +2243,8 @@ packages:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
-
   multiformats@13.1.0:
     resolution: {integrity: sha512-HzdtdBwxsIkzpeXzhQ5mAhhuxcHbjEHH+JQoxt7hG/2HGFjjwyolLo7hbaexcnhoEuV4e0TNJ8kkpMjiEYY4VQ==}
-
   mute-stream@0.0.8:
     resolution: {integrity: sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==}
   my-easy-fp@0.22.0:
@@ -2927,10 +2925,8 @@ packages:
     hasBin: true
   ua-parser-js@1.0.37:
     resolution: {integrity: sha512-bhTyI94tZofjo+Dn8SN6Zv8nBDvyXTymAdM3LDI/0IboIUwTu1rEhW7v2TfiVsoYWgkQ4kOVqnI8APUFbIQIFQ==}
-
   uint8arrays@5.0.3:
     resolution: {integrity: sha512-6LBuKji28kHjgPJMkQ6GDaBb1lRwIhyOYq6pDGwYMoDPfImE9SkuYENVmR0yu9yGgs2clHUSY9fKDukR+AXfqQ==}
-
   unbox-primitive@1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}
   unc-path-regex@0.1.2:
@@ -5773,9 +5769,7 @@ snapshots:
   mkdirp@3.0.1: {}
   ms@2.1.2: {}
   ms@2.1.3: {}
-
   multiformats@13.1.0: {}
-
   mute-stream@0.0.8: {}
   my-easy-fp@0.22.0: {}
   my-node-fp@0.10.3:
@@ -6431,11 +6425,9 @@ snapshots:
   typed-function@4.1.1: {}
   typescript@5.4.5: {}
   ua-parser-js@1.0.37: {}
-
   uint8arrays@5.0.3:
     dependencies:
       multiformats: 13.1.0
-
   unbox-primitive@1.0.2:
     dependencies:
       call-bind: 1.0.7
