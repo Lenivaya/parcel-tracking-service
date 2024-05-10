@@ -1,4 +1,4 @@
-namespace ParcelTrackingService.WebCommon.Search.Criteria.Parcel;
+namespace ParcelTrackingService.BLL.Search.Criteria.Parcel;
 
 public record ParcelSearchCriteria(
     string? Matching,

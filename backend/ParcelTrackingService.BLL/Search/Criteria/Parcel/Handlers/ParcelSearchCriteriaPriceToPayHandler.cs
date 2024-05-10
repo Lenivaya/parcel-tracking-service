@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ParcelTrackingService.DAL;
 
-namespace ParcelTrackingService.WebCommon.Search.Criteria.Parcel.Handlers;
+namespace ParcelTrackingService.BLL.Search.Criteria.Parcel.Handlers;
 
 public class ParcelSearchCriteriaPriceToPayHandler
     : SearchCriteriaQueryHandler<

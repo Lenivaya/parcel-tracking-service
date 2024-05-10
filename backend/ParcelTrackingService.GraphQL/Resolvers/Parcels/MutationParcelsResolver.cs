@@ -1,12 +1,12 @@
 using HotChocolate.Subscriptions;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
+using ParcelTrackingService.BLL.DTO;
+using ParcelTrackingService.BLL.Exceptions;
+using ParcelTrackingService.BLL.Services;
 using ParcelTrackingService.DAL.Entities;
 using ParcelTrackingService.DAL.UnitOfWork;
 using ParcelTrackingService.GraphQL.Schema;
-using ParcelTrackingService.WebCommon.DTO;
-using ParcelTrackingService.WebCommon.Exceptions;
-using ParcelTrackingService.WebCommon.Services;
 
 namespace ParcelTrackingService.GraphQL.Resolvers.Parcels;
 

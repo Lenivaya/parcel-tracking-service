@@ -3,7 +3,7 @@ using MapsterMapper;
 using Microsoft.Extensions.DependencyInjection;
 using ParcelTrackingService.DAL.Entities;
 
-namespace ParcelTrackingService.WebCommon.DTO;
+namespace ParcelTrackingService.BLL.DTO;
 
 public static class MapsterConfig
 {

@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ParcelTrackingService.DAL;
 
-namespace ParcelTrackingService.WebCommon.Search.Criteria.PostOffice.Handlers;
+namespace ParcelTrackingService.BLL.Search.Criteria.PostOffice.Handlers;
 
 public class PostsOfficeSearchCriteriaMatchingCodeQueryHandler
     : SearchCriteriaQueryHandler<

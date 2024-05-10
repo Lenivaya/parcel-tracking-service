@@ -2,15 +2,16 @@ using System.Text.Json.Serialization;
 using HotChocolate.AspNetCore.Voyager;
 using HotChocolate.Language;
 using Microsoft.AspNetCore.HttpLogging;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using ParcelTrackingService.BLL.DTO;
 using ParcelTrackingService.DAL;
 using ParcelTrackingService.DAL.UnitOfWork;
 using ParcelTrackingService.GraphQL.Resolvers.DeliveryStatuses;
 using ParcelTrackingService.GraphQL.Resolvers.Parcels;
 using ParcelTrackingService.GraphQL.Resolvers.PostOffices;
 using ParcelTrackingService.GraphQL.Schema;
-using ParcelTrackingService.WebCommon.DTO;
 using StackExchange.Redis;
 
 var builder = WebApplication.CreateSlimBuilder(args);
@@ -22,10 +23,7 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 );
 
 builder
-    .Services.AddHttpLogging(options =>
-    {
-        options.LoggingFields = HttpLoggingFields.Request;
-    })
+    .Services.AddHttpLogging(options => { options.LoggingFields = HttpLoggingFields.Request; })
     .AddCors();
 
 builder
@@ -68,15 +66,25 @@ builder
     .AddApolloTracing()
     .UseAutomaticPersistedQueryPipeline()
     .AddRedisQueryStorage(_ => ConnectionMultiplexer.Connect(redisConnectionString).GetDatabase())
-    .ModifyRequestOptions(options => options.IncludeExceptionDetails = true)
+    .ModifyRequestOptions(options =>
+    {
+        options.ExecutionTimeout = TimeSpan.FromSeconds(60);
+        options.IncludeExceptionDetails = true;
+    })
     .InitializeOnStartup();
 ;
+
 
 var app = builder.Build();
 
 await app.Services.GetRequiredService<DatabaseSeeder>().Seed();
 
 app.UseRouting().UseWebSockets();
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 if (app.Environment.IsDevelopment())
 {

@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using ParcelTrackingService.BLL.Search;
+using ParcelTrackingService.BLL.Search.Criteria.Parcel;
+using ParcelTrackingService.BLL.Search.Criteria.Parcel.Handlers;
 using ParcelTrackingService.DAL;
 using ParcelTrackingService.DAL.Entities;
 using ParcelTrackingService.GraphQL.Schema;
-using ParcelTrackingService.WebCommon.Search;
-using ParcelTrackingService.WebCommon.Search.Criteria.Parcel;
-using ParcelTrackingService.WebCommon.Search.Criteria.Parcel.Handlers;
 
 namespace ParcelTrackingService.GraphQL.Resolvers.Parcels;
 

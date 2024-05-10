@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using ParcelTrackingService.WebCommon.Contracts;
+using ParcelTrackingService.BLL.Contracts;
 
-namespace ParcelTrackingService.WebCommon.Search;
+namespace ParcelTrackingService.BLL.Search;
 
 public abstract class SearchCriteriaQueryHandler<TContext, TSearchCriteria, TQueryResult>
     : ISearchCriteriaQueryHandler<TContext, TSearchCriteria, TQueryResult>

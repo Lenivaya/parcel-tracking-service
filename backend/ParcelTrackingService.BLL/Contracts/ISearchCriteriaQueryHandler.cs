@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace ParcelTrackingService.WebCommon.Contracts;
+namespace ParcelTrackingService.BLL.Contracts;
 
 public interface ISearchCriteriaQueryHandler<TContext, TSearchCriteria, TQueryResult>
     : IChainable<ISearchCriteriaQueryHandler<TContext, TSearchCriteria, TQueryResult>>

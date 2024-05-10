@@ -1,4 +1,4 @@
-namespace ParcelTrackingService.WebCommon.DTO;
+namespace ParcelTrackingService.BLL.DTO;
 
 public record PostOfficeCreateDto(string Address, string Code);
 
