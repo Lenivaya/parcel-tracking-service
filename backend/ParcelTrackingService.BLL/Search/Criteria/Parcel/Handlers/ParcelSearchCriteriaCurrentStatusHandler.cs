@@ -19,7 +19,7 @@ public class ParcelSearchCriteriaCurrentStatusHandler
         query ??= context.Parcels.AsQueryable();
 
         if (searchCriteria == null)
-            return query;
+            return Next?.HandleQuery(context, searchCriteria, query) ?? query;
 
         if (searchCriteria.CurrentStatusMatching is string currentStatusMatching)
         {

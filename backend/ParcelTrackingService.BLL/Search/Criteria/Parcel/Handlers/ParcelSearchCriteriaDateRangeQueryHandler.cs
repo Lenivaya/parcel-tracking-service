@@ -19,7 +19,7 @@ public class ParcelSearchCriteriaDateRangeQueryHandler
         query ??= context.Parcels.AsQueryable();
 
         if (searchCriteria == null)
-            return query;
+            return Next?.HandleQuery(context, searchCriteria, query) ?? query;
 
         if (searchCriteria.MinDate is DateTime minDate)
         {

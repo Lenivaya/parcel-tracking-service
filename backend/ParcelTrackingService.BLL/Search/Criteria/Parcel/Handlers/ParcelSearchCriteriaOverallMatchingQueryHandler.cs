@@ -19,7 +19,7 @@ public class ParcelSearchCriteriaOverallMatchingQueryHandler
         query ??= context.Parcels.AsQueryable();
 
         if (searchCriteria == null)
-            return query;
+            return Next?.HandleQuery(context, searchCriteria, query) ?? query;
 
         if (searchCriteria.Matching is string matching)
         {

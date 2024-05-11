@@ -19,7 +19,7 @@ public class PostsOfficeSearchCriteriaOverallMatchingQueryHandler
         query ??= context.PostOffices.AsQueryable();
 
         if (searchCriteria == null)
-            return query;
+            return Next?.HandleQuery(context, searchCriteria, query) ?? query;
 
         if (searchCriteria.Matching is string matching)
         {
