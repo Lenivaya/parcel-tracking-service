@@ -52,14 +52,25 @@ public class BaseGraphQlMutationResolverService<TEntity, TPrimaryKey, TCreateDto
         Action<TEntity>? onSuccess = null
     )
     {
-        var repo = getRepository(unitOfWork);
-        var (isDeleted, deletedEntity) = await repo.DeleteWithEntityReturn(id);
-        if (!isDeleted || deletedEntity is null)
-            return null;
+        try
+        {
+            var repo = getRepository(unitOfWork);
+            var (isDeleted, deletedEntity) = await repo.DeleteWithEntityReturn(id);
+            if (!isDeleted || deletedEntity is null)
+                return null;
 
-        await unitOfWork.SaveChanges();
-        onSuccess?.Invoke(deletedEntity);
-        return deletedEntity;
+            await unitOfWork.SaveChanges();
+            onSuccess?.Invoke(deletedEntity);
+            return deletedEntity;
+        }
+        catch (DbUpdateException e) when (e.InnerException is PostgresException postgresException)
+        {
+            throw new ParcelTrackingServiceException(postgresException.MessageText);
+        }
+        catch (PostgresException e)
+        {
+            throw new ParcelTrackingServiceException(e.Message);
+        }
     }
 
     public async Task<TEntity?> UpdateEntity(
@@ -70,18 +81,29 @@ public class BaseGraphQlMutationResolverService<TEntity, TPrimaryKey, TCreateDto
         Action<TEntity>? onSuccess = null
     )
     {
-        var repo = getRepository(unitOfWork);
-        var entityToUpdate = await repo.GetById(id);
+        try
+        {
+            var repo = getRepository(unitOfWork);
+            var entityToUpdate = await repo.GetById(id);
 
-        if (entityToUpdate == null)
-            return null;
+            if (entityToUpdate == null)
+                return null;
 
-        var updatedEntity = mapper.Map(updateDto, entityToUpdate);
+            var updatedEntity = mapper.Map(updateDto, entityToUpdate);
 
-        repo.Update(updatedEntity);
-        await unitOfWork.SaveChanges();
-        onSuccess?.Invoke(updatedEntity);
+            repo.Update(updatedEntity);
+            await unitOfWork.SaveChanges();
+            onSuccess?.Invoke(updatedEntity);
 
-        return updatedEntity;
+            return updatedEntity;
+        }
+        catch (DbUpdateException e) when (e.InnerException is PostgresException postgresException)
+        {
+            throw new ParcelTrackingServiceException(postgresException.MessageText);
+        }
+        catch (PostgresException e)
+        {
+            throw new ParcelTrackingServiceException(e.Message);
+        }
     }
 }

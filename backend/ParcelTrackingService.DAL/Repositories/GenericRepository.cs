@@ -151,7 +151,7 @@ public class GenericRepository<TEntity, TPrimaryKey>
         Context.Entry(entityToUpdate).State = EntityState.Modified;
     }
 
-    public IQueryable<TEntity> StartQueryWithDefaultIncludes()
+    public virtual IQueryable<TEntity> StartQueryWithDefaultIncludes()
     {
         var query = DbSet.AsQueryable();
 
