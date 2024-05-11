@@ -21,6 +21,7 @@ public class MutationDeliveryStatusesResolver
         new(unitOfWork => unitOfWork.DeliveryStatusesRepository);
 
     [Error(typeof(ParcelTrackingServiceException))]
+    [UseProjection]
     public Task<DeliveryStatus?> AddDeliveryStatus(
         ParcelTrackingServiceUnitOfWork unitOfWork,
         [Service] IMapper mapper,
@@ -37,6 +38,8 @@ public class MutationDeliveryStatusesResolver
             );
     }
 
+    [Error(typeof(ParcelTrackingServiceException))]
+    [UseProjection]
     public Task<DeliveryStatus?> DeleteDeliveryStatusById(
         ParcelTrackingServiceUnitOfWork unitOfWork,
         ITopicEventSender sender,
@@ -52,6 +55,8 @@ public class MutationDeliveryStatusesResolver
             );
     }
 
+    [Error(typeof(ParcelTrackingServiceException))]
+    [UseProjection]
     public Task<DeliveryStatus?> UpdateDeliveryStatus(
         ParcelTrackingServiceUnitOfWork unitOfWork,
         [Service] IMapper mapper,

@@ -19,7 +19,7 @@ public class ParcelSearchCriteriaPriceToPayHandler
         query ??= context.Parcels.AsQueryable();
 
         if (searchCriteria == null)
-            return query;
+            return Next?.HandleQuery(context, searchCriteria, query) ?? query;
 
         if (searchCriteria.MinPriceToPay is decimal minPrice)
             query = query

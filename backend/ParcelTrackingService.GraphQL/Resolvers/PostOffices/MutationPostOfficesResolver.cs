@@ -20,6 +20,7 @@ public class MutationPostOfficesResolver
     > GraphQlMutationResolverService { get; } = new(unitOfWork => unitOfWork.PostOfficesRepository);
 
     [Error(typeof(ParcelTrackingServiceException))]
+    [UseProjection]
     public Task<PostOffice?> AddPostOffice(
         ParcelTrackingServiceUnitOfWork unitOfWork,
         [Service] IMapper mapper,
@@ -36,6 +37,8 @@ public class MutationPostOfficesResolver
             );
     }
 
+    [Error(typeof(ParcelTrackingServiceException))]
+    [UseProjection]
     public Task<PostOffice?> DeletePostOfficeById(
         ParcelTrackingServiceUnitOfWork unitOfWork,
         ITopicEventSender sender,
@@ -51,6 +54,8 @@ public class MutationPostOfficesResolver
             );
     }
 
+    [Error(typeof(ParcelTrackingServiceException))]
+    [UseProjection]
     public Task<PostOffice?> UpdatePostOffice(
         ParcelTrackingServiceUnitOfWork unitOfWork,
         [Service] IMapper mapper,

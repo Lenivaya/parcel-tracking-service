@@ -20,6 +20,7 @@ public class MutationParcelsResolver
         ParcelPatchDto
     > GraphQlMutationResolverService { get; } = new(unitOfWork => unitOfWork.ParcelsRepository);
 
+    [Error(typeof(ParcelTrackingServiceException))]
     [UseProjection]
     public Task<Parcel?> AddParcel(
         ParcelTrackingServiceUnitOfWork unitOfWork,
@@ -30,10 +31,36 @@ public class MutationParcelsResolver
         return GraphQlMutationResolverService.AddEntity(unitOfWork, mapper, createDto);
     }
 
+    [Error(typeof(ParcelTrackingServiceException))]
     [UseProjection]
     public Task<Parcel?> DeleteParcelById(ParcelTrackingServiceUnitOfWork unitOfWork, Guid parcelId)
     {
         return GraphQlMutationResolverService.DeleteEntity(unitOfWork, parcelId);
+    }
+
+    [Error(typeof(ParcelTrackingServiceException))]
+    [UseProjection]
+    public Task<Parcel?> UpdateParcel(
+        ParcelTrackingServiceUnitOfWork unitOfWork,
+        [Service] IMapper mapper,
+        ITopicEventSender sender,
+        Guid parcelId,
+        ParcelPatchDto updateDto
+    )
+    {
+        return GraphQlMutationResolverService.UpdateEntity(
+            unitOfWork,
+            mapper,
+            parcelId,
+            updateDto,
+            OnSuccess
+        );
+
+        async void OnSuccess(Parcel result) =>
+            await sender.SendAsync(
+                $"{nameof(SubscriptionParcelsResolver.ParcelStatusUpdated)}-{parcelId}",
+                result.Id
+            );
     }
 
     [Error(typeof(ParcelNotFoundException))]
